@@ -1,0 +1,157 @@
+
+
+<div class="dashboard-container" #dashboardContainer>
+  <!-- Sidebar -->
+  <div class="sidebar" #sidebar [class.collapsed]="sidebarCollapsed">
+    <!-- Header del Sidebar -->
+    <div class="sidebar-header">
+      <div class="logo" *ngIf="!sidebarCollapsed">
+        <h2 class="logo-text">NUMIX</h2>
+        <span class="logo-version">v2.0</span>
+      </div>
+      <div class="logo-mini" *ngIf="sidebarCollapsed">
+        <span class="logo-icon">N</span>
+      </div>
+      <button class="sidebar-toggle" (click)="toggleSidebar()">
+        <span class="toggle-icon">{{ sidebarCollapsed ? '→' : '←' }}</span>
+      </button>
+    </div>
+
+    <!-- User Info -->
+    <div class="user-info" *ngIf="!sidebarCollapsed">
+      <div class="user-avatar">
+        <span class="avatar-text">{{ currentUser?.fullName?.charAt(0) || 'A' }}</span>
+      </div>
+      <div class="user-details">
+        <div class="user-name">{{ currentUser?.fullName }}</div>
+        <div class="user-role">{{ currentUser?.role | titlecase }}</div>
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="sidebar-nav">
+      <div 
+        *ngFor="let module of modules" 
+        class="nav-item"
+        [class.active]="activeModule === module.id"
+        [class]="'module-' + module.id"
+        (click)="navigateToModule(module)">
+        <span class="nav-icon">{{ module.icon }}</span>
+        <span class="nav-text" *ngIf="!sidebarCollapsed">{{ module.name }}</span>
+      </div>
+    </nav>
+
+    <!-- Logout Button -->
+    <div class="sidebar-footer">
+      <button class="logout-btn" (click)="logout()">
+        <span class="logout-icon">🚪</span>
+        <span class="logout-text" *ngIf="!sidebarCollapsed">Cerrar Sesión</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content" #mainContent>
+    <!-- Header -->
+    <div class="content-header">
+      <div class="header-left">
+        <h1 class="page-title">Dashboard Administrativo</h1>
+        <p class="page-subtitle">Resumen ejecutivo del sistema contable</p>
+      </div>
+      <div class="header-right">
+        <div class="date-time">
+          <span class="current-date">{{ 'now' | date:'dd/MM/yyyy' }}</span>
+          <span class="current-time">{{ 'now' | date:'HH:mm' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metrics Cards -->
+    <div class="metrics-grid">
+      <div class="metric-card revenue">
+        <div class="metric-header">
+          <h3 class="metric-title">Ingresos del Mes</h3>
+          <span class="metric-icon">📈</span>
+        </div>
+        <div class="metric-value">{{ formatCurrency(metrics.ingresosMes) }}</div>
+        <div class="metric-change positive">+12.5% vs mes anterior</div>
+      </div>
+
+      <div class="metric-card expenses">
+        <div class="metric-header">
+          <h3 class="metric-title">Egresos del Mes</h3>
+          <span class="metric-icon">📉</span>
+        </div>
+        <div class="metric-value">{{ formatCurrency(metrics.egresosMes) }}</div>
+        <div class="metric-change negative">+8.3% vs mes anterior</div>
+      </div>
+
+      <div class="metric-card balance">
+        <div class="metric-header">
+          <h3 class="metric-title">Saldo Actual</h3>
+          <span class="metric-icon">💰</span>
+        </div>
+        <div class="metric-value">{{ formatCurrency(metrics.saldoActual) }}</div>
+        <div class="metric-change positive">+5.7% vs mes anterior</div>
+      </div>
+
+      <div class="metric-card pending">
+        <div class="metric-header">
+          <h3 class="metric-title">Facturas Pendientes</h3>
+          <span class="metric-icon">⏳</span>
+        </div>
+        <div class="metric-value">{{ metrics.facturasPendientes }}</div>
+        <div class="metric-change neutral">Requieren seguimiento</div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <h2 class="section-title">Acciones Rápidas</h2>
+      <div class="actions-grid">
+        <button class="action-btn primary" (click)="crearFactura()">
+          <span class="action-icon">🧾</span>
+          <span class="action-text">Nueva Factura</span>
+        </button>
+        <button class="action-btn success" (click)="registrarPago()">
+          <span class="action-icon">💰</span>
+          <span class="action-text">Registrar Pago</span>
+        </button>
+        <button class="action-btn info" (click)="nuevoAsiento()">
+          <span class="action-icon">📝</span>
+          <span class="action-text">Nuevo Asiento</span>
+        </button>
+        <button class="action-btn warning" (click)="verInformes()">
+          <span class="action-icon">📊</span>
+          <span class="action-text">Ver Informes</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="recent-transactions">
+      <h2 class="section-title">Transacciones Recientes</h2>
+      <div class="transactions-list">
+        <div 
+          *ngFor="let transaction of recentTransactions" 
+          class="transaction-item"
+          [style.border-left-color]="getTransactionColor(transaction.tipo)">
+          <div class="transaction-icon">{{ getTransactionIcon(transaction.tipo) }}</div>
+          <div class="transaction-details">
+            <div class="transaction-description">{{ transaction.descripcion }}</div>
+            <div class="transaction-meta">
+              <span class="transaction-date">{{ transaction.fecha }}</span>
+              <span class="transaction-client" *ngIf="transaction.cliente">• {{ transaction.cliente }}</span>
+            </div>
+          </div>
+          <div class="transaction-amount" [style.color]="getTransactionColor(transaction.tipo)">
+            {{ transaction.tipo === 'egreso' ? '-' : '+' }}{{ formatCurrency(transaction.monto) }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

@@ -1,0 +1,478 @@
+<div class="informes-container" #container>
+  <!-- Header del módulo -->
+  <div class="module-header">
+    <div class="header-left">
+      <button class="back-btn" (click)="volverDashboard()">
+        <span class="back-icon">←</span>
+        Dashboard
+      </button>
+      <div class="header-info">
+        <h1 class="module-title">📊 Informes Financieros</h1>
+        <p class="module-subtitle">Reportes contables y análisis financiero</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-export" (click)="exportarPDF()">📄 PDF</button>
+      <button class="btn-export" (click)="exportarExcel()">📊 Excel</button>
+      <button class="btn-print" (click)="imprimirReporte()">🖨️ Imprimir</button>
+    </div>
+  </div>
+
+  <!-- Navegación por tabs -->
+  <div class="nav-tabs">
+    <button 
+      class="tab" 
+      [class.active]="vistaActual === 'dashboard'"
+      (click)="cambiarVista('dashboard')">
+      📈 Dashboard
+    </button>
+    <button 
+      class="tab" 
+      [class.active]="vistaActual === 'balance'"
+      (click)="cambiarVista('balance')">
+      ⚖️ Balance General
+    </button>
+    <button 
+      class="tab" 
+      [class.active]="vistaActual === 'resultados'"
+      (click)="cambiarVista('resultados')">
+      💹 Estado de Resultados
+    </button>
+    <button 
+      class="tab" 
+      [class.active]="vistaActual === 'diario'"
+      (click)="cambiarVista('diario')">
+      📔 Libro Diario
+    </button>
+    <button 
+      class="tab" 
+      [class.active]="vistaActual === 'mayor'"
+      (click)="cambiarVista('mayor')">
+      📚 Libro Mayor
+    </button>
+  </div>
+
+  <!-- Parámetros de reportes -->
+  <div class="parametros-section" *ngIf="vistaActual !== 'dashboard'">
+    <div class="parametros-card">
+      <h3>Parámetros del Reporte</h3>
+      <div class="parametros-grid">
+        <div class="param-group">
+          <label>Fecha Inicio:</label>
+          <input type="date" class="param-input" [(ngModel)]="parametros.fechaInicio">
+        </div>
+        <div class="param-group">
+          <label>Fecha Fin:</label>
+          <input type="date" class="param-input" [(ngModel)]="parametros.fechaFin">
+        </div>
+        <div class="param-group">
+          <label>Nivel de Detalle:</label>
+          <select id="selectors"   class="param-select" [(ngModel)]="parametros.nivel">
+            <option value="1">Nivel 1 (Grupos)</option>
+            <option value="2">Nivel 2 (Subgrupos)</option>
+            <option value="3">Nivel 3 (Cuentas)</option>
+            <option value="4">Nivel 4 (Subcuentas)</option>
+          </select>
+        </div>
+        <div class="param-group">
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="parametros.incluirCuentasCero">
+            Incluir cuentas con saldo cero
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="content-area">
+    
+    <!-- Dashboard Financiero -->
+    <div *ngIf="vistaActual === 'dashboard'" class="dashboard-view">
+      <!-- Métricas principales -->
+      <div class="metricas-grid">
+        <div class="metric-card activos">
+          <div class="metric-header">
+            <h3>Total Activos</h3>
+            <span class="metric-icon">🏢</span>
+          </div>
+          <div class="metric-value">{{ formatCurrency(metricas.totalActivos) }}</div>
+          <div class="metric-detail">Recursos de la empresa</div>
+        </div>
+
+        <div class="metric-card pasivos">
+          <div class="metric-header">
+            <h3>Total Pasivos</h3>
+            <span class="metric-icon">📋</span>
+          </div>
+          <div class="metric-value">{{ formatCurrency(metricas.totalPasivos) }}</div>
+          <div class="metric-detail">Obligaciones pendientes</div>
+        </div>
+
+        <div class="metric-card patrimonio">
+          <div class="metric-header">
+            <h3>Patrimonio</h3>
+            <span class="metric-icon">💎</span>
+          </div>
+          <div class="metric-value">{{ formatCurrency(metricas.totalPatrimonio) }}</div>
+          <div class="metric-detail">Capital propio</div>
+        </div>
+
+        <div class="metric-card utilidad">
+          <div class="metric-header">
+            <h3>Utilidad Neta</h3>
+            <span class="metric-icon">💰</span>
+          </div>
+          <div class="metric-value" [class.positive]="metricas.utilidadNeta > 0" [class.negative]="metricas.utilidadNeta < 0">
+            {{ formatCurrency(metricas.utilidadNeta) }}
+          </div>
+          <div class="metric-detail">Resultado del período</div>
+        </div>
+      </div>
+
+      <!-- Ratios financieros -->
+      <div class="ratios-section">
+        <h2 class="section-title">Indicadores Financieros</h2>
+        <div class="ratios-grid">
+          <div class="ratio-card">
+            <div class="ratio-header">
+              <h4>Liquidez Corriente</h4>
+              <span class="ratio-formula">Activo Corriente / Pasivo Corriente</span>
+            </div>
+            <div class="ratio-value" [class.good]="metricas.liquidez > 1" [class.warning]="metricas.liquidez <= 1">
+              {{ metricas.liquidez.toFixed(2) }}
+            </div>
+            <div class="ratio-interpretation">
+              <span *ngIf="metricas.liquidez > 1.5" class="interpretation good">Excelente liquidez</span>
+              <span *ngIf="metricas.liquidez > 1 && metricas.liquidez <= 1.5" class="interpretation ok">Liquidez adecuada</span>
+              <span *ngIf="metricas.liquidez <= 1" class="interpretation warning">Liquidez baja</span>
+            </div>
+          </div>
+
+          <div class="ratio-card">
+            <div class="ratio-header">
+              <h4>Rentabilidad sobre Activos</h4>
+              <span class="ratio-formula">(Utilidad Neta / Total Activos) × 100</span>
+            </div>
+            <div class="ratio-value" [class.good]="metricas.rentabilidad > 5" [class.ok]="metricas.rentabilidad > 0 && metricas.rentabilidad <= 5" [class.warning]="metricas.rentabilidad <= 0">
+              {{ metricas.rentabilidad.toFixed(2) }}%
+            </div>
+            <div class="ratio-interpretation">
+              <span *ngIf="metricas.rentabilidad > 10" class="interpretation good">Muy rentable</span>
+              <span *ngIf="metricas.rentabilidad > 5 && metricas.rentabilidad <= 10" class="interpretation good">Rentable</span>
+              <span *ngIf="metricas.rentabilidad > 0 && metricas.rentabilidad <= 5" class="interpretation ok">Rentabilidad moderada</span>
+              <span *ngIf="metricas.rentabilidad <= 0" class="interpretation warning">Sin rentabilidad</span>
+            </div>
+          </div>
+        </div>
+      </div>
+       <!-- Gráfico de composición patrimonial -->
+      <div class="graficos-section">
+        <h2 class="section-title">Composición Patrimonial</h2>
+          <div class="grafico-patrimonial">
+          <div class="patrimonio-bars">
+            <div class="bar-item activos">
+              <div class="bar-label">Activos</div>
+              <div class="bar-container">
+                <div class="bar-fill" [style.width.%]="(metricas.totalActivos / (metricas.totalActivos + metricas.totalPasivos + metricas.totalPatrimonio)) * 100"></div>
+              </div>
+              <div class="bar-value">{{ formatCurrency(metricas.totalActivos) }}</div>
+            </div>
+            <div class="bar-item pasivos">
+              <div class="bar-label">Pasivos</div>
+              <div class="bar-container">
+                <div class="bar-fill" [style.width.%]="(metricas.totalPasivos / (metricas.totalActivos + metricas.totalPasivos + metricas.totalPatrimonio)) * 100"></div>
+              </div>
+              <div class="bar-value">{{ formatCurrency(metricas.totalPasivos) }}</div>
+            </div>
+            <div class="bar-item patrimonio">
+              <div class="bar-label">Patrimonio</div>
+              <div class="bar-container">
+                <div class="bar-fill" [style.width.%]="(metricas.totalPatrimonio / (metricas.totalActivos + metricas.totalPasivos + metricas.totalPatrimonio)) * 100"></div>
+              </div>
+              <div class="bar-value">{{ formatCurrency(metricas.totalPatrimonio) }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Balance General -->
+    <div *ngIf="vistaActual === 'balance'" class="balance-view">
+      <div class="reporte-header">
+        <h2 class="reporte-title">BALANCE GENERAL</h2>
+        <p class="reporte-subtitle">Al {{ parametros.fechaFin | date:'dd/MM/yyyy' }}</p>
+        <p class="empresa-info">Sistema Contable NUMIX</p>
+      </div>
+
+      <div class="balance-content">
+        <div class="balance-section activos-section">
+          <h3 class="balance-section-title">ACTIVOS</h3>
+          <div class="balance-table">
+            <div *ngFor="let cuenta of getActivosBalance()"
+                 class="balance-row" 
+                 [class.nivel-1]="cuenta.nivel === 1"
+                 [class.nivel-2]="cuenta.nivel === 2"
+                 [class.nivel-3]="cuenta.nivel === 3"
+                 [class.nivel-4]="cuenta.nivel === 4">
+              <div class="cuenta-codigo">{{ cuenta.codigo }}</div>
+              <div class="cuenta-nombre" [style.padding-left]="getIndentStyle(cuenta.nivel)">
+                {{ cuenta.nombre }}
+              </div>
+              <div class="cuenta-saldo">
+               {{ cuenta.saldoFinal !== 0 ? formatCurrency(abs(cuenta.saldoFinal)) : '' }}
+              </div>
+            </div>
+            <div class="balance-row total">
+              <div class="cuenta-codigo"></div>
+              <div class="cuenta-nombre"><strong>TOTAL ACTIVOS</strong></div>
+              <div class="cuenta-saldo"><strong>{{ formatCurrency(metricas.totalActivos) }}</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="balance-section pasivos-section">
+          <h3 class="balance-section-title">PASIVOS</h3>
+          <div class="balance-table">
+           <div *ngFor="let cuenta of getPasivosBalance()"
+                 class="balance-row"
+                 [class.nivel-1]="cuenta.nivel === 1"
+                 [class.nivel-2]="cuenta.nivel === 2"
+                 [class.nivel-3]="cuenta.nivel === 3"
+                 [class.nivel-4]="cuenta.nivel === 4">
+              <div class="cuenta-codigo">{{ cuenta.codigo }}</div>
+              <div class="cuenta-nombre" [style.padding-left]="getIndentStyle(cuenta.nivel)">
+                {{ cuenta.nombre }}
+              </div>
+              <div class="cuenta-saldo">
+                {{ cuenta.saldoFinal !== 0 ? formatCurrency(abs(cuenta.saldoFinal)) : '' }}
+              </div>
+            </div>
+            <div class="balance-row subtotal">
+              <div class="cuenta-codigo"></div>
+              <div class="cuenta-nombre"><strong>TOTAL PASIVOS</strong></div>
+              <div class="cuenta-saldo"><strong>{{ formatCurrency(metricas.totalPasivos) }}</strong></div>
+            </div>
+          </div>
+
+          <h3 class="balance-section-title">PATRIMONIO</h3>
+          <div class="balance-table">
+            <div *ngFor="let cuenta of getPatrimonioBalance()"
+                 class="balance-row"
+                 [class.nivel-1]="cuenta.nivel === 1"
+                 [class.nivel-2]="cuenta.nivel === 2"
+                 [class.nivel-3]="cuenta.nivel === 3"
+                 [class.nivel-4]="cuenta.nivel === 4">
+              <div class="cuenta-codigo">{{ cuenta.codigo }}</div>
+              <div class="cuenta-nombre" [style.padding-left]="getIndentStyle(cuenta.nivel)">
+                {{ cuenta.nombre }}
+              </div>
+              <div class="cuenta-saldo">
+                {{ cuenta.saldoFinal !== 0 ? formatCurrency(abs(cuenta.saldoFinal)) : '' }}
+              </div>
+            </div>
+            <div class="balance-row subtotal">
+              <div class="cuenta-codigo"></div>
+              <div class="cuenta-nombre"><strong>TOTAL PATRIMONIO</strong></div>
+              <div class="cuenta-saldo"><strong>{{ formatCurrency(metricas.totalPatrimonio) }}</strong></div>
+            </div>
+            <div class="balance-row total">
+              <div class="cuenta-codigo"></div>
+              <div class="cuenta-nombre"><strong>TOTAL PASIVOS + PATRIMONIO</strong></div>
+              <div class="cuenta-saldo"><strong>{{ formatCurrency(metricas.totalPasivos + metricas.totalPatrimonio) }}</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado de Resultados -->
+    <div *ngIf="vistaActual === 'resultados'" class="resultados-view">
+      <div class="reporte-header">
+        <h2 class="reporte-title">ESTADO DE RESULTADOS</h2>
+        <p class="reporte-subtitle">Del {{ parametros.fechaInicio | date:'dd/MM/yyyy' }} al {{ parametros.fechaFin | date:'dd/MM/yyyy' }}</p>
+        <p class="empresa-info">Sistema Contable NUMIX</p>
+      </div>
+
+      <div class="resultados-content">
+        <div class="resultados-section ingresos-section">
+          <h3 class="resultados-section-title">INGRESOS</h3>
+          <div class="resultados-table">
+            <div *ngFor="let cuenta of getIngresosResultados()" 
+                 class="resultados-row"
+                 [class.nivel-1]="cuenta.nivel === 1"
+                 [class.nivel-2]="cuenta.nivel === 2"
+                 [class.nivel-3]="cuenta.nivel === 3"
+                 [class.nivel-4]="cuenta.nivel === 4">
+              <div class="cuenta-codigo">{{ cuenta.codigo }}</div>
+              <div class="cuenta-nombre" [style.padding-left]="getIndentStyle(cuenta.nivel)">
+                {{ cuenta.nombre }}
+              </div>
+              <div class="cuenta-saldo positivo">
+                {{ cuenta.saldoFinal !== 0 ? formatCurrency(abs(cuenta.saldoFinal)) : '' }}
+              </div>
+            </div>
+            <div class="resultados-row subtotal">
+              <div class="cuenta-codigo"></div>
+              <div class="cuenta-nombre"><strong>TOTAL INGRESOS</strong></div>
+              <div class="cuenta-saldo"><strong>
+               {{ formatCurrency(getTotalIngresos()) }}
+            </strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="resultados-section egresos-section">
+          <h3 class="resultados-section-title">EGRESOS</h3>
+          <div class="resultados-table">
+            <div *ngFor="let cuenta of getEgresosResultados()"
+                 class="resultados-row"
+                 [class.nivel-1]="cuenta.nivel === 1"
+                 [class.nivel-2]="cuenta.nivel === 2"
+                 [class.nivel-3]="cuenta.nivel === 3"
+                 [class.nivel-4]="cuenta.nivel === 4">
+              <div class="cuenta-codigo">{{ cuenta.codigo }}</div>
+              <div class="cuenta-nombre" [style.padding-left]="getIndentStyle(cuenta.nivel)">
+                {{ cuenta.nombre }}
+              </div>
+              <div class="cuenta-saldo negativo">
+                {{ cuenta.saldoFinal !== 0 ? formatCurrency(abs(cuenta.saldoFinal)) : '' }}
+              </div>
+            </div>
+            <div class="resultados-row subtotal">
+              <div class="cuenta-codigo"></div>
+              <div class="cuenta-nombre"><strong>TOTAL EGRESOS</strong></div>
+              <div class="cuenta-saldo"><strong>
+               {{ formatCurrency(getTotalEgresos()) }}
+            </strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="resultado-final">
+          <div class="resultado-row" [class.utilidad]="metricas.utilidadNeta > 0" [class.perdida]="metricas.utilidadNeta < 0">
+            <div class="resultado-label">
+              <strong>{{ metricas.utilidadNeta >= 0 ? 'UTILIDAD NETA' : 'PÉRDIDA NETA' }}</strong>
+            </div>
+            <div class="resultado-valor">
+              {{ formatCurrency(abs(metricas.utilidadNeta)) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Libro Diario -->
+    <div *ngIf="vistaActual === 'diario'" class="diario-view">
+      <div class="reporte-header">
+        <h2 class="reporte-title">LIBRO DIARIO</h2>
+        <p class="reporte-subtitle">Del {{ parametros.fechaInicio | date:'dd/MM/yyyy' }} al {{ parametros.fechaFin | date:'dd/MM/yyyy' }}</p>
+        <p class="empresa-info">Sistema Contable NUMIX</p>
+      </div>
+
+      <div class="diario-content">
+        <div *ngFor="let asiento of generarLibroDiario()" class="asiento-card">
+          <div class="asiento-header">
+            <div class="asiento-info">
+              <h3 class="asiento-referencia">{{ asiento.referencia }}</h3>
+              <p class="asiento-fecha">{{ asiento.fecha | date:'dd/MM/yyyy' }}</p>
+            </div>
+            <div class="asiento-totales">
+              <span class="total-debito">Débito: {{ formatCurrency(asiento.totalDebito) }}</span>
+              <span class="total-credito">Crédito: {{ formatCurrency(asiento.totalCredito) }}</span>
+            </div>
+          </div>
+
+          <div class="asiento-descripcion">
+            <p><strong>{{ asiento.descripcion }}</strong></p>
+          </div>
+
+          <div class="asiento-detalles">
+            <div class="detalles-header">
+              <div class="col-codigo">Código</div>
+              <div class="col-cuenta">Cuenta</div>
+              <div class="col-descripcion">Descripción</div>
+              <div class="col-debito">Débito</div>
+              <div class="col-credito">Crédito</div>
+            </div>
+
+            <div *ngFor="let detalle of asiento.detalles" class="detalle-row">
+              <div class="col-codigo">{{ detalle.codigoCuenta }}</div>
+              <div class="col-cuenta">{{ detalle.nombreCuenta }}</div>
+              <div class="col-descripcion">{{ detalle.descripcion }}</div>
+              <div class="col-debito">{{ detalle.debito > 0 ? formatCurrency(detalle.debito) : '' }}</div>
+              <div class="col-credito">{{ detalle.credito > 0 ? formatCurrency(detalle.credito) : '' }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Libro Mayor -->
+    <div *ngIf="vistaActual === 'mayor'" class="mayor-view">
+      <div class="reporte-header">
+        <h2 class="reporte-title">LIBRO MAYOR</h2>
+        <p class="reporte-subtitle">Del {{ parametros.fechaInicio | date:'dd/MM/yyyy' }} al {{ parametros.fechaFin | date:'dd/MM/yyyy' }}</p>
+        <p class="empresa-info">Sistema Contable NUMIX</p>
+      </div>
+
+      <div class="mayor-content">
+        <div *ngFor="let cuenta of getCuentasMayor()"
+             class="cuenta-mayor-card">
+          <div class="cuenta-mayor-header">
+            <h3 class="cuenta-mayor-titulo">{{ cuenta.codigo }} - {{ cuenta.nombre }}</h3>
+            <div class="cuenta-mayor-tipo" [class]="getTipoColorClass(cuenta.tipo)">
+              {{ cuenta.tipo }}
+            </div>
+          </div>
+
+          <div class="cuenta-mayor-movimientos">
+            <div class="movimientos-header">
+              <div class="col-fecha">Fecha</div>
+              <div class="col-referencia">Ref.</div>
+              <div class="col-descripcion">Descripción</div>
+              <div class="col-debito">Débito</div>
+              <div class="col-credito">Crédito</div>
+              <div class="col-saldo">Saldo</div>
+            </div>
+
+            <!-- Saldo inicial -->
+            <div class="movimiento-row saldo-inicial">
+              <div class="col-fecha">{{ parametros.fechaInicio | date:'dd/MM/yyyy' }}</div>
+              <div class="col-referencia">-</div>
+              <div class="col-descripcion">Saldo Inicial</div>
+              <div class="col-debito"></div>
+              <div class="col-credito"></div>
+              <div class="col-saldo">{{ formatCurrency(cuenta.saldoFinal) }}</div>
+            </div>
+
+            <!-- Movimientos durante el período -->
+            <div class="movimiento-row" 
+                 *ngFor="let asiento of generarLibroDiario(); let i = index">
+              <div *ngFor="let detalle of asiento.detalles">
+                <div *ngIf="detalle.codigoCuenta === cuenta.codigo" class="movimiento-detalle">
+                  <div class="col-fecha">{{ asiento.fecha | date:'dd/MM/yyyy' }}</div>
+                  <div class="col-referencia">{{ asiento.referencia }}</div>
+                  <div class="col-descripcion">{{ detalle.descripcion }}</div>
+                  <div class="col-debito">{{ detalle.debito > 0 ? formatCurrency(detalle.debito) : '' }}</div>
+                  <div class="col-credito">{{ detalle.credito > 0 ? formatCurrency(detalle.credito) : '' }}</div>
+                  <div class="col-saldo">{{ formatCurrency(cuenta.saldoFinal) }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Saldo final -->
+            <div class="movimiento-row saldo-final">
+              <div class="col-fecha">{{ parametros.fechaFin | date:'dd/MM/yyyy' }}</div>
+              <div class="col-referencia">-</div>
+              <div class="col-descripcion"><strong>Saldo Final</strong></div>
+              <div class="col-debito"></div>
+              <div class="col-credito"></div>
+              <div class="col-saldo"><strong>{{ formatCurrency(cuenta.saldoFinal) }}</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

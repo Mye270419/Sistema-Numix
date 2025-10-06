@@ -1,0 +1,367 @@
+<div class="configuracion-container" #container>
+  <!-- Header del módulo -->
+  <div class="module-header">
+    <div class="header-left">
+      <button class="back-btn" (click)="volverDashboard()">
+        <span class="back-icon">←</span>
+        Dashboard
+      </button>
+      <div class="header-info">
+        <h1 class="module-title">⚙️ Configuración del Sistema</h1>
+        <p class="module-subtitle">Gestión de usuarios, empresa y parámetros</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensajes de feedback -->
+  <div class="messages-container">
+    <div *ngIf="mensajeExito" class="message message-success">
+      ✅ {{ mensajeExito }}
+    </div>
+    <div *ngIf="mensajeError" class="message message-error">
+      ❌ {{ mensajeError }}
+    </div>
+  </div>
+
+  <!-- Navegación por tabs -->
+  <div class="nav-tabs">
+    <button 
+      class="tab" 
+      [class.active]="vistaActual === 'general'"
+      (click)="cambiarVista('general')">
+      🏠 General
+    </button>
+    <button 
+      class="tab" 
+      [class.active]="vistaActual === 'usuarios'"
+      (click)="cambiarVista('usuarios')">
+      👥 Usuarios
+    </button>
+    <button 
+      class="tab" 
+      [class.active]="vistaActual === 'empresa'"
+      (click)="cambiarVista('empresa')">
+      🏢 Empresa
+    </button>
+    <button 
+      class="tab" 
+      [class.active]="vistaActual === 'sistema'"
+      (click)="cambiarVista('sistema')">
+      🔧 Sistema
+    </button>
+    <button 
+      class="tab" 
+      [class.active]="vistaActual === 'seguridad'"
+      (click)="cambiarVista('seguridad')">
+      🔒 Seguridad
+    </button>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="content-area">
+    
+    <!-- Vista General -->
+    <div *ngIf="vistaActual === 'general'" class="general-view">
+      <h2 class="section-title">Resumen de Configuración</h2>
+      
+      <div class="config-cards-grid">
+        <div class="config-card" (click)="cambiarVista('usuarios')">
+          <div class="card-icon">👥</div>
+          <h3 class="card-title">Gestión de Usuarios</h3>
+          <p class="card-description">{{ usuarios.length }} usuarios registrados</p>
+          <div class="card-action">Ver usuarios →</div>
+        </div>
+
+        <div class="config-card" (click)="cambiarVista('empresa')">
+          <div class="card-icon">🏢</div>
+          <h3 class="card-title">Datos de la Empresa</h3>
+          <p class="card-description">{{ empresa.razonSocial }}</p>
+          <div class="card-action">Editar datos →</div>
+        </div>
+
+        <div class="config-card" (click)="cambiarVista('sistema')">
+          <div class="card-icon">🔧</div>
+          <h3 class="card-title">Parámetros del Sistema</h3>
+          <p class="card-description">Moneda: {{ parametros.moneda }}, IVA: {{ parametros.iva }}%</p>
+          <div class="card-action">Configurar →</div>
+        </div>
+
+        <div class="config-card" (click)="cambiarVista('seguridad')">
+          <div class="card-icon">🔒</div>
+          <h3 class="card-title">Seguridad</h3>
+          <p class="card-description">Backup automático: {{ parametros.backupAutomatico ? 'Activo' : 'Inactivo' }}</p>
+          <div class="card-action">Gestionar →</div>
+        </div>
+      </div>
+
+      <!-- Información del sistema -->
+      <div class="sistema-info">
+        <h3>Información del Sistema</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Versión:</span>
+            <span class="info-value">NUMIX v2.0.0</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Base de Datos:</span>
+            <span class="info-value">Activa</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Último Backup:</span>
+            <span class="info-value">Hoy, 08:00 AM</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Usuario Actual:</span>
+            <span class="info-value">{{ authService.currentUserValue?.fullName }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vista Usuarios -->
+    <div *ngIf="vistaActual === 'usuarios'" class="usuarios-view">
+      <h2 class="section-title">Gestión de Usuarios</h2>
+      
+      <!-- Formulario nuevo usuario -->
+      <div class="nuevo-usuario-form">
+        <h3 class="subsection-title">Agregar Nuevo Usuario</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nombre de Usuario:</label>
+            <input type="text" class="form-input" [(ngModel)]="nuevoUsuario.username" placeholder="usuario123">
+          </div>
+          <div class="form-group">
+            <label>Nombre Completo:</label>
+            <input type="text" class="form-input" [(ngModel)]="nuevoUsuario.fullName" placeholder="Juan Pérez">
+          </div>
+          <div class="form-group">
+            <label>Email:</label>
+            <input type="email" class="form-input" [(ngModel)]="nuevoUsuario.email" placeholder="email@numix.bo">
+          </div>
+          <div class="form-group">
+            <label>Rol:</label>
+            <select class="form-select" [(ngModel)]="nuevoUsuario.role">
+              <option value="contador">Contador</option>
+              <option value="gerente">Gerente</option>
+              <option value="facturador">Facturador</option>
+              <option value="administrador">Administrador</option>
+            </select>
+          </div>
+          <button class="btn-add-usuario" (click)="agregarUsuario()">
+            ➕ Agregar Usuario
+          </button>
+        </div>
+      </div>
+
+      <!-- Lista de usuarios -->
+      <div class="usuarios-list">
+        <h3 class="subsection-title">Usuarios Registrados</h3>
+        <div class="usuarios-grid">
+          <div *ngFor="let usuario of usuarios" class="usuario-card">
+            <div class="usuario-header">
+              <div class="usuario-info">
+                <h4>{{ usuario.fullName }}</h4>
+                <p class="usuario-username">@{{ usuario.username }}</p>
+              </div>
+              <div class="usuario-status">
+                <span class="role-badge" [class]="getRoleBadgeClass(usuario.role)">
+                  {{ getRoleLabel(usuario.role) }}
+                </span>
+                <span class="status-badge" [class.activo]="usuario.activo" [class.inactivo]="!usuario.activo">
+                  {{ usuario.activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </div>
+            </div>
+
+            <div class="usuario-detalles">
+              <p><strong>📧</strong> {{ usuario.email }}</p>
+              <p><strong>📅</strong> Creado: {{ usuario.fechaCreacion | date:'dd/MM/yyyy' }}</p>
+              <p *ngIf="usuario.ultimoAcceso"><strong>🕐</strong> Último acceso: {{ usuario.ultimoAcceso | date:'dd/MM/yyyy' }}</p>
+            </div>
+
+            <div class="usuario-actions">
+              <button class="btn-toggle" (click)="toggleUsuarioActivo(usuario)">
+                {{ usuario.activo ? '⏸️ Desactivar' : '▶️ Activar' }}
+              </button>
+              <button class="btn-edit">✏️ Editar</button>
+              <button class="btn-delete" (click)="eliminarUsuario(usuario)" *ngIf="usuario.role !== 'administrador'">
+                🗑️ Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vista Empresa -->
+    <div *ngIf="vistaActual === 'empresa'" class="empresa-view">
+      <h2 class="section-title">Datos de la Empresa</h2>
+      
+      <div class="empresa-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>NIT:</label>
+            <input type="text" class="form-input" [(ngModel)]="empresa.nit" placeholder="1234567890">
+          </div>
+          <div class="form-group">
+            <label>Razón Social:</label>
+            <input type="text" class="form-input" [(ngModel)]="empresa.razonSocial" placeholder="Nombre de la empresa">
+          </div>
+          <div class="form-group full-width">
+            <label>Dirección:</label>
+            <input type="text" class="form-input" [(ngModel)]="empresa.direccion" placeholder="Dirección completa">
+          </div>
+          <div class="form-group">
+            <label>Teléfono:</label>
+            <input type="tel" class="form-input" [(ngModel)]="empresa.telefono" placeholder="2-2123456">
+          </div>
+          <div class="form-group">
+            <label>Email:</label>
+            <input type="email" class="form-input" [(ngModel)]="empresa.email" placeholder="contacto@empresa.com">
+          </div>
+          <div class="form-group">
+            <label>Ciudad:</label>
+            <input type="text" class="form-input" [(ngModel)]="empresa.ciudad" placeholder="La Paz">
+          </div>
+          <div class="form-group">
+            <label>País:</label>
+            <input type="text" class="form-input" [(ngModel)]="empresa.pais" placeholder="Bolivia">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-save" (click)="guardarDatosEmpresa()" [disabled]="guardando">
+            {{ guardando ? '⏳ Guardando...' : '💾 Guardar Cambios' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vista Sistema -->
+    <div *ngIf="vistaActual === 'sistema'" class="sistema-view">
+      <h2 class="section-title">Parámetros del Sistema</h2>
+      
+      <div class="sistema-form">
+        <h3 class="subsection-title">Configuración Regional</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Idioma:</label>
+            <select class="form-select" [(ngModel)]="parametros.idioma">
+              <option value="es">Español</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Moneda:</label>
+            <select class="form-select" [(ngModel)]="parametros.moneda">
+              <option value="BOB">Bolivianos (BOB)</option>
+              <option value="USD">Dólares (USD)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Formato de Fecha:</label>
+            <select class="form-select" [(ngModel)]="parametros.formatoFecha">
+              <option value="dd/MM/yyyy">DD/MM/AAAA</option>
+              <option value="MM/dd/yyyy">MM/DD/AAAA</option>
+              <option value="yyyy-MM-dd">AAAA-MM-DD</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Zona Horaria:</label>
+            <select class="form-select" [(ngModel)]="parametros.timezone">
+              <option value="America/La_Paz">La Paz (BOT)</option>
+              <option value="America/Lima">Lima (PET)</option>
+            </select>
+          </div>
+        </div>
+
+        <h3 class="subsection-title">Facturación</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" [(ngModel)]="parametros.facturaAutonumerica">
+              Numeración automática de facturas
+            </label>
+          </div>
+          <div class="form-group" *ngIf="parametros.facturaAutonumerica">
+            <label>Próximo Número de Factura:</label>
+            <input type="number" class="form-input" [(ngModel)]="parametros.proximoNumeroFactura">
+          </div>
+          <div class="form-group">
+            <label>IVA (%):</label>
+            <input type="number" class="form-input" [(ngModel)]="parametros.iva" step="0.01">
+          </div>
+        </div>
+
+        <h3 class="subsection-title">Backup</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" [(ngModel)]="parametros.backupAutomatico">
+              Backup automático
+            </label>
+          </div>
+          <div class="form-group" *ngIf="parametros.backupAutomatico">
+            <label>Frecuencia:</label>
+            <select class="form-select" [(ngModel)]="parametros.frecuenciaBackup">
+              <option value="diario">Diario</option>
+              <option value="semanal">Semanal</option>
+              <option value="mensual">Mensual</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-save" (click)="guardarParametros()" [disabled]="guardando">
+            {{ guardando ? '⏳ Guardando...' : '💾 Guardar Parámetros' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vista Seguridad -->
+    <div *ngIf="vistaActual === 'seguridad'" class="seguridad-view">
+      <h2 class="section-title">Seguridad del Sistema</h2>
+      
+      <!-- Cambio de contraseña -->
+      <div class="password-section">
+        <h3 class="subsection-title">Cambiar Contraseña</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Contraseña Actual:</label>
+            <input type="password" class="form-input" [(ngModel)]="cambioPassword.passwordActual" placeholder="Contraseña actual">
+          </div>
+          <div class="form-group">
+            <label>Nueva Contraseña:</label>
+            <input type="password" class="form-input" [(ngModel)]="cambioPassword.passwordNuevo" placeholder="Nueva contraseña">
+          </div>
+          <div class="form-group">
+            <label>Confirmar Contraseña:</label>
+            <input type="password" class="form-input" [(ngModel)]="cambioPassword.passwordConfirmar" placeholder="Confirmar contraseña">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-save" (click)="cambiarPassword()" [disabled]="guardando">
+            {{ guardando ? '⏳ Cambiando...' : '🔒 Cambiar Contraseña' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Backup y restauración -->
+      <div class="backup-section">
+        <h3 class="subsection-title">Backup y Restauración</h3>
+        <div class="backup-actions">
+          <button class="btn-backup" (click)="generarBackup()">
+            💾 Generar Backup
+          </button>
+          <button class="btn-restore" (click)="restaurarBackup()">
+            🔄 Restaurar Backup
+          </button>
+          <button class="btn-export" (click)="exportarDatos()">
+            📤 Exportar Datos
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

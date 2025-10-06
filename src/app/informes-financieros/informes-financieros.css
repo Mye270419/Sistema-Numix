@@ -1,0 +1,4224 @@
+informes-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0a0a0a 100%);
+  color: #000000;
+  font-family: 'Arial', sans-serif;
+  padding: 2rem;
+  opacity: 0;
+}
+
+/* ===================
+   HEADER STYLES
+   =================== */
+.module-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 1.5rem 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(-2px);
+}
+
+.module-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.module-subtitle {
+  margin: 0.25rem 0 0 0;
+  color: #999;
+  font-size: 1rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.btn-export, .btn-print {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.btn-export:hover, .btn-print:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ===================
+   NAVIGATION TABS
+   =================== */
+.nav-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tab {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  background: transparent;
+  border: none;
+  color: #999;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  min-width: 150px;
+  text-align: center;
+}
+
+.tab:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.tab.active {
+  background: rgba(59, 130, 246, 0.3);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+}
+
+/* ===================
+   PARÁMETROS
+   =================== */
+.parametros-section {
+  margin-bottom: 2rem;
+}
+
+.parametros-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.parametros-card h3 {
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+}
+
+.parametros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  align-items: end;
+}
+
+.param-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.param-group label {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.param-input, .param-select {
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.95rem;
+  
+}
+
+.param-select option {
+  /* Usamos un fondo oscuro sólido para asegurar la legibilidad cuando la lista se abre */
+  background-color: #1a1a1a !important; /* Un gris muy oscuro/negro sólido */
+  color: #ffffff !important; 
+             /* Letras blancas sólidas */
+  
+}
+
+.param-input:focus, .param-select:focus {
+  
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin: 0;
+}
+
+/* ===================
+   CONTENT AREA
+   =================== */
+.content-area {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  min-height: 600px;
+}
+
+/* ===================
+   DASHBOARD VIEW
+   =================== */
+.metricas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.metric-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: transform 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+.metric-card.activos::before {
+  background: linear-gradient(90deg, #16a085, #10b981);
+}
+
+.metric-card.pasivos::before {
+  background: linear-gradient(90deg, #e74c3c, #ef4444);
+}
+
+.metric-card.patrimonio::before {
+  background: linear-gradient(90deg, #8b5cf6, #a855f7);
+}
+
+.metric-card.utilidad::before {
+  background: linear-gradient(90deg, #f39c12, #f59e0b);
+}
+
+.metric-card:hover {
+  transform: translateY(-5px);
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.metric-header h3 {
+  font-size: 0.9rem;
+  color: #999;
+  margin: 0;
+  font-weight: 500;
+}
+
+.metric-icon {
+  font-size: 1.5rem;
+}
+
+.metric-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.metric-value.positive {
+  color: #10b981;
+}
+
+.metric-value.negative {
+  color: #ef4444;
+}
+
+.metric-detail {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* ===================
+   RATIOS FINANCIEROS
+   =================== */
+.ratios-section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 1.5rem 0;
+}
+
+.ratios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.ratio-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.ratio-header h4 {
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+.ratio-formula {
+  color: #999;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.ratio-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.ratio-value.good {
+  color: #10b981;
+}
+
+.ratio-value.ok {
+  color: #f59e0b;
+}
+
+.ratio-value.warning {
+  color: #ef4444;
+}
+
+.ratio-interpretation {
+  text-align: center;
+}
+
+.interpretation {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.interpretation.good {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.interpretation.ok {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.interpretation.warning {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+/* ===================
+   GRÁFICO PATRIMONIAL
+   =================== */
+.graficos-section {
+  margin-bottom: 2rem;
+}
+
+.patrimonio-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bar-item {
+  display: grid;
+  grid-template-columns: 120px 1fr 150px;
+  gap: 1rem;
+  align-items: center;
+}
+
+.bar-label {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.bar-container {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  height: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 20px;
+  transition: width 1s ease;
+}
+
+.bar-item.activos .bar-fill {
+  background: linear-gradient(90deg, #16a085, #10b981);
+}
+
+.bar-item.pasivos .bar-fill {
+  background: linear-gradient(90deg, #e74c3c, #ef4444);
+}
+
+.bar-item.patrimonio .bar-fill {
+  background: linear-gradient(90deg, #8b5cf6, #a855f7);
+}
+
+.bar-value {
+  text-align: right;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* ===================
+   REPORTES
+   =================== */
+.reporte-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.reporte-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+}
+
+.reporte-subtitle {
+  font-size: 1rem;
+  color: #999;
+  margin: 0 0 0.5rem 0;
+}
+
+.empresa-info {
+  font-size: 0.9rem;
+  color: #ffffff;
+  margin: 0;
+}
+/* ===================
+   ANIMACIONES & FX
+   =================== */
+@keyframes fadeIn {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.informes-container {
+  animation: fadeIn 1s ease forwards;
+}
+
+.metric-card,
+.ratio-card,
+.parametros-card,
+.content-area {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.metric-card:hover,
+.ratio-card:hover,
+.parametros-card:hover,
+.content-area:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+/* ===================
+   TABLAS / DATOS
+   =================== */
+.table-finanzas {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
+
+.table-finanzas th,
+.table-finanzas td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  color: #ffffff;
+}
+
+.table-finanzas th {
+  background: rgba(255,255,255,0.08);
+  font-weight: 600;
+}
+
+.table-finanzas tr:nth-child(even) {
+  background: rgba(255,255,255,0.04);
+}
+
+.table-finanzas tr:hover {
+  background: rgba(59,130,246,0.15);
+}
+
+/* ===================
+   BOTONES EXTRA
+   =================== */
+.btn-primary {
+  background: linear-gradient(90deg,#3b82f6,#2563eb);
+  border: none;
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(90deg,#2563eb,#1d4ed8);
+}
+
+/* ===================
+   RESPONSIVE DESIGN
+   =================== */
+@media (max-width: 1024px) {
+  .metricas-grid { grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); }
+  .ratios-grid   { grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); }
+  .bar-item      { grid-template-columns: 100px 1fr 100px; }
+}
+
+@media (max-width: 768px) {
+  .module-header, .nav-tabs {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .header-actions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .module-title   { font-size: 1.6rem; }
+  .metric-value   { font-size: 1.6rem; }
+  .ratio-value    { font-size: 2rem; }
+  .bar-item       { grid-template-columns: 1fr; text-align: center; }
+  .bar-container  { height: 20px; }
+}
+
+/* ===================
+   IMPRESIÓN
+   =================== */
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+  .informes-container {
+    background: #fff !important;
+    color: #000 !important;
+    padding: 1rem;
+  }
+  .module-header,
+  .nav-tabs,
+  .btn-export,
+  .btn-print {
+    display: none !important;
+  }
+  .content-area,
+  .metric-card,
+  .ratio-card,
+  .parametros-card {
+    background: #fff !important;
+    border: 1px solid #ccc;
+    box-shadow: none;
+    color: #000 !important;
+  }
+  .table-finanzas th,
+  .table-finanzas td {
+    color: #000 !important;
+    border: 1px solid #ddd;
+  }
+}
+
+/* ===================
+   GRADIENT ACCENTS
+   =================== */
+.metric-value.positive::after {
+  content: "▲";
+  margin-left: 4px;
+  color: #10b981;
+}
+
+.metric-value.negative::after {
+  content: "▼";
+  margin-left: 4px;
+  color: #ef4444;
+}
+
+/* =================== ESTILOS PARA VISTAS ESPECÍFICAS =================== */
+
+/* Estilos para la vista de Dashboard */
+.dashboard-view {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Estilos para la vista de Balance General */
+.balance-view {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.balance-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.balance-section {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.balance-section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.balance-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.balance-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 120px;
+  gap: 1rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background-color  0.3s ease;
+}
+
+.balance-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.balance-row.nivel-1 {
+  
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.balance-row.nivel-2 {
+  padding-left: 1rem;
+  font-weight: 500;
+}
+
+.balance-row.nivel-3 {
+  padding-left: 2rem;
+}
+
+.balance-row.nivel-4 {
+  padding-left: 3rem;
+}
+
+.balance-row.total {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  font-weight: 700;
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+.balance-row.subtotal {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  font-weight: 600;
+  padding: 0.75rem;
+}
+
+.cuenta-codigo {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.cuenta-nombre {
+  color: #ffffff;
+}
+
+.cuenta-saldo {
+  text-align: right;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.activos-section .cuenta-saldo {
+  color: #10b981;
+}
+
+.pasivos-section .cuenta-saldo {
+  color: #ef4444;
+}
+
+/* Estilos para la vista de Estado de Resultados */
+.resultados-view {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.resultados-content {
+  margin-top: 2rem;
+}
+
+.resultados-section {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.resultados-section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.resultados-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.resultados-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 120px;
+  gap: 1rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.resultados-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.resultados-row.nivel-1 {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.resultados-row.nivel-2 {
+  padding-left: 1rem;
+  font-weight: 500;
+}
+
+.resultados-row.nivel-3 {
+  padding-left: 2rem;
+}
+
+.resultados-row.nivel-4 {
+  padding-left: 3rem;
+}
+
+.resultados-row.subtotal {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  font-weight: 600;
+  padding: 0.75rem;
+}
+
+.cuenta-saldo.positivo {
+  color: #10b981;
+}
+
+.cuenta-saldo.negativo {
+  color: #ef4444;
+}
+
+.resultado-final {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.resultado-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.resultado-row.utilidad {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+}
+
+.resultado-row.perdida {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.resultado-label {
+  font-weight: 600;
+}
+
+.resultado-valor {
+  font-size: 1.5rem;
+}
+
+/* Estilos para la vista de Libro Diario */
+.diario-view {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.diario-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.asiento-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  animation: slideInLeft 0.4s ease forwards;
+}
+
+.asiento-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.asiento-info {
+  flex: 1;
+}
+
+.asiento-referencia {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 0.25rem 0;
+}
+
+.asiento-fecha {
+  color: #999;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.asiento-totales {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: right;
+}
+
+.total-debito {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.total-credito {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.asiento-descripcion {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+}
+
+.asiento-detalles {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.detalles-header {
+  display: grid;
+  grid-template-columns: 100px 150px 1fr 100px 100px;
+  background: rgba(59, 130, 246, 0.1);
+  padding: 0.75rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.detalle-row {
+  display: grid;
+  grid-template-columns: 100px 150px 1fr 100px 100px;
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.detalle-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.col-codigo { width: 100px; }
+.col-cuenta { width: 150px; }
+.col-descripcion { flex: 1; }
+.col-debito { width: 100px; text-align: right; }
+.col-credito { width: 100px; text-align: right; }
+
+/* Estilos para la vista de Libro Mayor */
+.mayor-view {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.mayor-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.cuenta-mayor-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  animation: slideDown 0.4s ease forwards;
+}
+
+.cuenta-mayor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cuenta-mayor-titulo {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.cuenta-mayor-tipo {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.cuenta-mayor-tipo.activos { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+.cuenta-mayor-tipo.pasivos { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+.cuenta-mayor-tipo.patrimonio { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
+.cuenta-mayor-tipo.ingresos { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+.cuenta-mayor-tipo.egresos { background: rgba(156, 163, 175, 0.2); color: #9ca3af; }
+
+.cuenta-mayor-movimientos {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.movimientos-header {
+  display: grid;
+  grid-template-columns: 100px 80px 1fr 100px 100px 100px;
+  background: rgba(59, 130, 246, 0.1);
+  padding: 0.75rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.movimiento-row {
+  display: grid;
+  grid-template-columns: 100px 80px 1fr 100px 100px 100px;
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.movimiento-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.movimiento-row.saldo-inicial {
+  background: rgba(16, 185, 129, 0.1);
+  font-weight: 600;
+}
+
+.movimiento-row.saldo-final {
+  background: rgba(59, 130, 246, 0.1);
+  font-weight: 600;
+}
+
+.col-fecha { width: 100px; }
+.col-referencia { width: 80px; }
+.col-descripcion { flex: 1; }
+.col-debito { width: 100px; text-align: right; }
+.col-credito { width: 100px; text-align: right; }
+.col-saldo { width: 100px; text-align: right; font-weight: 600; }
+
+/* Estilos para el encabezado de los reportes */
+.reporte-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.reporte-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+}
+
+.reporte-subtitle {
+  font-size: 1rem;
+  color: #999;
+  margin: 0 0 0.5rem 0;
+}
+
+.empresa-info {
+  font-size: 0.9rem;
+  color: #ffffff;
+  margin: 0;
+}
+
+/* Estilos para la casilla de verificación */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin: 0;
+  width: 18px;
+  height: 18px;
+  accent-color: #3b82f6;
+}
+
+/* Estilos para el contenido principal */
+.content-area {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  min-height: 600px;
+}
+
+/* Estilos para las métricas del dashboard */
+.metricas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.metric-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: transform 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+.metric-card.activos::before {
+  background: linear-gradient(90deg, #16a085, #10b981);
+}
+
+.metric-card.pasivos::before {
+  background: linear-gradient(90deg, #e74c3c, #ef4444);
+}
+
+.metric-card.patrimonio::before {
+  background: linear-gradient(90deg, #8b5cf6, #a855f7);
+}
+
+.metric-card.utilidad::before {
+  background: linear-gradient(90deg, #f39c12, #f59e0b);
+}
+
+.metric-card:hover {
+  transform: translateY(-5px);
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.metric-header h3 {
+  font-size: 0.9rem;
+  color: #999;
+  margin: 0;
+  font-weight: 500;
+}
+
+.metric-icon {
+  font-size: 1.5rem;
+}
+
+.metric-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.metric-value.positive {
+  color: #10b981;
+}
+
+.metric-value.negative {
+  color: #ef4444;
+}
+
+.metric-detail {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* Estilos para los ratios financieros */
+.ratios-section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 1.5rem 0;
+}
+
+.ratios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.ratio-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.ratio-header h4 {
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+.ratio-formula {
+  color: #999;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.ratio-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.ratio-value.good {
+  color: #10b981;
+}
+
+.ratio-value.ok {
+  color: #f59e0b;
+}
+
+.ratio-value.warning {
+  color: #ef4444;
+}
+
+.ratio-interpretation {
+  text-align: center;
+}
+
+.interpretation {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.interpretation.good {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.interpretation.ok {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.interpretation.warning {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+/* Estilos para el gráfico patrimonial */
+.graficos-section {
+  margin-bottom: 2rem;
+}
+
+.patrimonio-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bar-item {
+  display: grid;
+  grid-template-columns: 120px 1fr 150px;
+  gap: 1rem;
+  align-items: center;
+}
+
+.bar-label {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.bar-container {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  height: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 20px;
+  transition: width 1s ease;
+}
+
+.bar-item.activos .bar-fill {
+  background: linear-gradient(90deg, #16a085, #10b981);
+}
+
+.bar-item.pasivos .bar-fill {
+  background: linear-gradient(90deg, #e74c3c, #ef4444);
+}
+
+.bar-item.patrimonio .bar-fill {
+  background: linear-gradient(90deg, #8b5cf6, #a855f7);
+}
+
+.bar-value {
+  text-align: right;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Estilos para el header del módulo */
+.module-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 1.5rem 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.header-info {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Estilos para el gráfico patrimonial */
+.grafico-patrimonial {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Estilos para el área de resultados finales */
+.resultado-final {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+/* Estilos para las secciones de activos, pasivos y patrimonio */
+.activos-section, .pasivos-section {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+/* Estilos para las filas de movimientos */
+.movimiento-row {
+  display: grid;
+  grid-template-columns: 100px 80px 1fr 100px 100px 100px;
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Estilos para los movimientos de detalle */
+.movimiento-detalle {
+  display: grid;
+  grid-template-columns: 100px 80px 1fr 100px 100px 100px;
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Estilos para los totales y subtotales */
+.balance-row.total, .resultados-row.subtotal {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  font-weight: 700;
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+/* Estilos para las secciones de ingresos y egresos */
+.ingresos-section, .egresos-section {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Estilos para los títulos de secciones */
+.resultados-section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Estilos para los totales de ingresos y egresos */
+.resultados-row.subtotal {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  font-weight: 600;
+  padding: 0.75rem;
+}
+
+/* Estilos para los valores positivos y negativos */
+.cuenta-saldo.positivo {
+  color: #10b981;
+}
+
+.cuenta-saldo.negativo {
+  color: #ef4444;
+}
+
+/* Estilos para los tipos de cuentas */
+.tipo-activos { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+.tipo-pasivos { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+.tipo-patrimonio { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+.tipo-ingresos { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+.tipo-egresos { background: rgba(156, 163, 175, 0.1); color: #9ca3af; }
+
+/* Estilos para los movimientos de saldo */
+.saldo-inicial, .saldo-final {
+  background: rgba(59, 130, 246, 0.1);
+  font-weight: 600;
+}
+
+/* Estilos para los totales de balance */
+.balance-row.total {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  font-weight: 700;
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+/* Estilos para los subtotales de balance */
+.balance-row.subtotal {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  font-weight: 600;
+  padding: 0.75rem;
+}
+
+/* Estilos para las columnas */
+.cuenta-codigo { width: 100px; }
+.cuenta-nombre { flex: 1; }
+.cuenta-saldo { width: 120px; text-align: right; font-weight: 600; }
+
+/* Estilos para el total de pasivos + patrimonio */
+.balance-row.total-pasivos-patrimonio {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  font-weight: 700;
+  padding: 1rem;
+}
+
+/* Estilos para las secciones de balance */
+.balance-section.activos-section {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.balance-section.pasivos-section {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+/* Estilos para los encabezados de tablas */
+.balance-section-title, .resultados-section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Estilos para los totales de resultados */
+.resultado-row.utilidad {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+}
+
+.resultado-row.perdida {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+/* Estilos para los totales de diario */
+.total-debito {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.total-credito {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+/* Estilos para los movimientos de mayor */
+.movimiento-row.saldo-inicial {
+  background: rgba(16, 185, 129, 0.1);
+  font-weight: 600;
+}
+
+.movimiento-row.saldo-final {
+  background: rgba(59, 130, 246, 0.1);
+  font-weight: 600;
+}
+
+/* Estilos para las celdas de totales */
+.cuenta-saldo.total {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Estilos para los valores de totales */
+.balance-row.total .cuenta-saldo, 
+.resultados-row.subtotal .cuenta-saldo {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Estilos para los valores de resultados */
+.resultado-valor {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Estilos para los valores de utilidad */
+.metric-value.positive {
+  color: #10b981;
+}
+
+.metric-value.negative {
+  color: #ef4444;
+}
+
+/* Estilos para los valores de ratio */
+.ratio-value.good {
+  color: #10b981;
+}
+
+.ratio-value.ok {
+  color: #f59e0b;
+}
+
+.ratio-value.warning {
+  color: #ef4444;
+}
+
+/* Estilos para las interpretaciones */
+.interpretation.good {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.interpretation.ok {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.interpretation.warning {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+/* Estilos para las barras del gráfico patrimonial */
+.bar-item.activos {
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.bar-item.pasivos {
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.bar-item.patrimonio {
+  background: rgba(139, 92, 246, 0.05);
+}
+
+/* Estilos para los encabezados de los movimientos */
+.movimientos-header {
+  display: grid;
+  grid-template-columns: 100px 80px 1fr 100px 100px 100px;
+  background: rgba(59, 130, 246, 0.1);
+  padding: 0.75rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Estilos para las filas de movimientos */
+.movimiento-row {
+  display: grid;
+  grid-template-columns: 100px 80px 1fr 100px 100px 100px;
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Estilos para las columnas de movimientos */
+.col-fecha { width: 100px; }
+.col-referencia { width: 80px; }
+.col-descripcion { flex: 1; }
+.col-debito { width: 100px; text-align: right; }
+.col-credito { width: 100px; text-align: right; }
+.col-saldo { width: 100px; text-align: right; font-weight: 600; }
+
+/* Estilos para las filas pares */
+.movimiento-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Estilos para los detalles de asientos */
+.detalle-row {
+  display: grid;
+  grid-template-columns: 100px 150px 1fr 100px 100px;
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Estilos para las columnas de detalles */
+.col-codigo { width: 100px; }
+.col-cuenta { width: 150px; }
+.col-descripcion { flex: 1; }
+.col-debito { width: 100px; text-align: right; }
+.col-credito { width: 100px; text-align: right; }
+
+/* Estilos para las filas de detalles pares */
+.detalle-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Estilos para los totales de asientos */
+.asiento-totales {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: right;
+}
+
+/* Estilos para los totales de débito y crédito */
+.total-debito {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.total-credito {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+/* Estilos para las secciones de balance */
+.balance-section {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+/* Estilos para los títulos de secciones de balance */
+.balance-section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Estilos para las tablas de balance */
+.balance-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* Estilos para las filas de balance */
+.balance-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 120px;
+  gap: 1rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+/* Estilos para las filas de resultados */
+.resultados-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 120px;
+  gap: 1rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+/* Estilos para las columnas de balance */
+.cuenta-codigo { width: 100px; }
+.cuenta-nombre { flex: 1; }
+.cuenta-saldo { width: 120px; text-align: right; font-weight: 600; }
+
+/* Estilos para los niveles de cuentas */
+.balance-row.nivel-1, .resultados-row.nivel-1 {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.balance-row.nivel-2, .resultados-row.nivel-2 {
+  padding-left: 1rem;
+  font-weight: 500;
+}
+
+.balance-row.nivel-3, .resultados-row.nivel-3 {
+  padding-left: 2rem;
+}
+
+.balance-row.nivel-4, .resultados-row.nivel-4 {
+  padding-left: 3rem;
+}
+
+/* Estilos para las filas de balance con hover */
+.balance-row:hover, .resultados-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Estilos para los totales de balance */
+.balance-row.total {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  font-weight: 700;
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+/* Estilos para los subtotales de balance */
+.balance-row.subtotal {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  font-weight: 600;
+  padding: 0.75rem;
+}
+
+/* Estilos para los totales de resultados */
+.resultados-row.subtotal {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  font-weight: 600;
+  padding: 0.75rem;
+}
+
+/* Estilos para los valores de cuentas */
+.cuenta-saldo {
+  text-align: right;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Estilos para los valores de activos */
+.activos-section .cuenta-saldo {
+  color: #10b981;
+}
+
+/* Estilos para los valores de pasivos */
+.pasivos-section .cuenta-saldo {
+  color: #ef4444;
+}
+
+/* Estilos para los valores positivos y negativos */
+.cuenta-saldo.positivo {
+  color: #10b981;
+}
+
+.cuenta-saldo.negativo {
+  color: #ef4444;
+}
+
+/* Estilos para los totales de resultados */
+.resultado-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+/* Estilos para utilidad y pérdida */
+.resultado-row.utilidad {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+}
+
+.resultado-row.perdida {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+/* Estilos para el label de resultado */
+.resultado-label {
+  font-weight: 600;
+}
+
+/* Estilos para el valor de resultado */
+.resultado-valor {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Estilos para los encabezados de resultados */
+.resultados-section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Estilos para las secciones de resultados */
+.ingresos-section, .egresos-section {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Estilos para las tablas de resultados */
+.resultados-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* Estilos para las filas de resultados con hover */
+.resultados-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Estilos para los totales de resultados */
+.resultados-row.subtotal {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  font-weight: 600;
+  padding: 0.75rem;
+}
+
+/* Estilos para los valores de totales */
+.resultados-row.subtotal .cuenta-saldo {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Estilos para los totales de ingresos y egresos */
+.total-ingresos, .total-egresos {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Estilos para los valores absolutos */
+.abs {
+  font-weight: 600;
+}
+
+/* Estilos para los valores de utilidad neta */
+.utilidad-neta {
+  font-weight: 700;
+}
+
+.utilidad-neta.positiva {
+  color: #10b981;
+}
+
+.utilidad-neta.negativa {
+  color: #ef4444;
+}
+
+/* Estilos para los encabezados de ratios */
+.ratio-header {
+  margin-bottom: 1rem;
+}
+
+/* Estilos para las fórmulas de ratios */
+.ratio-formula {
+  color: #999;
+  font-size: 0.8rem;
+  font-style: italic;
+  margin-bottom: 1rem;
+}
+
+/* Estilos para los valores de ratios */
+.ratio-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+/* Estilos para las interpretaciones de ratios */
+.ratio-interpretation {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+/* Estilos para los valores de ratios según interpretación */
+.ratio-value.good {
+  color: #10b981;
+}
+
+.ratio-value.ok {
+  color: #f59e0b;
+}
+
+.ratio-value.warning {
+  color: #ef4444;
+}
+
+/* Estilos para las interpretaciones de ratios */
+.interpretation.good {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.interpretation.ok {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.interpretation.warning {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+/* Estilos para las barras del gráfico patrimonial */
+.patrimonio-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Estilos para los items de barras */
+.bar-item {
+  display: grid;
+  grid-template-columns: 120px 1fr 150px;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Estilos para las etiquetas de barras */
+.bar-label {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Estilos para los contenedores de barras */
+.bar-container {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  height: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Estilos para los rellenos de barras */
+.bar-fill {
+  height: 100%;
+  border-radius: 20px;
+  transition: width 1s ease;
+}
+
+/* Estilos para los colores de barras */
+.bar-item.activos .bar-fill {
+  background: linear-gradient(90deg, #16a085, #10b981);
+}
+
+.bar-item.pasivos .bar-fill {
+  background: linear-gradient(90deg, #e74c3c, #ef4444);
+}
+
+.bar-item.patrimonio .bar-fill {
+  background: linear-gradient(90deg, #8b5cf6, #a855f7);
+}
+
+/* Estilos para los valores de barras */
+.bar-value {
+  text-align: right;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Estilos para las secciones de gráficos */
+.graficos-section {
+  margin-bottom: 2rem;
+}
+
+/* Estilos para los títulos de secciones */
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 1.5rem 0;
+}
+
+/* Estilos para el gráfico patrimonial */
+.grafico-patrimonial {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Estilos para los items de barras con hover */
+.bar-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Estilos para los valores de métricas */
+.metric-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+/* Estilos para los valores positivos y negativos de métricas */
+.metric-value.positive {
+  color: #10b981;
+}
+
+.metric-value.negative {
+  color: #ef4444;
+}
+
+/* Estilos para los detalles de métricas */
+.metric-detail {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* Estilos para los encabezados de métricas */
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Estilos para los títulos de encabezados de métricas */
+.metric-header h3 {
+  font-size: 0.9rem;
+  color: #999;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Estilos para los iconos de métricas */
+.metric-icon {
+  font-size: 1.5rem;
+}
+
+/* Estilos para las tarjetas de métricas */
+.metric-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: transform 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Estilos para las líneas de métricas */
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+/* Estilos para los tipos de métricas */
+.metric-card.activos::before {
+  background: linear-gradient(90deg, #16a085, #10b981);
+}
+
+.metric-card.pasivos::before {
+  background: linear-gradient(90deg, #e74c3c, #ef4444);
+}
+
+.metric-card.patrimonio::before {
+  background: linear-gradient(90deg, #8b5cf6, #a855f7);
+}
+
+.metric-card.utilidad::before {
+  background: linear-gradient(90deg, #f39c12, #f59e0b);
+}
+
+/* Estilos para el hover de métricas */
+.metric-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Estilos para las secciones de ratios */
+.ratios-section {
+  margin-bottom: 3rem;
+}
+
+/* Estilos para las cuadrículas de ratios */
+.ratios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Estilos para las tarjetas de ratios */
+.ratio-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+/* Estilos para los encabezados de ratios */
+.ratio-header h4 {
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+/* Estilos para los valores de ratios */
+.ratio-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+/* Estilos para las interpretaciones de ratios */
+.ratio-interpretation {
+  text-align: center;
+}
+
+/* Estilos para las interpretaciones */
+.interpretation {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Estilos para las cuadrículas de métricas */
+.metricas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+/* Estilos para el área de contenido */
+.content-area {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  min-height: 600px;
+}
+
+/* Estilos para las vistas específicas */
+.dashboard-view, .balance-view, .resultados-view, .diario-view, .mayor-view {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Estilos para los encabezados de reportes */
+.reporte-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Estilos para los títulos de reportes */
+.reporte-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+}
+
+/* Estilos para los subtítulos de reportes */
+.reporte-subtitle {
+  font-size: 1rem;
+  color: #999;
+  margin: 0 0 0.5rem 0;
+}
+
+/* Estilos para la información de empresa */
+.empresa-info {
+  font-size: 0.9rem;
+  color: #ffffff;
+  margin: 0;
+}
+
+/* Estilos para las secciones de parámetros */
+.parametros-section {
+  margin-bottom: 2rem;
+}
+
+/* Estilos para las tarjetas de parámetros */
+.parametros-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+/* Estilos para los títulos de tarjetas de parámetros */
+.parametros-card h3 {
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+}
+
+/* Estilos para las cuadrículas de parámetros */
+.parametros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  align-items: end;
+}
+
+/* Estilos para los grupos de parámetros */
+.param-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Estilos para las etiquetas de parámetros */
+.param-group label {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Estilos para los inputs y selects de parámetros */
+.param-input, .param-select {
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  
+}
+/*estilos del select */
+.param-select option{
+  
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0a0a0a 100%);
+}
+
+
+/* Estilos para el focus de inputs y selects de parámetros */
+.param-input:focus, .param-select:focus {
+  outline: none;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0a0a0a 100%);
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+  
+}
+
+/* Estilos para las etiquetas de checkbox */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+/* Estilos para los checkbox */
+.checkbox-label input[type="checkbox"] {
+  margin: 0;
+  width: 18px;
+  height: 18px;
+  accent-color: #3b82f6;
+}
+
+/* Estilos para las pestañas */
+.nav-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Estilos para los botones de pestañas */
+.tab {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  background: transparent;
+  border: none;
+  color: #999;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  min-width: 150px;
+  text-align: center;
+}
+
+/* Estilos para el hover de pestañas */
+.tab:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+/* Estilos para la pestaña activa */
+.tab.active {
+  background: rgba(59, 130, 246, 0.3);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+}
+
+/* Estilos para el header del módulo */
+.module-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 1.5rem 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Estilos para la parte izquierda del header */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* Estilos para las acciones del header */
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Estilos para la información del header */
+.header-info {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Estilos para el botón de volver */
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Estilos para el hover del botón de volver */
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(-2px);
+}
+
+/* Estilos para el icono de volver */
+.back-icon {
+  font-size: 1.2rem;
+}
+
+/* Estilos para el título del módulo */
+.module-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  color: #ffffff;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* Estilos para el subtítulo del módulo */
+.module-subtitle {
+  margin: 0.25rem 0 0 0;
+  color: #999;
+  font-size: 1rem;
+}
+
+/* Estilos para los botones de exportar e imprimir */
+.btn-export, .btn-print {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+/* Estilos para el hover de botones de exportar e imprimir */
+.btn-export:hover, .btn-print:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Estilos para el contenedor principal */
+.informes-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0a0a0a 100%);
+  color: #ffffff;
+  font-family: 'Arial', sans-serif;
+  padding: 2rem;
+  opacity: 0;
+  animation: fadeIn 0.6s ease forwards;
+}
+/* =================== ESTILOS PARA ANIMACIONES Y TRANSICIONES =================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* =================== ESTILOS RESPONSIVE =================== */
+@media (max-width: 1200px) {
+  .balance-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .detalles-header,
+  .detalle-row {
+    grid-template-columns: 80px 120px 1fr 80px 80px;
+  }
+  
+  .movimientos-header,
+  .movimiento-row {
+    grid-template-columns: 80px 60px 1fr 80px 80px 80px;
+  }
+}
+
+@media (max-width: 992px) {
+  .balance-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .balance-row,
+  .resultados-row {
+    grid-template-columns: 1fr 2fr 1fr;
+    font-size: 0.9rem;
+  }
+  
+  .detalles-header,
+  .detalle-row {
+    display: block;
+    padding: 0.5rem;
+  }
+  
+  .detalle-row > div {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .detalle-row > div:last-child {
+    border-bottom: none;
+  }
+  
+  .movimientos-header,
+  .movimiento-row {
+    display: block;
+    padding: 0.5rem;
+  }
+  
+  .movimiento-row > div {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .movimiento-row > div:last-child {
+    border-bottom: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .informes-container {
+    padding: 1rem;
+  }
+  
+  .module-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  
+  .header-left {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .header-actions {
+    justify-content: center;
+  }
+  
+  .nav-tabs {
+    flex-direction: column;
+  }
+  
+  .parametros-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .metricas-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ratios-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .bar-item {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .bar-label {
+    text-align: center;
+  }
+  
+  .bar-container {
+    height: 24px;
+  }
+  
+  .bar-value {
+    text-align: center;
+    font-size: 1rem;
+  }
+  
+  .detalles-header,
+  .detalle-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .movimientos-header,
+  .movimiento-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .informes-container {
+    padding: 0.5rem;
+  }
+  
+  .module-header {
+    padding: 1rem;
+  }
+  
+  .module-title {
+    font-size: 1.5rem;
+  }
+  
+  .param-group {
+    margin-bottom: 0.5rem;
+  }
+  
+  .content-area {
+    padding: 1rem;
+  }
+  
+  .balance-row,
+  .resultados-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .cuenta-codigo,
+  .cuenta-nombre,
+  .cuenta-saldo {
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+  
+  .cuenta-saldo {
+    text-align: right;
+    margin-top: 0.25rem;
+  }
+}
+
+/* =================== ESTILOS PARA ESTADOS DE CARGA =================== */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem;
+  color: #999;
+  font-size: 1.1rem;
+}
+
+.loading-state::after {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top: 2px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* =================== ESTILOS PARA SCROLLBAR =================== */
+.informes-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.informes-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.informes-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.informes-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* =================== ESTILOS PARA HOVER EFFECTS =================== */
+.metric-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.ratio-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.btn-export:hover,
+.btn-print:hover,
+.back-btn:hover {
+  animation: pulseGlow 2s infinite;
+}
+
+/* =================== ESTILOS PARA TOOLTIPS =================== */
+.tooltip {
+  position: relative;
+}
+
+.tooltip:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+.tooltip:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.9);
+}
+
+/* =================== ESTILOS PARA ESTADOS DE VISTAS =================== */
+*[hidden] {
+  display: none !important;
+}
+
+/* =================== ESTILOS PARA FORMATO DE NÚMEROS =================== */
+.currency-format {
+  font-weight: 600;
+}
+
+.currency-format.positive {
+  color: #10b981;
+}
+
+.currency-format.negative {
+  color: #ef4444;
+}
+
+/* =================== ESTILOS PARA FECHAS =================== */
+.date-format {
+  color: #999;
+  font-weight: 500;
+}
+
+/* =================== ESTILOS PARA ANIMACIONES DE ENTRADA =================== */
+.animate-in {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.animate-in.delay-1 {
+  animation-delay: 0.1s;
+}
+
+.animate-in.delay-2 {
+  animation-delay: 0.2s;
+}
+
+.animate-in.delay-3 {
+  animation-delay: 0.3s;
+}
+
+.animate-in.delay-4 {
+  animation-delay: 0.4s;
+}
+
+.animate-in.delay-5 {
+  animation-delay: 0.5s;
+}
+
+/* =================== ESTILOS PARA EFECTOS DE HOVER =================== */
+.hover-lift {
+  transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.hover-glow {
+  transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.hover-scale {
+  transition: all 0.3s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+/* =================== ESTILOS PARA INDICADORES DE ESTADO =================== */
+.estado-activo {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.estado-inactivo {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.estado-pendiente {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+.estado-procesando {
+  color: #3b82f6;
+  font-weight: 600;
+  animation: pulse 2s infinite;
+}
+
+/* =================== ESTILOS PARA BADGES =================== */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-success {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.badge-warning {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.badge-danger {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.badge-info {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+}
+
+/* =================== ESTILOS PARA PROGRESS BARS =================== */
+.progress-container {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  height: 8px;
+  overflow: hidden;
+  margin: 0.5rem 0;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.5s ease;
+}
+
+.progress-bar.success {
+  background: linear-gradient(90deg, #10b981, #34d399);
+}
+
+.progress-bar.warning {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.progress-bar.danger {
+  background: linear-gradient(90deg, #ef4444, #f87171);
+}
+
+/* =================== ESTILOS PARA ALERTAS =================== */
+.alert {
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.alert-success {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+}
+
+.alert-warning {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #f59e0b;
+}
+
+.alert-danger {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.alert-info {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #3b82f6;
+}
+
+.alert-icon {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.alert-message {
+  flex: 1;
+  font-weight: 500;
+}
+
+/* =================== ESTILOS PARA SKELETON LOADERS =================== */
+.skeleton {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 25%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.1) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-text {
+  height: 16px;
+  margin-bottom: 8px;
+}
+
+.skeleton-title {
+  height: 24px;
+  margin-bottom: 12px;
+}
+
+.skeleton-button {
+  height: 36px;
+  width: 100px;
+}
+
+/* =================== ESTILOS PARA TOAST MESSAGES =================== */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.toast {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  min-width: 300px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  animation: slideInRight 0.3s ease;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.toast.success {
+  border-left: 4px solid #10b981;
+}
+
+.toast.warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.toast.error {
+  border-left: 4px solid #ef4444;
+}
+
+.toast.info {
+  border-left: 4px solid #3b82f6;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toast-close:hover {
+  color: #ffffff;
+}
+
+/* =================== ESTILOS PARA MODALES =================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: scaleIn 0.3s ease;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.modal-close {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #ffffff;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(90deg);
+}
+
+/* =================== ESTILOS PARA PRINT =================== */
+@media print {
+  .informes-container {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .module-header,
+  .nav-tabs,
+  .parametros-section {
+    display: none;
+  }
+  
+  .content-area {
+    background: white !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+  
+  .balance-content,
+  .resultados-content,
+  .diario-content,
+  .mayor-content {
+    display: block !important;
+  }
+  
+  .asiento-card,
+  .cuenta-mayor-card {
+    page-break-inside: avoid;
+    border: 1px solid black !important;
+    background: white !important;
+  }
+  
+  .balance-row,
+  .resultados-row,
+  .detalle-row,
+  .movimiento-row {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .metric-card,
+  .ratio-card {
+    page-break-inside: avoid;
+    background: white !important;
+    color: black !important;
+  }
+}
+
+/* =================== ESTILOS PARA ACCESIBILIDAD =================== */
+.focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* =================== ESTILOS PARA FORMATEO DE TEXTO =================== */
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-bold {
+  font-weight: 700;
+}
+
+.text-italic {
+  font-style: italic;
+}
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
+.text-lowercase {
+  text-transform: lowercase;
+}
+
+.text-capitalize {
+  text-transform: capitalize;
+}
+
+/* =================== ESTILOS PARA ESPACIADO =================== */
+.m-0 { margin: 0; }
+.m-1 { margin: 0.25rem; }
+.m-2 { margin: 0.5rem; }
+.m-3 { margin: 1rem; }
+.m-4 { margin: 1.5rem; }
+.m-5 { margin: 3rem; }
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.mt-4 { margin-top: 1.5rem; }
+.mt-5 { margin-top: 3rem; }
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 1rem; }
+.mb-4 { margin-bottom: 1.5rem; }
+.mb-5 { margin-bottom: 3rem; }
+
+.p-0 { padding: 0; }
+.p-1 { padding: 0.25rem; }
+.p-2 { padding: 0.5rem; }
+.p-3 { padding: 1rem; }
+.p-4 { padding: 1.5rem; }
+.p-5 { padding: 3rem; }
+
+.pt-0 { padding-top: 0; }
+.pt-1 { padding-top: 0.25rem; }
+.pt-2 { padding-top: 0.5rem; }
+.pt-3 { padding-top: 1rem; }
+.pt-4 { padding-top: 1.5rem; }
+.pt-5 { padding-top: 3rem; }
+
+.pb-0 { padding-bottom: 0; }
+.pb-1 { padding-bottom: 0.25rem; }
+.pb-2 { padding-bottom: 0.5rem; }
+.pb-3 { padding-bottom: 1rem; }
+.pb-4 { padding-bottom: 1.5rem; }
+.pb-5 { padding-bottom: 3rem; }
+
+/* =================== ESTILOS PARA UTILIDADES DE FLEX =================== */
+.d-flex { display: flex; }
+.d-grid { display: grid; }
+.d-block { display: block; }
+.d-none { display: none; }
+
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-start { justify-content: flex-start; }
+.justify-end { justify-content: flex-end; }
+
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+
+.gap-0 { gap: 0; }
+.gap-1 { gap: 0.25rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 1rem; }
+.gap-4 { gap: 1.5rem; }
+.gap-5 { gap: 3rem; }
+
+/* =================== ESTILOS PARA UTILIDADES DE GRID =================== */
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+
+.auto-cols-auto { grid-auto-columns: auto; }
+.auto-cols-min { grid-auto-columns: min-content; }
+.auto-cols-max { grid-auto-columns: max-content; }
+
+/* =================== ESTILOS PARA UTILIDADES DE TAMAÑO =================== */
+.w-full { width: 100%; }
+.w-half { width: 50%; }
+.w-third { width: 33.333333%; }
+.w-quarter { width: 25%; }
+
+.h-full { height: 100%; }
+.h-screen { height: 100vh; }
+.min-h-screen { min-height: 100vh; }
+
+/* =================== ESTILOS PARA UTILIDADES DE BORDE =================== */
+.border { border: 1px solid; }
+.border-0 { border: 0; }
+.border-t { border-top: 1px solid; }
+.border-b { border-bottom: 1px solid; }
+.border-l { border-left: 1px solid; }
+.border-r { border-right: 1px solid; }
+
+.rounded { border-radius: 0.25rem; }
+.rounded-md { border-radius: 0.375rem; }
+.rounded-lg { border-radius: 0.5rem; }
+.rounded-xl { border-radius: 0.75rem; }
+.rounded-2xl { border-radius: 1rem; }
+.rounded-3xl { border-radius: 1.5rem; }
+.rounded-full { border-radius: 9999px; }
+
+/* =================== ESTILOS PARA UTILIDADES DE SOMBRA =================== */
+.shadow-sm { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+.shadow { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1); }
+.shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); }
+.shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1); }
+.shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
+.shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+
+/* =================== ESTILOS PARA UTILIDADES DE TRANSICIÓN =================== */
+.transition-all { transition: all 0.3s ease; }
+.transition-colors { transition: color 0.3s ease; }
+.transition-opacity { transition: opacity 0.3s ease; }
+.transition-transform { transition: transform 0.3s ease; }
+
+/* =================== ESTILOS PARA UTILIDADES DE OPACIDAD =================== */
+.opacity-0 { opacity: 0; }
+.opacity-25 { opacity: 0.25; }
+.opacity-50 { opacity: 0.5; }
+.opacity-75 { opacity: 0.75; }
+.opacity-100 { opacity: 1; }
+
+/* =================== ESTILOS PARA UTILIDADES DE TRANSFORMACIÓN =================== */
+.transform { transform: translate(0, 0); }
+.translate-x-0 { transform: translateX(0); }
+.translate-x-1 { transform: translateX(0.25rem); }
+.translate-x-2 { transform: translateX(0.5rem); }
+.translate-x-3 { transform: translateX(1rem); }
+.translate-x-4 { transform: translateX(1.5rem); }
+.translate-x-5 { transform: translateX(3rem); }
+.translate-y-0 { transform: translateY(0); }
+.translate-y-1 { transform: translateY(0.25rem); }
+.translate-y-2 { transform: translateY(0.5rem); }
+.translate-y-3 { transform: translateY(1rem); }
+.translate-y-4 { transform: translateY(1.5rem); }
+.translate-y-5 { transform: translateY(3rem); }
+.rotate-0 { transform: rotate(0deg); }
+.rotate-45 { transform: rotate(45deg); }
+.rotate-90 { transform: rotate(90deg); }
+.rotate-180 { transform: rotate(180deg); }
+.scale-0 { transform: scale(0); }
+.scale-50 { transform: scale(0.5); }
+.scale-75 { transform: scale(0.75); }
+.scale-90 { transform: scale(0.9); }
+.scale-95 { transform: scale(0.95); }
+.scale-100 { transform: scale(1); }
+.scale-105 { transform: scale(1.05); }
+.scale-110 { transform: scale(1.1); }
+.scale-125 { transform: scale(1.25); }
+.scale-150 { transform: scale(1.5); }
+
+/* =================== ESTILOS PARA UTILIDADES DE Z-INDEX =================== */
+.z-0 { z-index: 0; }
+.z-10 { z-index: 10; }
+.z-20 { z-index: 20; }
+.z-30 { z-index: 30; }
+.z-40 { z-index: 40; }
+.z-50 { z-index: 50; }
+.z-100 { z-index: 100; }
+.z-auto { z-index: auto; }
+
+/* =================== ESTILOS PARA UTILIDADES DE OVERFLOW =================== */
+.overflow-auto { overflow: auto; }
+.overflow-hidden { overflow: hidden; }
+.overflow-visible { overflow: visible; }
+.overflow-scroll { overflow: scroll; }
+.overflow-x-auto { overflow-x: auto; }
+.overflow-y-auto { overflow-y: auto; }
+.overflow-x-hidden { overflow-x: hidden; }
+.overflow-y-hidden { overflow-y: hidden; }
+.overflow-x-visible { overflow-x: visible; }
+.overflow-y-visible { overflow-y: visible; }
+.overflow-x-scroll { overflow-x: scroll; }
+.overflow-y-scroll { overflow-y: scroll; }
+
+/* =================== ESTILOS PARA UTILIDADES DE POSICIONAMIENTO =================== */
+.static { position: static; }
+.fixed { position: fixed; }
+.absolute { position: absolute; }
+.relative { position: relative; }
+.sticky { position: sticky; }
+
+.top-0 { top: 0; }
+.top-1 { top: 0.25rem; }
+.top-2 { top: 0.5rem; }
+.top-3 { top: 1rem; }
+.top-4 { top: 1.5rem; }
+.top-5 { top: 3rem; }
+.top-auto { top: auto; }
+
+.bottom-0 { bottom: 0; }
+.bottom-1 { bottom: 0.25rem; }
+.bottom-2 { bottom: 0.5rem; }
+.bottom-3 { bottom: 1rem; }
+.bottom-4 { bottom: 1.5rem; }
+.bottom-5 { bottom: 3rem; }
+.bottom-auto { bottom: auto; }
+
+.left-0 { left: 0; }
+.left-1 { left: 0.25rem; }
+.left-2 { left: 0.5rem; }
+.left-3 { left: 1rem; }
+.left-4 { left: 1.5rem; }
+.left-5 { left: 3rem; }
+.left-auto { left: auto; }
+
+.right-0 { right: 0; }
+.right-1 { right: 0.25rem; }
+.right-2 { right: 0.5rem; }
+.right-3 { right: 1rem; }
+.right-4 { right: 1.5rem; }
+.right-5 { right: 3rem; }
+.right-auto { right: auto; }
+
+/* =================== ESTILOS PARA UTILIDADES DE VISIBILIDAD =================== */
+.visible { visibility: visible; }
+.invisible { visibility: hidden; }
+
+/* =================== ESTILOS PARA UTILIDADES DE CURSOR =================== */
+.cursor-auto { cursor: auto; }
+.cursor-default { cursor: default; }
+.cursor-pointer { cursor: pointer; }
+.cursor-wait { cursor: wait; }
+.cursor-text { cursor: text; }
+.cursor-move { cursor: move; }
+.cursor-not-allowed { cursor: not-allowed; }
+.cursor-grab { cursor: grab; }
+.cursor-grabbing { cursor: grabbing; }
+
+/* =================== ESTILOS PARA UTILIDADES DE USO DEL MOUSE =================== */
+.select-none { user-select: none; }
+.select-text { user-select: text; }
+.select-all { user-select: all; }
+.select-auto { user-select: auto; }
+
+/* =================== ESTILOS PARA UTILIDADES DE RESIZE =================== */
+.resize-none { resize: none; }
+.resize-y { resize: vertical; }
+.resize-x { resize: horizontal; }
+.resize { resize: both; }
+
+/* =================== ESTILOS PARA UTILIDADES DE APARIENCIA =================== */
+.appearance-none { appearance: none; }
+
+/* =================== ESTILOS PARA UTILIDADES DE FILTROS =================== */
+.filter { filter: blur(0); }
+.blur-none { filter: blur(0); }
+.blur-sm { filter: blur(4px); }
+.blur { filter: blur(8px); }
+.blur-md { filter: blur(12px); }
+.blur-lg { filter: blur(16px); }
+.blur-xl { filter: blur(24px); }
+.blur-2xl { filter: blur(40px); }
+.blur-3xl { filter: blur(64px); }
+
+/* =================== ESTILOS PARA UTILIDADES DE BACKDROP-FILTER =================== */
+.backdrop-blur { backdrop-filter: blur(1px); }
+.backdrop-blur-sm { backdrop-filter: blur(4px); }
+.backdrop-blur { backdrop-filter: blur(8px); }
+.backdrop-blur-md { backdrop-filter: blur(12px); }
+.backdrop-blur-lg { backdrop-filter: blur(16px); }
+.backdrop-blur-xl { backdrop-filter: blur(24px); }
+.backdrop-blur-2xl { backdrop-filter: blur(40px); }
+.backdrop-blur-3xl { backdrop-filter: blur(64px); }
+
+/* =================== ESTILOS PARA UTILIDADES DE ISOMETRÍA =================== */
+.isometric {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.isometric-item {
+  transform: rotateX(70deg) rotateZ(-45deg);
+  transform-style: preserve-3d;
+}
+
+/* =================== ESTILOS PARA UTILIDADES DE GRADIENTES =================== */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.bg-gradient-success {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.bg-gradient-warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.bg-gradient-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.bg-gradient-info {
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+}
+
+.bg-gradient-purple {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.bg-gradient-pink {
+  background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+}
+
+/* =================== ESTILOS PARA UTILIDADES DE ANIMACIÓN PERSONALIZADA =================== */
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* =================== ESTILOS PARA UTILIDADES DE TEXTO =================== */
+.text-xs { font-size: 0.75rem; }
+.text-sm { font-size: 0.875rem; }
+.text-base { font-size: 1rem; }
+.text-lg { font-size: 1.125rem; }
+.text-xl { font-size: 1.25rem; }
+.text-2xl { font-size: 1.5rem; }
+.text-3xl { font-size: 1.875rem; }
+.text-4xl { font-size: 2.25rem; }
+.text-5xl { font-size: 3rem; }
+.text-6xl { font-size: 3.75rem; }
+.text-7xl { font-size: 4.5rem; }
+.text-8xl { font-size: 6rem; }
+.text-9xl { font-size: 8rem; }
+
+.font-thin { font-weight: 100; }
+.font-extralight { font-weight: 200; }
+.font-light { font-weight: 300; }
+.font-normal { font-weight: 400; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.font-extrabold { font-weight: 800; }
+.font-black { font-weight: 900; }
+
+.leading-3 { line-height: 0.75rem; }
+.leading-4 { line-height: 1rem; }
+.leading-5 { line-height: 1.25rem; }
+.leading-6 { line-height: 1.5rem; }
+.leading-7 { line-height: 1.75rem; }
+.leading-8 { line-height: 2rem; }
+.leading-9 { line-height: 2.25rem; }
+.leading-10 { line-height: 2.5rem; }
+.leading-none { line-height: 1; }
+.leading-tight { line-height: 1.25; }
+.leading-snug { line-height: 1.375; }
+.leading-normal { line-height: 1.5; }
+.leading-relaxed { line-height: 1.625; }
+.leading-loose { line-height: 2; }
+
+.tracking-tighter { letter-spacing: -0.05em; }
+.tracking-tight { letter-spacing: -0.025em; }
+.tracking-normal { letter-spacing: 0em; }
+.tracking-wide { letter-spacing: 0.025em; }
+.tracking-wider { letter-spacing: 0.05em; }
+.tracking-widest { letter-spacing: 0.1em; }
+
+/* =================== ESTILOS PARA UTILIDADES DE ESPACIADO DE TEXTO =================== */
+.text-indent-0 { text-indent: 0; }
+.text-indent-1 { text-indent: 0.25rem; }
+.text-indent-2 { text-indent: 0.5rem; }
+.text-indent-3 { text-indent: 1rem; }
+.text-indent-4 { text-indent: 1.5rem; }
+.text-indent-5 { text-indent: 3rem; }
+
+.text-shadow-none { text-shadow: none; }
+.text-shadow-sm { text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1); }
+.text-shadow { text-shadow: 0 2px 2px rgba(0, 0, 0, 0.1); }
+.text-shadow-md { text-shadow: 0 4px 4px rgba(0, 0, 0, 0.1); }
+.text-shadow-lg { text-shadow: 0 8px 8px rgba(0, 0, 0, 0.1); }
+
+/* =================== ESTILOS PARA UTILIDADES DE FONDO =================== */
+.bg-no-repeat { background-repeat: no-repeat; }
+.bg-repeat { background-repeat: repeat; }
+.bg-repeat-x { background-repeat: repeat-x; }
+.bg-repeat-y { background-repeat: repeat-y; }
+.bg-repeat-round { background-repeat: round; }
+.bg-repeat-space { background-repeat: space; }
+
+.bg-auto { background-size: auto; }
+.bg-cover { background-size: cover; }
+.bg-contain { background-size: contain; }
+
+.bg-center { background-position: center; }
+.bg-top { background-position: top; }
+.bg-right { background-position: right; }
+.bg-bottom { background-position: bottom; }
+.bg-left { background-position: left; }
+
+/* =================== ESTILOS PARA UTILIDADES DE BORDES =================== */
+.border-solid { border-style: solid; }
+.border-dashed { border-style: dashed; }
+.border-dotted { border-style: dotted; }
+.border-double { border-style: double; }
+.border-none { border-style: none; }
+
+.border-transparent { border-color: transparent; }
+.border-current { border-color: currentColor; }
+.border-black { border-color: #000; }
+.border-white { border-color: #fff; }
+.border-gray-50 { border-color: #f9fafb; }
+.border-gray-100 { border-color: #f3f4f6; }
+.border-gray-200 { border-color: #e5e7eb; }
+.border-gray-300 { border-color: #d1d5db; }
+.border-gray-400 { border-color: #9ca3af; }
+.border-gray-500 { border-color: #6b7280; }
+.border-gray-600 { border-color: #4b5563; }
+.border-gray-700 { border-color: #374151; }
+.border-gray-800 { border-color: #1f2937; }
+.border-gray-900 { border-color: #111827; }
+.border-red-50 { border-color: #fef2f2; }
+.border-red-100 { border-color: #fee2e2; }
+.border-red-200 { border-color: #fecaca; }
+.border-red-300 { border-color: #fca5a5; }
+.border-red-400 { border-color: #f87171; }
+.border-red-500 { border-color: #ef4444; }
+.border-red-600 { border-color: #dc2626; }
+.border-red-700 { border-color: #b91c1c; }
+.border-red-800 { border-color: #991b1b; }
+.border-red-900 { border-color: #7f1d1d; }
+.border-yellow-50 { border-color: #fffbeb; }
+.border-yellow-100 { border-color: #fef3c7; }
+.border-yellow-200 { border-color: #fde68a; }
+.border-yellow-300 { border-color: #fcd34d; }
+.border-yellow-400 { border-color: #fbbf24; }
+.border-yellow-500 { border-color: #f59e0b; }
+.border-yellow-600 { border-color: #d97706; }
+.border-yellow-700 { border-color: #b45309; }
+.border-yellow-800 { border-color: #92400e; }
+.border-yellow-900 { border-color: #78350f; }
+.border-green-50 { border-color: #f0fdf4; }
+.border-green-100 { border-color: #dcfce7; }
+.border-green-200 { border-color: #bbf7d0; }
+.border-green-300 { border-color: #86efac; }
+.border-green-400 { border-color: #4ade80; }
+.border-green-500 { border-color: #22c55e; }
+.border-green-600 { border-color: #16a34a; }
+.border-green-700 { border-color: #15803d; }
+.border-green-800 { border-color: #166534; }
+.border-green-900 { border-color: #14532d; }
+.border-blue-50 { border-color: #eff6ff; }
+.border-blue-100 { border-color: #dbeafe; }
+.border-blue-200 { border-color: #bfdbfe; }
+.border-blue-300 { border-color: #93c5fd; }
+.border-blue-400 { border-color: #60a5fa; }
+.border-blue-500 { border-color: #3b82f6; }
+.border-blue-600 { border-color: #2563eb; }
+.border-blue-700 { border-color: #1d4ed8; }
+.border-blue-800 { border-color: #1e40af; }
+.border-blue-900 { border-color: #1e3a8a; }
+
+.border-opacity-0 { --tw-border-opacity: 0; }
+.border-opacity-5 { --tw-border-opacity: 0.05; }
+.border-opacity-10 { --tw-border-opacity: 0.1; }
+.border-opacity-20 { --tw-border-opacity: 0.2; }
+.border-opacity-25 { --tw-border-opacity: 0.25; }
+.border-opacity-30 { --tw-border-opacity: 0.3; }
+.border-opacity-40 { --tw-border-opacity: 0.4; }
+.border-opacity-50 { --tw-border-opacity: 0.5; }
+.border-opacity-60 { --tw-border-opacity: 0.6; }
+.border-opacity-70 { --tw-border-opacity: 0.7; }
+.border-opacity-75 { --tw-border-opacity: 0.75; }
+.border-opacity-80 { --tw-border-opacity: 0.8; }
+.border-opacity-90 { --tw-border-opacity: 0.9; }
+.border-opacity-95 { --tw-border-opacity: 0.95; }
+.border-opacity-100 { --tw-border-opacity: 1; }
+
+/* =================== ESTILOS PARA UTILIDADES DE DIVISORES =================== */
+.divide-y > :not([hidden]) ~ :not([hidden]) {
+  border-top-width: 1px;
+  border-bottom-width: 0;
+}
+
+.divide-x > :not([hidden]) ~ :not([hidden]) {
+  border-left-width: 1px;
+  border-right-width: 0;
+}
+
+.divide-y-reverse > :not([hidden]) ~ :not([hidden]) {
+  border-top-width: 0;
+  border-bottom-width: 1px;
+}
+
+.divide-x-reverse > :not([hidden]) ~ :not([hidden]) {
+  border-left-width: 0;
+  border-right-width: 1px;
+}
+
+.divide-solid > :not([hidden]) ~ :not([hidden]) {
+  border-style: solid;
+}
+
+.divide-dashed > :not([hidden]) ~ :not([hidden]) {
+  border-style: dashed;
+}
+
+.divide-dotted > :not([hidden]) ~ :not([hidden]) {
+  border-style: dotted;
+}
+
+.divide-double > :not([hidden]) ~ :not([hidden]) {
+  border-style: double;
+}
+
+.divide-none > :not([hidden]) ~ :not([hidden]) {
+  border-style: none;
+}
+
+.divide-transparent > :not([hidden]) ~ :not([hidden]) {
+  border-color: transparent;
+}
+
+.divide-current > :not([hidden]) ~ :not([hidden]) {
+  border-color: currentColor;
+}
+
+.divide-black > :not([hidden]) ~ :not([hidden]) {
+  border-color: #000;
+}
+
+.divide-white > :not([hidden]) ~ :not([hidden]) {
+  border-color: #fff;
+}
+
+.divide-gray-50 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #f9fafb;
+}
+
+.divide-gray-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #f3f4f6;
+}
+
+.divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #e5e7eb;
+}
+
+.divide-gray-300 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #d1d5db;
+}
+
+.divide-gray-400 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #9ca3af;
+}
+
+.divide-gray-500 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #6b7280;
+}
+
+.divide-gray-600 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #4b5563;
+}
+
+.divide-gray-700 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #374151;
+}
+
+.divide-gray-800 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #1f2937;
+}
+
+.divide-gray-900 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #111827;
+}
+
+.divide-red-50 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #fef2f2;
+}
+
+.divide-red-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #fee2e2;
+}
+
+.divide-red-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #fecaca;
+}
+
+.divide-red-300 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #fca5a5;
+}
+
+.divide-red-400 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #f87171;
+}
+
+.divide-red-500 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #ef4444;
+}
+
+.divide-red-600 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #dc2626;
+}
+
+.divide-red-700 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #b91c1c;
+}
+
+.divide-red-800 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #991b1b;
+}
+
+.divide-red-900 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #7f1d1d;
+}
+
+.divide-yellow-50 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #fffbeb;
+}
+
+.divide-yellow-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #fef3c7;
+}
+
+.divide-yellow-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #fde68a;
+}
+
+.divide-yellow-300 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #fcd34d;
+}
+
+.divide-yellow-400 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #fbbf24;
+}
+
+.divide-yellow-500 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #f59e0b;
+}
+
+.divide-yellow-600 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #d97706;
+}
+
+.divide-yellow-700 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #b45309;
+}
+
+.divide-yellow-800 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #92400e;
+}
+
+.divide-yellow-900 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #78350f;
+}
+
+.divide-green-50 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #f0fdf4;
+}
+
+.divide-green-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #dcfce7;
+}
+
+.divide-green-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #bbf7d0;
+}
+
+.divide-green-300 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #86efac;
+}
+
+.divide-green-400 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #4ade80;
+}
+
+.divide-green-500 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #22c55e;
+}
+
+.divide-green-600 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #16a34a;
+}
+
+.divide-green-700 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #15803d;
+}
+
+.divide-green-800 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #166534;
+}
+
+.divide-green-900 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #14532d;
+}
+
+.divide-blue-50 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #eff6ff;
+}
+
+.divide-blue-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #dbeafe;
+}
+
+.divide-blue-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #bfdbfe;
+}
+
+.divide-blue-300 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #93c5fd;
+}
+
+.divide-blue-400 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #60a5fa;
+}
+
+.divide-blue-500 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #3b82f6;
+}
+
+.divide-blue-600 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #2563eb;
+}
+
+.divide-blue-700 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #1d4ed8;
+}
+
+.divide-blue-800 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #1e40af;
+}
+
+.divide-blue-900 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #1e3a8a;
+}
+
+/* =================== ESTILOS PARA UTILIDADES DE ESPACIADO =================== */
+.divide-y > :not([hidden]) ~ :not([hidden]) {
+  border-top-width: 1px;
+  border-bottom-width: 0;
+}
+
+.divide-x > :not([hidden]) ~ :not([hidden]) {
+  border-left-width: 1px;
+  border-right-width: 0;
+}
+
+/* =================== ESTILOS PARA UTILIDADES DE ESPACIADO DE GRUPO =================== */
+.space-y-0 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0px * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0px * var(--tw-space-y-reverse));
+}
+
+.space-y-1 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
+}
+
+.space-y-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.5rem * var(--tw-space-y-reverse));
+}
+
+.space-y-3 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+}
+
+.space-y-4 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));
+}
+
+.space-y-5 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(3rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(3rem * var(--tw-space-y-reverse));
+}
+
+.space-x-0 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(0px * var(--tw-space-x-reverse));
+  margin-left: calc(0px * calc(1 - var(--tw-space-x-reverse)));
+}
+
+.space-x-1 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(0.25rem * var(--tw-space-x-reverse));
+  margin-left: calc(0.25rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
+.space-x-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(0.5rem * var(--tw-space-x-reverse));
+  margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
+.space-x-3 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(1rem * var(--tw-space-x-reverse));
+  margin-left: calc(1rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
+.space-x-4 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(1.5rem * var(--tw-space-x-reverse));
+  margin-left: calc(1.5rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
+.space-x-5 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(3rem * var(--tw-space-x-reverse));
+  margin-left: calc(3rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
+/* =================== ESTILOS PARA UTILIDADES DE ESPACIADO REVERSO =================== */
+.space-y-reverse > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 1;
+}
+
+.space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+}
+
+/* =================== ESTILOS PARA UTILIDADES DE FLEX =================== */
+.flex-1 { flex: 1 1 0%; }
+.flex-auto { flex: 1 1 auto; }
+.flex-initial { flex: 0 1 auto; }
+.flex-none { flex: none; }
+
+.flex-shrink-0 { flex-shrink: 0; }
+.flex-shrink { flex-shrink: 1; }
+
+.flex-grow-0 { flex-grow: 0; }
+.flex-grow { flex-grow: 1; }
+
+/* =================== ESTILOS PARA UTILIDADES DE ORDEN =================== */
+.order-first { order: -9999; }
+.order-last { order: 9999; }
+.order-none { order: 0; }
+.order-1 { order: 1; }
+.order-2 { order: 2; }
+.order-3 { order: 3; }
+.order-4 { order: 4; }
+.order-5 { order: 5; }
+.order-6 { order: 6; }
+.order-7 { order: 7; }
+.order-8 { order: 8; }
+.order-9 { order: 9; }
+.order-10 { order: 10; }
+.order-11 { order: 11; }
+.order-12 { order: 12; }
+
+/* =================== ESTILOS PARA UTILIDADES DE TAMAÑO DE GRILLA =================== */
+.col-auto { grid-column: auto; }
+.col-span-1 { grid-column: span 1 / span 1; }
+.col-span-2 { grid-column: span 2 / span 2; }
+.col-span-3 { grid-column: span 3 / span 3; }
+.col-span-4 { grid-column: span 4 / span 4; }
+.col-span-5 { grid-column: span 5 / span 5; }
+.col-span-6 { grid-column: span 6 / span 6; }
+.col-span-7 { grid-column: span 7 / span 7; }
+.col-span-8 { grid-column: span 8 / span 8; }
+.col-span-9 { grid-column: span 9 / span 9; }
+.col-span-10 { grid-column: span 10 / span 10; }
+.col-span-11 { grid-column: span 11 / span 11; }
+.col-span-12 { grid-column: span 12 / span 12; }
+.col-span-full { grid-column: 1 / -1; }
+
+.col-start-1 { grid-column-start: 1; }
+.col-start-2 { grid-column-start: 2; }
+.col-start-3 { grid-column-start: 3; }
+.col-start-4 { grid-column-start: 4; }
+.col-start-5 { grid-column-start: 5; }
+.col-start-6 { grid-column-start: 6; }
+.col-start-7 { grid-column-start: 7; }
+.col-start-8 { grid-column-start: 8; }
+.col-start-9 { grid-column-start: 9; }
+.col-start-10 { grid-column-start: 10; }
+.col-start-11 { grid-column-start: 11; }
+.col-start-12 { grid-column-start: 12; }
+.col-start-13 { grid-column-start: 13; }
+.col-start-auto { grid-column-start: auto; }
+
+.col-end-1 { grid-column-end: 1; }
+.col-end-2 { grid-column-end: 2; }
+.col-end-3 { grid-column-end: 3; }
+.col-end-4 { grid-column-end: 4; }
+.col-end-5 { grid-column-end: 5; }
+.col-end-6 { grid-column-end: 6; }
+.col-end-7 { grid-column-end: 7; }
+.col-end-8 { grid-column-end: 8; }
+.col-end-9 { grid-column-end: 9; }
+.col-end-10 { grid-column-end: 10; }
+.col-end-11 { grid-column-end: 11; }
+.col-end-12 { grid-column-end: 12; }
+.col-end-13 { grid-column-end: 13; }
+.col-end-auto { grid-column-end: auto; }
+
+.row-auto { grid-row: auto; }
+.row-span-1 { grid-row: span 1 / span 1; }
+.row-span-2 { grid-row: span 2 / span 2; }
+.row-span-3 { grid-row: span 3 / span 3; }
+.row-span-4 { grid-row: span 4 / span 4; }
+.row-span-5 { grid-row: span 5 / span 5; }
+.row-span-6 { grid-row: span 6 / span 6; }
+
+.row-start-1 { grid-row-start: 1; }
+.row-start-2 { grid-row-start: 2; }
+.row-start-3 { grid-row-start: 3; }
+.row-start-4 { grid-row-start: 4; }
+.row-start-5 { grid-row-start: 5; }
+.row-start-6 { grid-row-start: 6; }
+.row-start-7 { grid-row-start: 7; }
+.row-start-auto { grid-row-start: auto; }
+
+.row-end-1 { grid-row-end: 1; }
+.row-end-2 { grid-row-end: 2; }
+.row-end-3 { grid-row-end: 3; }
+.row-end-4 { grid-row-end: 4; }
+.row-end-5 { grid-row-end: 5; }
+.row-end-6 { grid-row-end: 6; }
+.row-end-7 { grid-row-end: 7; }
+.row-end-auto { grid-row-end: auto; }
+
+/* =================== ESTILOS PARA UTILIDADES DE AUTO-FILL Y AUTO-FIT =================== */
+.auto-cols-auto { grid-auto-columns: auto; }
+.auto-cols-min { grid-auto-columns: min-content; }
+.auto-cols-max { grid-auto-columns: max-content; }
+.auto-cols-fr { grid-auto-columns: minmax(0, 1fr); }
+
+.auto-rows-auto { grid-auto-rows: auto; }
+.auto-rows-min { grid-auto-rows: min-content; }
+.auto-rows-max { grid-auto-rows: max-content; }
+.auto-rows-fr { grid-auto-rows: minmax(0, 1fr); }
+
+.grid-flow-row { grid-auto-flow: row; }
+.grid-flow-col { grid-auto-flow: column; }
+.grid-flow-dense { grid-auto-flow: dense; }
+.grid-flow-row-dense { grid-auto-flow: row dense; }
+.grid-flow-col-dense { grid-auto-flow: column dense; }

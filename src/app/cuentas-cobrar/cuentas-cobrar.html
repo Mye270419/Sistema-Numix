@@ -1,0 +1,431 @@
+<div class="cuentas-cobrar-container" #container>
+  <!-- Header del módulo -->
+  <div class="module-header">
+    <div class="header-left">
+      <button class="back-btn" (click)="volverDashboard()">
+        <span class="back-icon">←</span>
+        Dashboard
+      </button>
+      <div class="header-info">
+        <h1 class="module-title">💰 Cuentas por Cobrar</h1>
+        <p class="module-subtitle">Gestión de clientes y documentos por cobrar</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Métricas principales -->
+  <div class="metricas-grid">
+    <div class="metric-card total">
+      <div class="metric-header">
+        <h3>Total por Cobrar</h3>
+        <span class="metric-icon">💰</span>
+      </div>
+      <div class="metric-value">{{ formatCurrency(metricas.totalPorCobrar) }}</div>
+      <div class="metric-detail">En {{ documentosPorCobrar.length }} documentos</div>
+    </div>
+
+    <div class="metric-card vencido">
+      <div class="metric-header">
+        <h3>Vencido</h3>
+        <span class="metric-icon">⚠️</span>
+      </div>
+      <div class="metric-value">{{ formatCurrency(metricas.totalVencido) }}</div>
+      <div class="metric-detail">Requiere seguimiento</div>
+    </div>
+
+    <div class="metric-card pendiente">
+      <div class="metric-header">
+        <h3>Pendiente</h3>
+        <span class="metric-icon">⏳</span>
+      </div>
+      <div class="metric-value">{{ formatCurrency(metricas.totalPendiente) }}</div>
+      <div class="metric-detail">Por vencer</div>
+    </div>
+
+    <div class="metric-card clientes">
+      <div class="metric-header">
+        <h3>Clientes con Deuda</h3>
+        <span class="metric-icon">👥</span>
+      </div>
+      <div class="metric-value">{{ metricas.clientesConDeuda }}</div>
+      <div class="metric-detail">Activos</div>
+    </div>
+  </div>
+
+  <!-- Navegación por tabs -->
+  <div class="nav-tabs">
+    <button
+      class="tab"
+      [class.active]="vistaActual === 'documentos'"
+      (click)="cambiarVista('documentos')"
+    >
+      📋 Documentos por Cobrar
+    </button>
+    <button class="tab" [class.active]="vistaActual === 'pagos'" (click)="cambiarVista('pagos')">
+      💳 Historial de Pagos
+    </button>
+    <button
+      class="tab"
+      [class.active]="vistaActual === 'clientes'"
+      (click)="cambiarVista('clientes')"
+    >
+      👥 Gestión de Clientes
+    </button>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="content-area">
+    <!-- Vista Documentos por Cobrar -->
+    <div *ngIf="vistaActual === 'documentos'" class="documentos-view">
+      <!-- Filtros -->
+      <div class="filtros-section">
+        <div class="filtros-row">
+          <div class="filtro-grupo">
+            <label>Filtrar por Estado:</label>
+            <select
+              class="filtro-select"
+              [(ngModel)]="filtroEstado"
+              (ngModelChange)="aplicarFiltros()"
+            >
+              <option value="">Todos los estados</option>
+              <option value="PENDIENTE">Pendientes</option>
+              <option value="PAGADO_PARCIAL">Pagado Parcial</option>
+              <option value="VENCIDO">Vencidos</option>
+              <option value="PAGADO">Pagados</option>
+            </select>
+          </div>
+
+          <div class="filtro-grupo">
+            <label>Buscar Cliente:</label>
+            <input
+              type="text"
+              class="filtro-input"
+              placeholder="Nombre o NIT del cliente..."
+              [(ngModel)]="filtroCliente"
+              (ngModelChange)="aplicarFiltros()"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de documentos -->
+      <div class="documentos-grid">
+        <div
+          *ngFor="let documento of documentosFiltrados"
+          class="documento-card"
+          [class.vencido]="documento.estado === 'VENCIDO'"
+        >
+          <div class="documento-header">
+            <div class="documento-info">
+              <h3 class="documento-numero">{{ documento.numeroDocumento }}</h3>
+              <p class="documento-tipo">{{ documento.tipoDocumento }}</p>
+            </div>
+            <div class="documento-estado">
+              <span class="estado-badge" [class]="getEstadoBadgeClass(documento.estado)">
+                {{ documento.estado.replace('_', ' ') }}
+              </span>
+            </div>
+          </div>
+
+          <div class="documento-cliente">
+            <h4>{{ documento.cliente.razonSocial }}</h4>
+            <p class="cliente-nit">NIT: {{ documento.cliente.nit }}</p>
+          </div>
+
+          <div class="documento-fechas">
+            <div class="fecha-item">
+              <span class="fecha-label">Emisión:</span>
+              <span class="fecha-valor">{{ documento.fechaEmision | date : 'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="fecha-item">
+              <span class="fecha-label">Vencimiento:</span>
+              <span class="fecha-valor">{{
+                documento.fechaVencimiento | date : 'dd/MM/yyyy'
+              }}</span>
+            </div>
+            <div class="fecha-item" *ngIf="documento.diasVencimiento > 0">
+              <span class="fecha-label">Días vencido:</span>
+              <span
+                class="fecha-valor"
+                [class]="getDiasVencimientoClass(documento.diasVencimiento)"
+              >
+                {{ documento.diasVencimiento }} días
+              </span>
+            </div>
+          </div>
+
+          <div class="documento-montos">
+            <div class="monto-row">
+              <span class="monto-label">Monto Original:</span>
+              <span class="monto-valor">{{ formatCurrency(documento.montoOriginal) }}</span>
+            </div>
+            <div class="monto-row">
+              <span class="monto-label">Pagado:</span>
+              <span class="monto-valor pagado">{{ formatCurrency(documento.montoPagado) }}</span>
+            </div>
+            <div class="monto-row total">
+              <span class="monto-label"><strong>Saldo:</strong></span>
+              <span class="monto-valor"
+                ><strong>{{ formatCurrency(documento.montoSaldo) }}</strong></span
+              >
+            </div>
+          </div>
+
+          <div class="documento-observaciones" *ngIf="documento.observaciones">
+            <p><strong>Observaciones:</strong> {{ documento.observaciones }}</p>
+          </div>
+
+          <div class="documento-actions">
+            <button
+              *ngIf="documento.montoSaldo > 0"
+              class="btn-pagar"
+              (click)="seleccionarDocumento(documento)"
+            >
+              💳 Registrar Pago
+            </button>
+            <button class="btn-ver">👁️ Ver Detalles</button>
+            <button class="btn-historial">📋 Historial</button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="documentosFiltrados.length === 0" class="empty-state">
+        <div class="empty-icon">📭</div>
+        <h3>No se encontraron documentos</h3>
+        <p>No hay documentos que coincidan con los filtros aplicados.</p>
+      </div>
+    </div>
+
+    <!-- Vista Nuevo Pago -->
+    <div *ngIf="vistaActual === 'nuevo-pago'" class="nuevo-pago-view">
+      <h2 class="section-title">Registrar Nuevo Pago</h2>
+
+      <div class="pago-form" *ngIf="documentoSeleccionado">
+        <!-- Información del documento -->
+        <div class="documento-info-section">
+          <h3>Información del Documento</h3>
+          <div class="info-card">
+            <div class="info-row">
+              <span class="info-label">Documento:</span>
+              <span class="info-value">{{ documentoSeleccionado.numeroDocumento }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Cliente:</span>
+              <span class="info-value">{{ documentoSeleccionado.cliente.razonSocial }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Saldo Pendiente:</span>
+              <span class="info-value saldo">{{
+                formatCurrency(documentoSeleccionado.montoSaldo)
+              }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formulario de pago -->
+        <div class="pago-form-section">
+          <h3>Datos del Pago</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Fecha de Pago:</label>
+              <input type="date" class="form-input" [(ngModel)]="nuevoPago.fechaPago" />
+            </div>
+
+            <div class="form-group">
+              <label>Monto del Pago:</label>
+              <input
+                type="number"
+                class="form-input"
+                step="0.01"
+                [max]="documentoSeleccionado.montoSaldo"
+                [(ngModel)]="nuevoPago.montoPago"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Método de Pago:</label>
+              <select class="form-select" [(ngModel)]="nuevoPago.metodoPago">
+                <option value="EFECTIVO">Efectivo</option>
+                <option value="TRANSFERENCIA">Transferencia Bancaria</option>
+                <option value="CHEQUE">Cheque</option>
+                <option value="TARJETA">Tarjeta de Crédito/Débito</option>
+              </select>
+            </div>
+
+            <div
+              class="form-group"
+              *ngIf="nuevoPago.metodoPago === 'TRANSFERENCIA' || nuevoPago.metodoPago === 'CHEQUE'"
+            >
+              <label>Banco:</label>
+              <select class="form-select" [(ngModel)]="nuevoPago.banco">
+                <option value="">Seleccionar banco...</option>
+                <option value="BANCO MERCANTIL SANTA CRUZ">Banco Mercantil Santa Cruz</option>
+                <option value="BANCO NACIONAL DE BOLIVIA">Banco Nacional de Bolivia</option>
+                <option value="BANCO DE CREDITO">Banco de Crédito</option>
+                <option value="BANCO UNION">Banco Unión</option>
+                <option value="BANCO SOL">Banco Sol</option>
+              </select>
+            </div>
+
+            <div class="form-group" *ngIf="nuevoPago.metodoPago === 'CHEQUE'">
+              <label>Número de Cheque:</label>
+              <input type="text" class="form-input" [(ngModel)]="nuevoPago.numeroCheque" />
+            </div>
+
+            <div class="form-group full-width">
+              <label>Observaciones:</label>
+              <textarea
+                class="form-textarea"
+                rows="3"
+                placeholder="Observaciones sobre el pago..."
+                [(ngModel)]="nuevoPago.observaciones"
+              >
+              </textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="pago-actions">
+          <button class="btn-success" (click)="registrarPago()">💰 Registrar Pago</button>
+          <button class="btn-secondary" (click)="vistaActual = 'documentos'">
+            📋 Volver a Documentos
+          </button>
+          <button
+            class="btn-cancel"
+            (click)="nuevoPago = inicializarNuevoPago(); documentoSeleccionado = null"
+          >
+            🧹 Limpiar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vista Historial de Pagos -->
+    <div *ngIf="vistaActual === 'pagos'" class="pagos-view">
+      <h2 class="section-title">Historial de Pagos Recibidos</h2>
+
+      <div class="pagos-list">
+        <div *ngFor="let pago of pagos" class="pago-card">
+          <div class="pago-header">
+            <div class="pago-info">
+              <h3 class="pago-monto">{{ formatCurrency(pago.montoPago) }}</h3>
+              <p class="pago-fecha">{{ pago.fechaPago | date : 'dd/MM/yyyy' }}</p>
+            </div>
+            <div class="pago-metodo">
+              <span class="metodo-badge" [class]="pago.metodoPago.toLowerCase()">
+                {{ pago.metodoPago }}
+              </span>
+            </div>
+          </div>
+
+          <p>
+            <strong>Documento:</strong>
+            {{ getNumeroDocumento(pago.documentoId) }}
+          </p>
+          <p>
+            <strong>Cliente:</strong>
+            {{ getRazonSocialCliente(pago.documentoId) }}
+          </p>
+          <p *ngIf="pago.banco"><strong>Banco:</strong> {{ pago.banco }}</p>
+          <p *ngIf="pago.numeroCheque"><strong>Cheque:</strong> {{ pago.numeroCheque }}</p>
+          <p *ngIf="pago.observaciones"><strong>Observaciones:</strong> {{ pago.observaciones }}</p>
+          <p><strong>Registrado por:</strong> {{ pago.registradoPor }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vista Clientes -->
+  <div *ngIf="vistaActual === 'clientes'" class="clientes-view">
+    <div class="clientes-header">
+      <h2 class="section-title">Gestión de Clientes</h2>
+    </div>
+
+    <!-- Formulario nuevo cliente -->
+    <div class="nuevo-cliente-form">
+      <h3 class="subsection-title">Agregar Nuevo Cliente</h3>
+      <div class="cliente-form-grid">
+        <div class="form-group">
+          <label>NIT:</label>
+          <input
+            type="text"
+            class="form-input"
+            [(ngModel)]="nuevoCliente.nit"
+            placeholder="1234567890"
+          />
+        </div>
+        <div class="form-group">
+          <label>Razón Social:</label>
+          <input
+            type="text"
+            class="form-input"
+            [(ngModel)]="nuevoCliente.razonSocial"
+            placeholder="Nombre de la empresa"
+          />
+        </div>
+        <div class="form-group">
+          <label>Email:</label>
+          <input
+            type="email"
+            class="form-input"
+            [(ngModel)]="nuevoCliente.email"
+            placeholder="email@empresa.com"
+          />
+        </div>
+        <div class="form-group">
+          <label>Teléfono:</label>
+          <input
+            type="tel"
+            class="form-input"
+            [(ngModel)]="nuevoCliente.telefono"
+            placeholder="70123456"
+          />
+        </div>
+        <div class="form-group full-width">
+          <label>Dirección:</label>
+          <input
+            type="text"
+            class="form-input"
+            [(ngModel)]="nuevoCliente.direccion"
+            placeholder="Dirección completa"
+          />
+        </div>
+        <button class="btn-add-cliente" (click)="agregarCliente()">➕ Agregar Cliente</button>
+      </div>
+    </div>
+
+    <!-- Lista de clientes -->
+    <div class="clientes-list">
+      <h3 class="subsection-title">Clientes Registrados</h3>
+      <div class="clientes-grid">
+        <div *ngFor="let cliente of clientes" class="cliente-card">
+          <div class="cliente-header">
+            <h4>{{ cliente.razonSocial }}</h4>
+            <span class="cliente-nit">{{ cliente.nit }}</span>
+          </div>
+          <div class="cliente-info">
+            <p><strong>📧</strong> {{ cliente.email || 'No registrado' }}</p>
+            <p><strong>📱</strong> {{ cliente.telefono || 'No registrado' }}</p>
+            <p><strong>📍</strong> {{ cliente.direccion || 'No registrado' }}</p>
+            <p>
+              <strong>📅</strong> Cliente desde: {{ cliente.fechaRegistro | date : 'dd/MM/yyyy' }}
+            </p>
+          </div>
+          <div class="cliente-saldos">
+            <div class="saldo-info">
+              <span class="saldo-label">Saldo por cobrar:</span>
+              <span class="saldo-valor">
+                {{ formatCurrency(getSaldoPorCliente(cliente.id)) }}
+              </span>
+            </div>
+          </div>
+          <div class="cliente-actions">
+            <button class="btn-edit">✏️ Editar</button>
+            <button class="btn-history">📊 Historial</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
