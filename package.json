@@ -22,7 +22,6 @@
     ]
   },
   "private": true,
-  
   "dependencies": {
     "@angular/common": "^20.3.3",
     "@angular/compiler": "^20.3.3",
@@ -34,10 +33,14 @@
     "@fortawesome/fontawesome-free": "6.7.2",
     "@supabase/supabase-js": "^2.74.0",
     "animejs": "^3.2.2",
+    "file-saver": "^2.0.5",
+    "jspdf": "^4.2.0",
+    "jspdf-autotable": "^5.0.7",
     "primeicons": "^7.0.0",
     "primeng": "^20.2.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
@@ -45,6 +48,7 @@
     "@angular/cli": "^20.3.4",
     "@angular/compiler-cli": "^20.3.3",
     "@types/animejs": "^3.1.13",
+    "@types/file-saver": "^2.0.7",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",

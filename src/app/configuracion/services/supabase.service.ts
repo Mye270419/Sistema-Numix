@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 // ── Credenciales Supabase ────────────────────────────────
 // Reemplaza estos valores con los de tu proyecto en:
 // Supabase → Settings → API
-const SUPABASE_URL     = 'https://TU_PROYECTO.supabase.cohttps://pvlldrsovcsproestspz.supabase.co';
+const SUPABASE_URL     = 'https://pvlldrsovcsproestspz.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_EDxxQjoUWO4CJLmbk6b3pg_-r3ojEzv';
 // ────────────────────────────────────────────────────────
 

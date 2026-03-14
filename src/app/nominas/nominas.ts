@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NominasService, Empleado, DetallePlanilla } from './nominas.service';
+import { ExportService } from '../export/export.service';
+import { AuthService } from '../auth';
 
 @Component({
   selector: 'app-nominas',
@@ -26,7 +28,6 @@ export class NominasComponent implements OnInit {
   meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
            'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
   anioActual = new Date().getFullYear();
-
   nuevaPlanilla = { mes: new Date().getMonth() + 1, anio: this.anioActual };
 
   empleadoForm: Partial<Empleado> = {
@@ -35,22 +36,28 @@ export class NominasComponent implements OnInit {
     caja_salud: '', email: '', telefono: '', estado: 'activo'
   };
 
-  // Empresa actual — reemplazar con el servicio de auth real
   empresaId = localStorage.getItem('empresa_id') || '';
 
-  constructor(private nominasService: NominasService) {}
-
-  ngOnInit() {
-    this.cargarDatos();
+  private get empresaInfo() {
+    return {
+      nombre: this.authService.currentUserValue?.empresa || 'NUMIX',
+      nit: '123456789',
+    };
   }
+
+  constructor(
+    private nominasService: NominasService,
+    private exportService: ExportService,
+    private authService: AuthService,
+  ) {}
+
+  ngOnInit() { this.cargarDatos(); }
 
   async cargarDatos() {
     try {
       this.empleados = await this.nominasService.getEmpleados(this.empresaId);
       this.planillas = await this.nominasService.getPlanillas(this.empresaId);
-    } catch (err) {
-      console.error('Error cargando datos:', err);
-    }
+    } catch (err) { console.error('Error cargando datos:', err); }
   }
 
   get empleadosFiltrados() {
@@ -62,7 +69,6 @@ export class NominasComponent implements OnInit {
     );
   }
 
-  // Totales calculados
   get totalGanado()    { return this.detallesCalculados.reduce((s, d) => s + d.total_ganado, 0); }
   get totalDescuentos(){ return this.detallesCalculados.reduce((s, d) => s + d.total_descuentos, 0); }
   get totalLiquido()   { return this.detallesCalculados.reduce((s, d) => s + d.liquido_pagable, 0); }
@@ -71,9 +77,7 @@ export class NominasComponent implements OnInit {
   async calcularPlanilla() {
     this.calculando = true;
     const activos = this.empleados.filter(e => e.estado === 'activo');
-    this.detallesCalculados = activos.map(e =>
-      this.nominasService.calcularDetalle(e)
-    );
+    this.detallesCalculados = activos.map(e => this.nominasService.calcularDetalle(e));
     this.calculando = false;
   }
 
@@ -89,8 +93,7 @@ export class NominasComponent implements OnInit {
     this.guardando = true;
     try {
       const usuarioId = localStorage.getItem('usuario_id') || '';
-      // periodoId: buscar período activo del mes/año seleccionado
-      const periodoId = ''; // TODO: obtener del servicio de períodos
+      const periodoId = '';
       await this.nominasService.crearPlanilla(
         this.empresaId, periodoId,
         this.nuevaPlanilla.mes, this.nuevaPlanilla.anio,
@@ -102,9 +105,7 @@ export class NominasComponent implements OnInit {
       alert('✅ Planilla guardada correctamente');
     } catch (err: any) {
       alert('❌ Error: ' + err.message);
-    } finally {
-      this.guardando = false;
-    }
+    } finally { this.guardando = false; }
   }
 
   abrirModalEmpleado() {
@@ -123,9 +124,7 @@ export class NominasComponent implements OnInit {
     this.mostrarModalEmpleado = true;
   }
 
-  verEmpleado(empleado: Empleado) {
-    // TODO: navegar a vista detalle
-  }
+  verEmpleado(empleado: Empleado) {}
 
   async guardarEmpleado() {
     this.guardando = true;
@@ -142,14 +141,10 @@ export class NominasComponent implements OnInit {
       await this.cargarDatos();
     } catch (err: any) {
       alert('❌ Error: ' + err.message);
-    } finally {
-      this.guardando = false;
-    }
+    } finally { this.guardando = false; }
   }
 
-  async verDetallePlanilla(planilla: any) {
-    // TODO: abrir modal con detalle de planilla
-  }
+  async verDetallePlanilla(planilla: any) {}
 
   cerrarModal(event: MouseEvent) {
     if ((event.target as HTMLElement).classList.contains('modal-overlay')) {
@@ -157,10 +152,56 @@ export class NominasComponent implements OnInit {
     }
   }
 
-  getNombreMes(mes: number): string {
-    return this.meses[mes - 1] || '';
+  getNombreMes(mes: number): string { return this.meses[mes - 1] || ''; }
+
+  // ── Datos para exportar la planilla activa (calculada o seleccionada) ──
+  private getDatosExport() {
+    // Si hay una planilla calculada en pantalla, exportarla
+    // Si no, usar los empleados actuales calculados
+    const fuente = this.detallesCalculados.length > 0
+      ? this.detallesCalculados
+      : [];
+
+    const empleadosActivos = this.empleados.filter(e => e.estado === 'activo');
+
+    return {
+      empresa:  this.empresaInfo,
+      mes:      this.getNombreMes(this.nuevaPlanilla.mes),
+      anio:     this.nuevaPlanilla.anio,
+      empleados: fuente.map((d, i) => ({
+        ci:               empleadosActivos[i]?.ci              || '',
+        nombre:           empleadosActivos[i]?.nombre_completo || '',
+        cargo:            empleadosActivos[i]?.cargo           || '',
+        totalGanado:      d.total_ganado,
+        afpLaboral:       d.afp_laboral,
+        cajaLaboral:      d.caja_salud_laboral,
+        rcIva:            d.rc_iva,
+        totalDescuentos:  d.total_descuentos,
+        liquidoPagable:   d.liquido_pagable,
+        totalPatronal:    d.total_aporte_patronal,
+      })),
+      totales: {
+        ganado:     this.totalGanado,
+        descuentos: this.totalDescuentos,
+        liquido:    this.totalLiquido,
+        patronal:   this.totalPatronal,
+      },
+    };
   }
 
-  exportarPDF()   { alert('Exportando PDF...'); }
-  exportarExcel() { alert('Exportando Excel...'); }
+  exportarPDF(): void {
+    if (this.detallesCalculados.length === 0) {
+      alert('⚠️ Primero calcula una planilla para exportar.');
+      return;
+    }
+    this.exportService.exportPlanillaPDF(this.getDatosExport());
+  }
+
+  exportarExcel(): void {
+    if (this.detallesCalculados.length === 0) {
+      alert('⚠️ Primero calcula una planilla para exportar.');
+      return;
+    }
+    this.exportService.exportPlanillaExcel(this.getDatosExport());
+  }
 }

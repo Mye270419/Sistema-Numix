@@ -300,3 +300,12 @@
   padding: 16px 24px;
   border-top: 1px solid #2d3250;
 }
+/*nominas*/
+.calculo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.calculo-header h3 { margin: 0; }
+.export-actions { display: flex; gap: 8px; }

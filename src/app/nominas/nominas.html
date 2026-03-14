@@ -10,8 +10,6 @@
       </div>
     </div>
     <div class="header-actions">
-      <button class="btn-secondary" (click)="exportarPDF()">📄 PDF</button>
-      <button class="btn-secondary" (click)="exportarExcel()">📊 Excel</button>
       <button class="btn-primary" (click)="abrirModalEmpleado()">+ Nuevo Empleado</button>
     </div>
   </div>
@@ -125,7 +123,14 @@
 
       <!-- Tabla de cálculo -->
       <div class="calculo-table" *ngIf="detallesCalculados.length > 0">
-        <h3>Detalle de Cálculo — {{ getNombreMes(nuevaPlanilla.mes) }} {{ nuevaPlanilla.anio }}</h3>
+        <div class="calculo-header">
+          <h3>Detalle — {{ getNombreMes(nuevaPlanilla.mes) }} {{ nuevaPlanilla.anio }}</h3>
+          <!-- BOTONES DE EXPORTACIÓN -->
+          <div class="export-actions">
+            <button class="btn-secondary" (click)="exportarPDF()">📄 PDF</button>
+            <button class="btn-secondary" (click)="exportarExcel()">📊 Excel</button>
+          </div>
+        </div>
         <div class="table-wrapper">
           <table class="data-table">
             <thead>
