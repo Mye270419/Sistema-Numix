@@ -1,10 +1,9 @@
 [build]
-  command = "npm run build"
+  command = "npm install && npm run build"
   publish = "dist/sistema-numix/browser"
 
 [build.environment]
   NODE_VERSION = "22"
-  NPM_FLAGS = "--legacy-peer-deps --prefer-offline"
 
 [[redirects]]
   from = "/*"
