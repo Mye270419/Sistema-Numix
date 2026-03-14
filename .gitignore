@@ -20,6 +20,10 @@ yarn-error.log
 .settings/
 *.sublime-workspace
 
+# Agregar estas líneas para NO subir credenciales a Git
+src/environments/environment.ts
+src/environments/environment.prod.ts
+
 # Visual Studio Code
 .vscode/*
 !.vscode/settings.json

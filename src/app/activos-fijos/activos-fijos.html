@@ -1,0 +1,234 @@
+<div class="activos-container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="header-icon">🏗️</div>
+      <div>
+        <h1>Activos Fijos</h1>
+        <p>Registro, depreciación y actualización UFV</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-primary" (click)="tabActivo = 'nuevo'">+ Nuevo Activo</button>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <span class="kpi-label">Costo Histórico Total</span>
+      <span class="kpi-value">Bs {{ totalCostoHistorico | number:'1.2-2' }}</span>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Valor en Libros</span>
+      <span class="kpi-value green">Bs {{ totalValorLibros | number:'1.2-2' }}</span>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Depreciación Acumulada</span>
+      <span class="kpi-value red">Bs {{ totalDepreciacionAcum | number:'1.2-2' }}</span>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab" [class.active]="tabActivo === 'listado'" (click)="tabActivo = 'listado'">
+      🏗️ Activos
+    </button>
+    <button class="tab" [class.active]="tabActivo === 'nuevo'" (click)="tabActivo = 'nuevo'">
+      ➕ Nuevo Activo
+    </button>
+    <button class="tab" [class.active]="tabActivo === 'depreciacion'" (click)="tabActivo = 'depreciacion'">
+      📉 Depreciación
+    </button>
+  </div>
+
+  <!-- TAB: LISTADO -->
+  <div class="tab-content" *ngIf="tabActivo === 'listado'">
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Descripción</th>
+            <th>Categoría</th>
+            <th>F. Adquisición</th>
+            <th>Costo Histórico</th>
+            <th>Valor Libros</th>
+            <th>Deprec. Acum.</th>
+            <th>% Deprec.</th>
+            <th>Tasa</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let a of activos">
+            <td><code>{{ a.codigo }}</code></td>
+            <td><strong>{{ a.descripcion }}</strong></td>
+            <td><span class="badge badge-cat">{{ getLabelCategoria(a.categoria) }}</span></td>
+            <td>{{ a.fecha_adquisicion }}</td>
+            <td>Bs {{ a.costo_historico | number:'1.2-2' }}</td>
+            <td class="green">Bs {{ a.valor_libros_actual | number:'1.2-2' }}</td>
+            <td class="red">Bs {{ a.depreciacion_acumulada | number:'1.2-2' }}</td>
+            <td>
+              <div class="progress-bar">
+                <div class="progress-fill" [style.width]="getPorcentajeDepreciado(a) + '%'"></div>
+                <span class="progress-label">{{ getPorcentajeDepreciado(a) }}%</span>
+              </div>
+            </td>
+            <td>{{ a.tasa_depreciacion }}%</td>
+            <td>
+              <button class="btn-icon" (click)="seleccionarActivo(a)" title="Ver depreciaciones">📉</button>
+            </td>
+          </tr>
+          <tr *ngIf="activos.length === 0">
+            <td colspan="10" class="empty-row">No hay activos registrados</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB: NUEVO ACTIVO -->
+  <div class="tab-content" *ngIf="tabActivo === 'nuevo'">
+    <div class="form-card">
+      <h3>Registrar Nuevo Activo Fijo</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Código *</label>
+          <input type="text" [(ngModel)]="activoForm.codigo" class="form-control" placeholder="AF-001">
+        </div>
+        <div class="form-group">
+          <label>Descripción *</label>
+          <input type="text" [(ngModel)]="activoForm.descripcion" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Categoría *</label>
+          <select [(ngModel)]="activoForm.categoria" class="form-control">
+            <option *ngFor="let c of categorias" [value]="c.value">
+              {{ c.label }} ({{ c.tasa }}% anual)
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tasa de Depreciación (DS 24051)</label>
+          <input type="text" [value]="tasaActualForm + '% anual'" class="form-control" readonly
+            style="background:#111827; cursor:not-allowed;">
+        </div>
+        <div class="form-group">
+          <label>Fecha de Adquisición *</label>
+          <input type="date" [(ngModel)]="activoForm.fecha_adquisicion" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Costo Histórico (Bs) *</label>
+          <input type="number" [(ngModel)]="activoForm.costo_historico" class="form-control" min="0">
+        </div>
+        <div class="form-group">
+          <label>Valor Residual (Bs)</label>
+          <input type="number" [(ngModel)]="activoForm.valor_residual" class="form-control" min="0">
+        </div>
+        <div class="form-group">
+          <label>Vida Útil (años)</label>
+          <input type="number" [(ngModel)]="activoForm.vida_util_anios" class="form-control" min="1">
+        </div>
+        <div class="form-group">
+          <label>Método de Depreciación</label>
+          <select [(ngModel)]="activoForm.metodo_depreciacion" class="form-control">
+            <option value="linea_recta">Línea Recta</option>
+            <option value="doble_saldo_decreciente">Doble Saldo Decreciente</option>
+            <option value="suma_digitos">Suma de Dígitos</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Ubicación</label>
+          <input type="text" [(ngModel)]="activoForm.ubicacion" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Número de Serie</label>
+          <input type="text" [(ngModel)]="activoForm.numero_serie" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Proveedor</label>
+          <input type="text" [(ngModel)]="activoForm.proveedor" class="form-control">
+        </div>
+      </div>
+      <div class="actions-bar">
+        <button class="btn-secondary" (click)="tabActivo = 'listado'">Cancelar</button>
+        <button class="btn-primary" (click)="guardarActivo()" [disabled]="guardando">
+          {{ guardando ? 'Guardando...' : '💾 Guardar Activo' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: DEPRECIACIÓN -->
+  <div class="tab-content" *ngIf="tabActivo === 'depreciacion'">
+    <div class="empty-state" *ngIf="!activoSeleccionado">
+      <span class="empty-icon">📉</span>
+      <p>Selecciona un activo desde la pestaña Activos para calcular su depreciación</p>
+      <button class="btn-secondary" (click)="tabActivo = 'listado'">Ver Activos</button>
+    </div>
+    <div *ngIf="activoSeleccionado">
+      <div class="activo-info-card">
+        <strong>{{ activoSeleccionado.descripcion }}</strong>
+        <span>Valor en libros: <strong class="green">Bs {{ activoSeleccionado.valor_libros_actual | number:'1.2-2' }}</strong></span>
+        <span>Tasa: {{ activoSeleccionado.tasa_depreciacion }}% anual</span>
+      </div>
+      <div class="form-card" style="margin-top: 16px;">
+        <h3>Calcular Depreciación con UFV</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>UFV Inicio del Período</label>
+            <input type="number" [(ngModel)]="ufvInicio" class="form-control" step="0.000001" min="1">
+          </div>
+          <div class="form-group">
+            <label>UFV Fin del Período</label>
+            <input type="number" [(ngModel)]="ufvFin" class="form-control" step="0.000001" min="1">
+          </div>
+        </div>
+        <div class="tip-box">💡 Consulta los valores UFV en <strong>bcb.gob.bo</strong></div>
+        <div class="actions-bar">
+          <button class="btn-secondary" (click)="calculoDepreciacion = null">Limpiar</button>
+          <button class="btn-primary" (click)="calcularPreview()">⚙️ Calcular</button>
+        </div>
+      </div>
+      <!-- Resultado del cálculo -->
+      <div class="calculo-resultado" *ngIf="calculoDepreciacion">
+        <h3>Resultado del Cálculo</h3>
+        <div class="resultado-grid">
+          <div class="resultado-item">
+            <span class="res-label">Valor inicial</span>
+            <span class="res-value">Bs {{ calculoDepreciacion.valor_inicial_ufv | number:'1.2-2' }}</span>
+          </div>
+          <div class="resultado-item">
+            <span class="res-label">Actualización UFV</span>
+            <span class="res-value green">+Bs {{ calculoDepreciacion.actualizacion_valor | number:'1.2-2' }}</span>
+          </div>
+          <div class="resultado-item">
+            <span class="res-label">Valor actualizado</span>
+            <span class="res-value">Bs {{ calculoDepreciacion.valor_final_ufv | number:'1.2-2' }}</span>
+          </div>
+          <div class="resultado-item">
+            <span class="res-label">Depreciación del período</span>
+            <span class="res-value red">-Bs {{ calculoDepreciacion.depreciacion_periodo | number:'1.2-2' }}</span>
+          </div>
+          <div class="resultado-item destacado">
+            <span class="res-label">Nuevo valor en libros</span>
+            <span class="res-value green">Bs {{ calculoDepreciacion.valor_libros | number:'1.2-2' }}</span>
+          </div>
+          <div class="resultado-item">
+            <span class="res-label">Deprec. acumulada total</span>
+            <span class="res-value red">Bs {{ calculoDepreciacion.depreciacion_acumulada | number:'1.2-2' }}</span>
+          </div>
+        </div>
+        <div class="actions-bar">
+          <button class="btn-secondary" (click)="calculoDepreciacion = null">Cancelar</button>
+          <button class="btn-primary" (click)="registrarDepreciacion()" [disabled]="guardando">
+            {{ guardando ? 'Registrando...' : '💾 Registrar Asiento' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

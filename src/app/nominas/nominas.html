@@ -1,0 +1,264 @@
+<div class="nominas-container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="header-icon">👥</div>
+      <div>
+        <h1>Nóminas</h1>
+        <p>Planilla de sueldos y salarios</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary" (click)="exportarPDF()">📄 PDF</button>
+      <button class="btn-secondary" (click)="exportarExcel()">📊 Excel</button>
+      <button class="btn-primary" (click)="abrirModalEmpleado()">+ Nuevo Empleado</button>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab" [class.active]="tabActivo === 'planillas'" (click)="tabActivo = 'planillas'">
+      📋 Planillas
+    </button>
+    <button class="tab" [class.active]="tabActivo === 'empleados'" (click)="tabActivo = 'empleados'">
+      👤 Empleados
+    </button>
+    <button class="tab" [class.active]="tabActivo === 'nueva'" (click)="tabActivo = 'nueva'">
+      ➕ Nueva Planilla
+    </button>
+  </div>
+
+  <!-- TAB: PLANILLAS -->
+  <div class="tab-content" *ngIf="tabActivo === 'planillas'">
+    <div class="empty-state" *ngIf="planillas.length === 0">
+      <span class="empty-icon">📋</span>
+      <p>No hay planillas generadas aún</p>
+      <button class="btn-primary" (click)="tabActivo = 'nueva'">Generar primera planilla</button>
+    </div>
+    <div class="planillas-grid" *ngIf="planillas.length > 0">
+      <div class="planilla-card" *ngFor="let p of planillas" (click)="verDetallePlanilla(p)">
+        <div class="planilla-header">
+          <span class="planilla-periodo">{{ getNombreMes(p.mes) }} {{ p.anio }}</span>
+          <span class="badge" [class]="'badge-' + p.estado">{{ p.estado }}</span>
+        </div>
+        <div class="planilla-stats">
+          <div class="stat">
+            <span class="stat-label">Total Haberes</span>
+            <span class="stat-value">Bs {{ p.total_haberes | number:'1.2-2' }}</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Líquido Pagable</span>
+            <span class="stat-value green">Bs {{ p.total_liquido | number:'1.2-2' }}</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Aporte Patronal</span>
+            <span class="stat-value amber">Bs {{ p.total_aporte_patronal | number:'1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: EMPLEADOS -->
+  <div class="tab-content" *ngIf="tabActivo === 'empleados'">
+    <div class="search-bar">
+      <input type="text" placeholder="Buscar empleado..." [(ngModel)]="busqueda" class="search-input">
+    </div>
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>CI</th>
+            <th>Nombre Completo</th>
+            <th>Cargo</th>
+            <th>Departamento</th>
+            <th>Salario Base</th>
+            <th>AFP</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let e of empleadosFiltrados">
+            <td>{{ e.ci }}</td>
+            <td><strong>{{ e.nombre_completo }}</strong></td>
+            <td>{{ e.cargo }}</td>
+            <td>{{ e.departamento }}</td>
+            <td>Bs {{ e.salario_base | number:'1.2-2' }}</td>
+            <td>{{ e.afp || '—' }}</td>
+            <td><span class="badge" [class]="'badge-' + e.estado">{{ e.estado }}</span></td>
+            <td>
+              <button class="btn-icon" (click)="editarEmpleado(e)">✏️</button>
+              <button class="btn-icon" (click)="verEmpleado(e)">👁️</button>
+            </td>
+          </tr>
+          <tr *ngIf="empleadosFiltrados.length === 0">
+            <td colspan="8" class="empty-row">No se encontraron empleados</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB: NUEVA PLANILLA -->
+  <div class="tab-content" *ngIf="tabActivo === 'nueva'">
+    <div class="nueva-planilla">
+      <div class="form-section">
+        <h3>Parámetros de la Planilla</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Mes</label>
+            <select [(ngModel)]="nuevaPlanilla.mes" class="form-control">
+              <option *ngFor="let m of meses; let i = index" [value]="i+1">{{ m }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Año</label>
+            <input type="number" [(ngModel)]="nuevaPlanilla.anio" class="form-control" [value]="anioActual">
+          </div>
+        </div>
+        <button class="btn-primary" (click)="calcularPlanilla()" [disabled]="calculando">
+          {{ calculando ? 'Calculando...' : '⚙️ Calcular Planilla' }}
+        </button>
+      </div>
+
+      <!-- Tabla de cálculo -->
+      <div class="calculo-table" *ngIf="detallesCalculados.length > 0">
+        <h3>Detalle de Cálculo — {{ getNombreMes(nuevaPlanilla.mes) }} {{ nuevaPlanilla.anio }}</h3>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Empleado</th>
+                <th>Días</th>
+                <th>Total Ganado</th>
+                <th>AFP Lab.</th>
+                <th>Caja Sal.</th>
+                <th>RC-IVA</th>
+                <th>Total Desc.</th>
+                <th>Líquido</th>
+                <th>Ap. Patronal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let d of detallesCalculados; let i = index">
+                <td><strong>{{ empleados[i]?.nombre_completo }}</strong></td>
+                <td>
+                  <input type="number" [(ngModel)]="d.dias_trabajados" min="1" max="30"
+                    class="input-dias" (change)="recalcularFila(i)">
+                </td>
+                <td>Bs {{ d.total_ganado | number:'1.2-2' }}</td>
+                <td class="red">Bs {{ d.afp_laboral | number:'1.2-2' }}</td>
+                <td class="red">Bs {{ d.caja_salud_laboral | number:'1.2-2' }}</td>
+                <td class="red">Bs {{ d.rc_iva | number:'1.2-2' }}</td>
+                <td class="red"><strong>Bs {{ d.total_descuentos | number:'1.2-2' }}</strong></td>
+                <td class="green"><strong>Bs {{ d.liquido_pagable | number:'1.2-2' }}</strong></td>
+                <td class="amber">Bs {{ d.total_aporte_patronal | number:'1.2-2' }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="totals-row">
+                <td colspan="2"><strong>TOTALES</strong></td>
+                <td><strong>Bs {{ totalGanado | number:'1.2-2' }}</strong></td>
+                <td></td><td></td><td></td>
+                <td><strong>Bs {{ totalDescuentos | number:'1.2-2' }}</strong></td>
+                <td class="green"><strong>Bs {{ totalLiquido | number:'1.2-2' }}</strong></td>
+                <td class="amber"><strong>Bs {{ totalPatronal | number:'1.2-2' }}</strong></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <div class="actions-bar">
+          <button class="btn-secondary" (click)="detallesCalculados = []">Cancelar</button>
+          <button class="btn-primary" (click)="guardarPlanilla()" [disabled]="guardando">
+            {{ guardando ? 'Guardando...' : '💾 Guardar Planilla' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Empleado -->
+  <div class="modal-overlay" *ngIf="mostrarModalEmpleado" (click)="cerrarModal($event)">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>{{ empleadoEditando?.id ? 'Editar Empleado' : 'Nuevo Empleado' }}</h3>
+        <button class="btn-close" (click)="mostrarModalEmpleado = false">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>CI *</label>
+            <input type="text" [(ngModel)]="empleadoForm.ci" class="form-control" placeholder="12345678">
+          </div>
+          <div class="form-group">
+            <label>Nombre Completo *</label>
+            <input type="text" [(ngModel)]="empleadoForm.nombre_completo" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Cargo</label>
+            <input type="text" [(ngModel)]="empleadoForm.cargo" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Departamento</label>
+            <input type="text" [(ngModel)]="empleadoForm.departamento" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Fecha de Ingreso *</label>
+            <input type="date" [(ngModel)]="empleadoForm.fecha_ingreso" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Salario Base (Bs) *</label>
+            <input type="number" [(ngModel)]="empleadoForm.salario_base" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>AFP</label>
+            <select [(ngModel)]="empleadoForm.afp" class="form-control">
+              <option value="">Seleccionar...</option>
+              <option value="Futuro de Bolivia">Futuro de Bolivia</option>
+              <option value="BBVA Previsión">BBVA Previsión</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Nro. AFP</label>
+            <input type="text" [(ngModel)]="empleadoForm.numero_afp" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Caja de Salud</label>
+            <select [(ngModel)]="empleadoForm.caja_salud" class="form-control">
+              <option value="">Seleccionar...</option>
+              <option value="CNS">CNS</option>
+              <option value="COSSMIL">COSSMIL</option>
+              <option value="Caja Petrolera">Caja Petrolera</option>
+              <option value="Caja CORDES">Caja CORDES</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" [(ngModel)]="empleadoForm.email" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="tel" [(ngModel)]="empleadoForm.telefono" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Estado</label>
+            <select [(ngModel)]="empleadoForm.estado" class="form-control">
+              <option value="activo">Activo</option>
+              <option value="suspendido">Suspendido</option>
+              <option value="baja">Baja</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="mostrarModalEmpleado = false">Cancelar</button>
+        <button class="btn-primary" (click)="guardarEmpleado()" [disabled]="guardando">
+          {{ guardando ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

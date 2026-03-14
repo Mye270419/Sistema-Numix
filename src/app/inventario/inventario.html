@@ -1,0 +1,261 @@
+<div class="inventario-container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="header-icon">📦</div>
+      <div>
+        <h1>Inventario</h1>
+        <p>Control de stock y Kardex de valoración</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary" (click)="tabActivo = 'movimiento'">± Movimiento</button>
+      <button class="btn-primary" (click)="tabActivo = 'nuevo-producto'">+ Nuevo Producto</button>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <span class="kpi-label">Total Productos</span>
+      <span class="kpi-value">{{ totalProductos }}</span>
+    </div>
+    <div class="kpi-card kpi-warning">
+      <span class="kpi-label">Bajo Stock</span>
+      <span class="kpi-value">{{ totalBajoStock }}</span>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-label">Valor Total Stock</span>
+      <span class="kpi-value">Bs {{ valorTotalStock | number:'1.2-2' }}</span>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab" [class.active]="tabActivo === 'productos'" (click)="tabActivo = 'productos'">
+      📦 Productos
+    </button>
+    <button class="tab" [class.active]="tabActivo === 'kardex'" (click)="tabActivo = 'kardex'">
+      📋 Kardex
+    </button>
+    <button class="tab" [class.active]="tabActivo === 'nuevo-producto'" (click)="tabActivo = 'nuevo-producto'">
+      ➕ Nuevo Producto
+    </button>
+    <button class="tab" [class.active]="tabActivo === 'movimiento'" (click)="tabActivo = 'movimiento'">
+      ± Registrar Movimiento
+    </button>
+  </div>
+
+  <!-- TAB: PRODUCTOS -->
+  <div class="tab-content" *ngIf="tabActivo === 'productos'">
+    <div class="search-bar">
+      <input type="text" placeholder="Buscar por nombre o código..."
+        [(ngModel)]="busqueda" class="search-input">
+    </div>
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Unidad</th>
+            <th>Precio Compra</th>
+            <th>Precio Venta</th>
+            <th>Stock</th>
+            <th>Mín.</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of productosFiltrados">
+            <td><code>{{ p.codigo }}</code></td>
+            <td><strong>{{ p.nombre }}</strong></td>
+            <td><span class="badge badge-tipo">{{ p.tipo }}</span></td>
+            <td>{{ p.unidad_medida }}</td>
+            <td>Bs {{ p.precio_compra | number:'1.2-2' }}</td>
+            <td>Bs {{ p.precio_venta | number:'1.2-2' }}</td>
+            <td>
+              <span [class]="'stock-badge ' + getStockClass(p)">
+                {{ p.stock_actual }}
+              </span>
+            </td>
+            <td>{{ p.stock_minimo }}</td>
+            <td>
+              <button class="btn-icon" (click)="verKardex(p)" title="Ver Kardex">📋</button>
+            </td>
+          </tr>
+          <tr *ngIf="productosFiltrados.length === 0">
+            <td colspan="9" class="empty-row">No se encontraron productos</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB: KARDEX -->
+  <div class="tab-content" *ngIf="tabActivo === 'kardex'">
+    <div class="kardex-header" *ngIf="productoSeleccionado">
+      <div class="kardex-producto-info">
+        <strong>{{ productoSeleccionado.nombre }}</strong>
+        <span>Cód: {{ productoSeleccionado.codigo }}</span>
+        <span class="stock-badge stock-ok">Stock actual: {{ productoSeleccionado.stock_actual }}</span>
+      </div>
+    </div>
+    <div class="empty-state" *ngIf="!productoSeleccionado">
+      <span class="empty-icon">📋</span>
+      <p>Selecciona un producto desde la pestaña Productos para ver su Kardex</p>
+      <button class="btn-secondary" (click)="tabActivo = 'productos'">Ver Productos</button>
+    </div>
+    <div class="table-wrapper" *ngIf="productoSeleccionado">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Tipo Movimiento</th>
+            <th>Cantidad</th>
+            <th>Costo Unit.</th>
+            <th>Costo Total</th>
+            <th>Stock Ant.</th>
+            <th>Stock Post.</th>
+            <th>Glosa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let k of kardex">
+            <td>{{ k.fecha }}</td>
+            <td>
+              <span [class]="'badge ' + (esEntrada(k.tipo_movimiento) ? 'badge-green' : 'badge-red')">
+                {{ getTipoLabel(k.tipo_movimiento) }}
+              </span>
+            </td>
+            <td [class]="esEntrada(k.tipo_movimiento) ? 'green' : 'red'">
+              {{ esEntrada(k.tipo_movimiento) ? '+' : '-' }}{{ k.cantidad }}
+            </td>
+            <td>Bs {{ k.costo_unitario | number:'1.2-2' }}</td>
+            <td>Bs {{ k.costo_total | number:'1.2-2' }}</td>
+            <td>{{ k.stock_anterior }}</td>
+            <td><strong>{{ k.stock_posterior }}</strong></td>
+            <td>{{ k.glosa || '—' }}</td>
+          </tr>
+          <tr *ngIf="kardex.length === 0">
+            <td colspan="8" class="empty-row">Sin movimientos registrados</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB: NUEVO PRODUCTO -->
+  <div class="tab-content" *ngIf="tabActivo === 'nuevo-producto'">
+    <div class="form-card">
+      <h3>Registrar Nuevo Producto</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Código *</label>
+          <input type="text" [(ngModel)]="productoForm.codigo" class="form-control" placeholder="PROD-001">
+        </div>
+        <div class="form-group">
+          <label>Nombre *</label>
+          <input type="text" [(ngModel)]="productoForm.nombre" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Tipo</label>
+          <select [(ngModel)]="productoForm.tipo" class="form-control">
+            <option value="bien">Bien</option>
+            <option value="servicio">Servicio</option>
+            <option value="activo">Activo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Unidad de Medida</label>
+          <select [(ngModel)]="productoForm.unidad_medida" class="form-control">
+            <option value="UND">Unidad</option>
+            <option value="KG">Kilogramo</option>
+            <option value="LT">Litro</option>
+            <option value="MT">Metro</option>
+            <option value="CJ">Caja</option>
+            <option value="HR">Hora</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Precio de Compra (Bs)</label>
+          <input type="number" [(ngModel)]="productoForm.precio_compra" class="form-control" min="0">
+        </div>
+        <div class="form-group">
+          <label>Precio de Venta (Bs)</label>
+          <input type="number" [(ngModel)]="productoForm.precio_venta" class="form-control" min="0">
+        </div>
+        <div class="form-group">
+          <label>Stock Mínimo</label>
+          <input type="number" [(ngModel)]="productoForm.stock_minimo" class="form-control" min="0">
+        </div>
+        <div class="form-group form-check">
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="productoForm.controla_stock">
+            Controla stock
+          </label>
+        </div>
+        <div class="form-group form-full">
+          <label>Descripción</label>
+          <textarea [(ngModel)]="productoForm.descripcion" class="form-control" rows="2"></textarea>
+        </div>
+      </div>
+      <div class="actions-bar">
+        <button class="btn-secondary" (click)="tabActivo = 'productos'">Cancelar</button>
+        <button class="btn-primary" (click)="guardarProducto()" [disabled]="guardando">
+          {{ guardando ? 'Guardando...' : '💾 Guardar Producto' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: MOVIMIENTO -->
+  <div class="tab-content" *ngIf="tabActivo === 'movimiento'">
+    <div class="form-card">
+      <h3>Registrar Movimiento de Stock</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Producto *</label>
+          <select [(ngModel)]="movimientoForm.producto_id" class="form-control">
+            <option value="">Seleccionar producto...</option>
+            <option *ngFor="let p of productos" [value]="p.id">
+              {{ p.codigo }} — {{ p.nombre }} (Stock: {{ p.stock_actual }})
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tipo de Movimiento *</label>
+          <select [(ngModel)]="movimientoForm.tipo_movimiento" class="form-control">
+            <option *ngFor="let t of tiposMovimiento" [value]="t.value">{{ t.label }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Fecha *</label>
+          <input type="date" [(ngModel)]="movimientoForm.fecha" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Cantidad *</label>
+          <input type="number" [(ngModel)]="movimientoForm.cantidad" class="form-control" min="0.01" step="0.01">
+        </div>
+        <div class="form-group">
+          <label>Costo Unitario (Bs) *</label>
+          <input type="number" [(ngModel)]="movimientoForm.costo_unitario" class="form-control" min="0">
+        </div>
+        <div class="form-group form-full">
+          <label>Glosa / Descripción</label>
+          <input type="text" [(ngModel)]="movimientoForm.glosa" class="form-control"
+            placeholder="Ej: Compra según factura #123">
+        </div>
+      </div>
+      <div class="actions-bar">
+        <button class="btn-secondary" (click)="tabActivo = 'productos'">Cancelar</button>
+        <button class="btn-primary" (click)="registrarMovimiento()" [disabled]="guardando">
+          {{ guardando ? 'Registrando...' : '✅ Registrar Movimiento' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

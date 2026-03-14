@@ -1,0 +1,116 @@
+<div class="auditoria-container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="header-icon">🔍</div>
+      <div>
+        <h1>Bitácora de Auditoría</h1>
+        <p>Registro de todas las operaciones del sistema</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary" (click)="limpiarFiltros()">🗑 Limpiar filtros</button>
+    </div>
+  </div>
+
+  <!-- Resumen actividad -->
+  <div class="resumen-grid" *ngIf="resumenArray.length > 0">
+    <div class="resumen-card" *ngFor="let r of resumenArray">
+      <span class="resumen-tabla">{{ r[0] }}</span>
+      <span class="resumen-count">{{ r[1] }}</span>
+      <span class="resumen-label">ops. esta semana</span>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros-card">
+    <div class="filtros-grid">
+      <div class="form-group">
+        <label>Tabla</label>
+        <select [(ngModel)]="filtros.tabla" class="form-control">
+          <option value="">Todas</option>
+          <option *ngFor="let t of tablasDisponibles" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Operación</label>
+        <select [(ngModel)]="filtros.operacion" class="form-control">
+          <option value="">Todas</option>
+          <option *ngFor="let op of operacionesDisponibles" [value]="op">{{ op }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Fecha desde</label>
+        <input type="date" [(ngModel)]="filtros.fechaDesde" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Fecha hasta</label>
+        <input type="date" [(ngModel)]="filtros.fechaHasta" class="form-control">
+      </div>
+    </div>
+    <div class="filtros-actions">
+      <button class="btn-primary" (click)="aplicarFiltros()">🔍 Buscar</button>
+    </div>
+  </div>
+
+  <!-- Tabla de logs -->
+  <div class="logs-card">
+    <div class="logs-header">
+      <span class="logs-total">{{ totalLogs | number }} registros encontrados</span>
+      <div class="paginacion">
+        <button class="btn-page" (click)="cambiarPagina(-1)" [disabled]="paginaActual === 0">←</button>
+        <span class="pagina-info">{{ paginaActual + 1 }} / {{ totalPaginas || 1 }}</span>
+        <button class="btn-page" (click)="cambiarPagina(1)" [disabled]="paginaActual >= totalPaginas - 1">→</button>
+      </div>
+    </div>
+
+    <div class="loading-row" *ngIf="cargando">Cargando registros...</div>
+
+    <div class="table-wrapper" *ngIf="!cargando">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Fecha y Hora</th>
+            <th>Usuario</th>
+            <th>Operación</th>
+            <th>Tabla</th>
+            <th>IP</th>
+            <th>Diferencias</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of logs">
+            <td class="fecha-col">{{ formatearFecha(log.created_at) }}</td>
+            <td>
+              <div class="usuario-info">
+                <strong>{{ log.usuarios?.nombre_completo || 'Sistema' }}</strong>
+                <span>{{ log.usuarios?.email || '' }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="badge" [class]="getColorOperacion(log.operacion)">
+                {{ log.operacion }}
+              </span>
+            </td>
+            <td><code>{{ log.tabla_afectada || '—' }}</code></td>
+            <td class="ip-col">{{ log.ip_address || '—' }}</td>
+            <td>
+              <button class="btn-icon"
+                *ngIf="log.datos_anteriores || log.datos_nuevos"
+                (click)="verDiferencias(log)"
+                title="Ver cambios">
+                🔎
+              </button>
+              <span *ngIf="!log.datos_anteriores && !log.datos_nuevos" class="text-muted">—</span>
+            </td>
+          </tr>
+          <tr *ngIf="logs.length === 0">
+            <td colspan="6" class="empty-row">No se encontraron registros con los filtros aplicados</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

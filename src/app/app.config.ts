@@ -1,8 +1,18 @@
-// src/app/app.config.ts
 import { ApplicationConfig } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import {
+  provideRouter,
+  withComponentInputBinding,
+  withPreloading,
+  PreloadAllModules
+} from '@angular/router';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes)]
+  providers: [
+    provideRouter(
+      routes,
+      withComponentInputBinding(), // permite pasar params de ruta como @Input()
+      withPreloading(PreloadAllModules) // precarga los módulos lazy en segundo plano
+    )
+  ]
 };

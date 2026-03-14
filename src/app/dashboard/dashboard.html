@@ -1,9 +1,9 @@
-
-
 <div class="dashboard-container" #dashboardContainer>
+
   <!-- Sidebar -->
   <div class="sidebar" #sidebar [class.collapsed]="sidebarCollapsed">
-    <!-- Header del Sidebar -->
+
+    <!-- Header -->
     <div class="sidebar-header">
       <div class="logo" *ngIf="!sidebarCollapsed">
         <h2 class="logo-text">NUMIX</h2>
@@ -28,20 +28,32 @@
       </div>
     </div>
 
-    <!-- Navigation Menu -->
+    <!-- Navigation Menu con grupos -->
     <nav class="sidebar-nav">
-      <div 
-        *ngFor="let module of modules" 
-        class="nav-item"
-        [class.active]="activeModule === module.id"
-        [class]="'module-' + module.id"
-        (click)="navigateToModule(module)">
-        <span class="nav-icon">{{ module.icon }}</span>
-        <span class="nav-text" *ngIf="!sidebarCollapsed">{{ module.name }}</span>
-      </div>
+      <ng-container *ngFor="let group of moduleGroups">
+
+        <!-- Etiqueta del grupo (solo si sidebar expandido) -->
+        <div class="nav-group-label" *ngIf="!sidebarCollapsed">
+          {{ group.label }}
+        </div>
+        <div class="nav-group-divider" *ngIf="sidebarCollapsed"></div>
+
+        <!-- Items del grupo -->
+        <div
+          *ngFor="let module of group.items"
+          class="nav-item"
+          [class.active]="activeModule === module.id"
+          [class]="'module-' + module.id"
+          (click)="navigateToModule(module)"
+          [title]="sidebarCollapsed ? module.name : ''">
+          <span class="nav-icon">{{ module.icon }}</span>
+          <span class="nav-text" *ngIf="!sidebarCollapsed">{{ module.name }}</span>
+        </div>
+
+      </ng-container>
     </nav>
 
-    <!-- Logout Button -->
+    <!-- Logout -->
     <div class="sidebar-footer">
       <button class="logout-btn" (click)="logout()">
         <span class="logout-icon">🚪</span>
@@ -52,6 +64,7 @@
 
   <!-- Main Content -->
   <div class="main-content" #mainContent>
+
     <!-- Header -->
     <div class="content-header">
       <div class="header-left">
@@ -60,8 +73,8 @@
       </div>
       <div class="header-right">
         <div class="date-time">
-          <span class="current-date">{{ 'now' | date:'dd/MM/yyyy' }}</span>
-          <span class="current-time">{{ 'now' | date:'HH:mm' }}</span>
+          <span class="current-date">{{ today | date:'dd/MM/yyyy' }}</span>
+          <span class="current-time">{{ today | date:'HH:mm' }}</span>
         </div>
       </div>
     </div>
@@ -76,7 +89,6 @@
         <div class="metric-value">{{ formatCurrency(metrics.ingresosMes) }}</div>
         <div class="metric-change positive">+12.5% vs mes anterior</div>
       </div>
-
       <div class="metric-card expenses">
         <div class="metric-header">
           <h3 class="metric-title">Egresos del Mes</h3>
@@ -85,7 +97,6 @@
         <div class="metric-value">{{ formatCurrency(metrics.egresosMes) }}</div>
         <div class="metric-change negative">+8.3% vs mes anterior</div>
       </div>
-
       <div class="metric-card balance">
         <div class="metric-header">
           <h3 class="metric-title">Saldo Actual</h3>
@@ -94,7 +105,6 @@
         <div class="metric-value">{{ formatCurrency(metrics.saldoActual) }}</div>
         <div class="metric-change positive">+5.7% vs mes anterior</div>
       </div>
-
       <div class="metric-card pending">
         <div class="metric-header">
           <h3 class="metric-title">Facturas Pendientes</h3>
@@ -109,19 +119,19 @@
     <div class="quick-actions">
       <h2 class="section-title">Acciones Rápidas</h2>
       <div class="actions-grid">
-        <button class="action-btn primary" (click)="crearFactura()">
+        <button class="action-btn primary"  (click)="crearFactura()">
           <span class="action-icon">🧾</span>
           <span class="action-text">Nueva Factura</span>
         </button>
-        <button class="action-btn success" (click)="registrarPago()">
+        <button class="action-btn success"  (click)="registrarPago()">
           <span class="action-icon">💰</span>
           <span class="action-text">Registrar Pago</span>
         </button>
-        <button class="action-btn info" (click)="nuevoAsiento()">
+        <button class="action-btn info"     (click)="nuevoAsiento()">
           <span class="action-icon">📝</span>
           <span class="action-text">Nuevo Asiento</span>
         </button>
-        <button class="action-btn warning" (click)="verInformes()">
+        <button class="action-btn warning"  (click)="verInformes()">
           <span class="action-icon">📊</span>
           <span class="action-text">Ver Informes</span>
         </button>
@@ -132,8 +142,8 @@
     <div class="recent-transactions">
       <h2 class="section-title">Transacciones Recientes</h2>
       <div class="transactions-list">
-        <div 
-          *ngFor="let transaction of recentTransactions" 
+        <div
+          *ngFor="let transaction of recentTransactions"
           class="transaction-item"
           [style.border-left-color]="getTransactionColor(transaction.tipo)">
           <div class="transaction-icon">{{ getTransactionIcon(transaction.tipo) }}</div>
@@ -150,8 +160,6 @@
         </div>
       </div>
     </div>
+
   </div>
 </div>
-
-
-

@@ -1,12 +1,8 @@
-// ====================================
-// PASO 1: dashboard.component.ts
-// ====================================
 import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService, User } from '../auth';
 
-// Declarar anime.js
 declare var anime: any;
 
 interface DashboardMetrics {
@@ -16,6 +12,7 @@ interface DashboardMetrics {
   facturasPendientes: number;
   clientesActivos: number;
   transaccionesHoy: number;
+  
 }
 
 interface RecentTransaction {
@@ -25,6 +22,19 @@ interface RecentTransaction {
   tipo: 'ingreso' | 'egreso' | 'factura';
   monto: number;
   cliente?: string;
+}
+
+// Agrupación visual del menú
+interface ModuleGroup {
+  label: string;
+  items: Module[];
+}
+
+interface Module {
+  id: string;
+  name: string;
+  icon: string;
+  route: string;
 }
 
 @Component({
@@ -40,6 +50,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   @ViewChild('mainContent') mainContent!: ElementRef;
 
   currentUser: User | null = null;
+  
+
   metrics: DashboardMetrics = {
     ingresosMes: 125450.75,
     egresosMes: 89320.50,
@@ -59,17 +71,47 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   sidebarCollapsed = false;
   activeModule = 'dashboard';
+  today = new Date();
 
-  // Módulos disponibles según el rol
-  modules = [
-    { id: 'dashboard', name: 'Dashboard', icon: '📊', route: '/dashboard' },
-    { id: 'libro-mayor', name: 'Libro Mayor', icon: '📚', route: '/libro-mayor' },
-    { id: 'facturacion', name: 'Facturación', icon: '🧾', route: '/facturacion' },
-    { id: 'cuentas-pagar', name: 'Cuentas por Pagar', icon: '💳', route: '/cuentas-pagar' },
-    { id: 'cuentas-cobrar', name: 'Cuentas por Cobrar', icon: '💰', route: '/cuentas-cobrar' },
-    { id: 'informes', name: 'Informes Financieros', icon: '📈', route: '/informes' },
-    { id: 'configuracion', name: 'Configuración', icon: '⚙️', route: '/configuracion' }
+  // ── Módulos agrupados ──────────────────────────────────
+  moduleGroups: ModuleGroup[] = [
+    {
+      label: 'Principal',
+      items: [
+        { id: 'dashboard',    name: 'Dashboard',           icon: '📊', route: '/dashboard' },
+      ]
+    },
+    {
+      label: 'Contabilidad',
+      items: [
+        { id: 'libro-mayor',  name: 'Libro Mayor',         icon: '📚', route: '/libro-mayor' },
+        { id: 'facturacion',  name: 'Facturación',         icon: '🧾', route: '/facturacion' },
+        { id: 'cuentas-pagar',name: 'Cuentas por Pagar',   icon: '💳', route: '/cuentas-pagar' },
+        { id: 'cuentas-cobrar',name:'Cuentas por Cobrar',  icon: '💰', route: '/cuentas-cobrar' },
+        { id: 'informes',     name: 'Informes Financieros',icon: '📈', route: '/informes' },
+      ]
+    },
+    {
+      label: 'Gestión',
+      items: [
+        { id: 'nominas',      name: 'Nóminas',             icon: '👥', route: '/nominas' },
+        { id: 'activos-fijos',name: 'Activos Fijos',       icon: '🏗️', route: '/activos-fijos' },
+        { id: 'inventario',   name: 'Inventario',          icon: '📦', route: '/inventario' },
+      ]
+    },
+    {
+      label: 'Sistema',
+      items: [
+        { id: 'auditoria',    name: 'Auditoría',           icon: '🔍', route: '/auditoria' },
+        { id: 'configuracion',name: 'Configuración',       icon: '⚙️', route: '/configuracion' },
+      ]
+    }
   ];
+
+  // Lista plana para compatibilidad con el HTML existente
+  get modules(): Module[] {
+    return this.moduleGroups.flatMap(g => g.items);
+  }
 
   constructor(
     private authService: AuthService,
@@ -79,191 +121,109 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    // Verificar autenticación
     if (!this.authService.isLoggedIn) {
       this.router.navigate(['/login']);
       return;
     }
-
     console.log('🎛️ Dashboard NUMIX iniciado para:', this.currentUser?.fullName);
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.startDashboardAnimation();
-    }, 300);
+    setTimeout(() => { this.startDashboardAnimation(); }, 300);
   }
 
   startDashboardAnimation(): void {
-    console.log('🎨 Iniciando animaciones del dashboard...');
-
-    // Animación del sidebar
     anime({
       targets: this.sidebar.nativeElement,
-      translateX: [-250, 0],
-      opacity: [0, 1],
-      duration: 800,
-      easing: 'easeOutCubic'
+      translateX: [-250, 0], opacity: [0, 1],
+      duration: 800, easing: 'easeOutCubic'
     });
-
-    // Animación del contenido principal
     anime({
       targets: this.mainContent.nativeElement,
-      opacity: [0, 1],
-      translateY: [30, 0],
-      duration: 1000,
-      delay: 200,
-      easing: 'easeOutCubic'
+      opacity: [0, 1], translateY: [30, 0],
+      duration: 1000, delay: 200, easing: 'easeOutCubic'
     });
-
-    // Animación de las métricas
     anime({
       targets: '.metric-card',
-      scale: [0.8, 1],
-      opacity: [0, 1],
-      duration: 600,
-      delay: anime.stagger(100, {start: 500}),
+      scale: [0.8, 1], opacity: [0, 1],
+      duration: 600, delay: anime.stagger(100, { start: 500 }),
       easing: 'easeOutBack'
     });
-
-    // Animación de las transacciones
     anime({
       targets: '.transaction-item',
-      translateX: [50, 0],
-      opacity: [0, 1],
-      duration: 500,
-      delay: anime.stagger(100, {start: 800}),
+      translateX: [50, 0], opacity: [0, 1],
+      duration: 500, delay: anime.stagger(100, { start: 800 }),
       easing: 'easeOutCubic'
     });
-
-    // Partículas de fondo
     this.createBackgroundEffects();
   }
 
   createBackgroundEffects(): void {
     const container = this.dashboardContainer.nativeElement;
-    const particleCount = 15;
-
-    for (let i = 0; i < particleCount; i++) {
+    for (let i = 0; i < 15; i++) {
       const particle = document.createElement('div');
       particle.className = 'bg-particle';
       particle.style.left = Math.random() * 100 + '%';
-      particle.style.top = Math.random() * 100 + '%';
+      particle.style.top  = Math.random() * 100 + '%';
       container.appendChild(particle);
-
       anime({
         targets: particle,
-        opacity: [0, 0.1, 0],
-        scale: [0.5, 1, 0.5],
-        translateY: [
-          () => anime.random(-30, 30),
-          () => anime.random(-60, 60)
-        ],
-        translateX: [
-          () => anime.random(-30, 30),
-          () => anime.random(-60, 60)
-        ],
+        opacity: [0, 0.1, 0], scale: [0.5, 1, 0.5],
+        translateY: [() => anime.random(-30, 30), () => anime.random(-60, 60)],
+        translateX: [() => anime.random(-30, 30), () => anime.random(-60, 60)],
         duration: () => anime.random(8000, 15000),
         delay: () => anime.random(0, 5000),
-        loop: true,
-        easing: 'easeInOutSine'
+        loop: true, easing: 'easeInOutSine'
       });
     }
   }
 
   toggleSidebar(): void {
     this.sidebarCollapsed = !this.sidebarCollapsed;
-    
-    const sidebar = this.sidebar.nativeElement;
-    const targetWidth = this.sidebarCollapsed ? 80 : 280;
-    
     anime({
-      targets: sidebar,
-      width: targetWidth + 'px',
-      duration: 400,
-      easing: 'easeOutCubic'
+      targets: this.sidebar.nativeElement,
+      width: (this.sidebarCollapsed ? 80 : 280) + 'px',
+      duration: 400, easing: 'easeOutCubic'
     });
   }
 
-  navigateToModule(module: any): void {
+  navigateToModule(module: Module): void {
     if (module.id === 'dashboard') return;
-    
     this.activeModule = module.id;
-    
-    // Animación de clic
     anime({
       targets: `.module-${module.id}`,
-      scale: [1, 0.95, 1],
-      duration: 200,
-      easing: 'easeInOutCubic'
+      scale: [1, 0.95, 1], duration: 200, easing: 'easeInOutCubic'
     });
-    // Navegación real
-  this.router.navigate([module.route]);
-
-    // Por ahora solo simular navegación
-   // console.log(`🔄 Navegando a: ${module.name}`); "volver a activa si no funciona la navegacion real"
-    // this.router.navigate([module.route]);
+    this.router.navigate([module.route]);
   }
 
   logout(): void {
-    // Animación de logout
     anime({
       targets: this.dashboardContainer.nativeElement,
-      opacity: [1, 0],
-      scale: [1, 0.95],
-      duration: 500,
-      easing: 'easeInCubic',
+      opacity: [1, 0], scale: [1, 0.95], duration: 500, easing: 'easeInCubic',
       complete: () => {
         this.authService.logout();
         this.router.navigate(['/login']);
       }
-      
     });
   }
 
   formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('es-BO', {
-      style: 'currency',
-      currency: 'BOB'
-    }).format(amount);
+    return new Intl.NumberFormat('es-BO', { style: 'currency', currency: 'BOB' }).format(amount);
   }
 
   getTransactionIcon(tipo: string): string {
-    switch (tipo) {
-      case 'ingreso': return '📈';
-      case 'egreso': return '📉';
-      case 'factura': return '🧾';
-      default: return '💼';
-    }
+    const icons: Record<string, string> = { ingreso: '📈', egreso: '📉', factura: '🧾' };
+    return icons[tipo] || '💼';
   }
 
   getTransactionColor(tipo: string): string {
-    switch (tipo) {
-      case 'ingreso': return '#10b981'; // Verde
-      case 'egreso': return '#ef4444';  // Rojo
-      case 'factura': return '#3b82f6'; // Azul
-      default: return '#6b7280';        // Gris
-    }
+    const colors: Record<string, string> = { ingreso: '#10b981', egreso: '#ef4444', factura: '#3b82f6' };
+    return colors[tipo] || '#6b7280';
   }
 
-  // Funciones para acciones rápidas
-  crearFactura(): void {
-    console.log('🧾 Creando nueva factura...');
-    // Implementar lógica
-  }
-
-  registrarPago(): void {
-    console.log('💰 Registrando nuevo pago...');
-    // Implementar lógica
-  }
-
-  nuevoAsiento(): void {
-    console.log('📝 Creando nuevo asiento contable...');
-    // Implementar lógica
-  }
-
-  verInformes(): void {
-    console.log('📊 Accediendo a informes...');
-    // Implementar lógica
-  }
+  crearFactura():    void { this.router.navigate(['/facturacion']); }
+  registrarPago():   void { this.router.navigate(['/cuentas-pagar']); }
+  nuevoAsiento():    void { this.router.navigate(['/libro-mayor']); }
+  verInformes():     void { this.router.navigate(['/informes']); }
 }
