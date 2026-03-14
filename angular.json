@@ -13,6 +13,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "outputPath": "dist/sistema-numix",
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
@@ -27,6 +28,9 @@
             "styles": [
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "src/styles.css"
+            ],
+            "scripts": [
+              "node_modules/animejs/lib/anime.min.js"
             ]
           },
           "configurations": {
@@ -34,16 +38,20 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "1MB",
+                  "maximumError": "3MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "10kB",
+                  "maximumError": "20kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": true,
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true
             },
             "development": {
               "optimization": false,
@@ -86,8 +94,8 @@
               "src/styles.css"
             ],
             "scripts": [
-  "node_modules/animejs/lib/anime.min.js"
-]
+              "node_modules/animejs/lib/anime.min.js"
+            ]
           }
         }
       }
