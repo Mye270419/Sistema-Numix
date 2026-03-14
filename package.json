@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "postinstall": "echo 'skip'"
   },
   "prettier": {
     "printWidth": 100,
@@ -21,6 +22,7 @@
     ]
   },
   "private": true,
+  
   "dependencies": {
     "@angular/common": "^20.3.3",
     "@angular/compiler": "^20.3.3",

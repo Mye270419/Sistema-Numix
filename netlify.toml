@@ -1,5 +1,5 @@
 [build]
-  command = "npm install && npm run build"
+  command = "npm install --ignore-scripts && npm run build"
   publish = "dist/sistema-numix/browser"
 
 [build.environment]
