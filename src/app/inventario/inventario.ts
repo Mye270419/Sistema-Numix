@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { InventarioService, Producto, MovimientoKardex } from './inventario.service';
 import { ExportService } from '../export/export.service';
 import { AuthService } from '../auth';
+import { Router } from '@angular/router'; 
 
 @Component({
   selector: 'app-inventario',
@@ -56,6 +57,7 @@ export class InventarioComponent implements OnInit {
   get valorTotalStock() { return this.productos.reduce((s, p) => s + (p.stock_actual * (p.precio_compra || 0)), 0); }
 
   constructor(
+    private router: Router, 
     private inventarioService: InventarioService,
     private exportService: ExportService,
     private authService: AuthService,
@@ -161,5 +163,8 @@ export class InventarioComponent implements OnInit {
         saveAs(new Blob([buf], { type: 'application/octet-stream' }), 'Productos_Inventario.xlsx');
       });
     });
+  }
+  volverDashboard(): void {
+    this.router.navigate(['/dashboard']);
   }
 }

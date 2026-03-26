@@ -54,29 +54,20 @@
 
   <!-- Navegación por tabs -->
   <div class="nav-tabs">
-    <button 
-      class="tab" 
-      [class.active]="vistaActual === 'documentos'"
-      (click)="cambiarVista('documentos')">
+    <button class="tab" [class.active]="vistaActual === 'documentos'" (click)="cambiarVista('documentos')">
       📋 Documentos por Pagar
     </button>
-    <button 
-      class="tab" 
-      [class.active]="vistaActual === 'pagos'"
-      (click)="cambiarVista('pagos')">
+    <button class="tab" [class.active]="vistaActual === 'pagos'" (click)="cambiarVista('pagos')">
       💰 Historial de Pagos
     </button>
-    <button 
-      class="tab" 
-      [class.active]="vistaActual === 'proveedores'"
-      (click)="cambiarVista('proveedores')">
+    <button class="tab" [class.active]="vistaActual === 'proveedores'" (click)="cambiarVista('proveedores')">
       🏢 Gestión de Proveedores
     </button>
   </div>
 
   <!-- Contenido principal -->
   <div class="content-area">
-    
+
     <!-- Vista Documentos por Pagar -->
     <div *ngIf="vistaActual === 'documentos'" class="documentos-view">
       <!-- Filtros -->
@@ -92,26 +83,20 @@
               <option value="PAGADO">Pagados</option>
             </select>
           </div>
-          
+
           <div class="filtro-grupo">
             <label>Buscar Proveedor:</label>
-            <input 
-              type="text" 
-              class="filtro-input" 
-              placeholder="Nombre o NIT del proveedor..."
-              [(ngModel)]="filtroProveedor"
-              (ngModelChange)="aplicarFiltros()">
+            <input type="text" class="filtro-input" placeholder="Nombre o NIT del proveedor..."
+              [(ngModel)]="filtroProveedor" (ngModelChange)="aplicarFiltros()">
           </div>
         </div>
       </div>
 
       <!-- Lista de documentos -->
       <div class="documentos-grid">
-        <div 
-          *ngFor="let documento of documentosFiltrados" 
-          class="documento-card"
+        <div *ngFor="let documento of documentosFiltrados" class="documento-card"
           [class.vencido]="documento.estado === 'VENCIDO'">
-          
+
           <div class="documento-header">
             <div class="documento-info">
               <h3 class="documento-numero">{{ documento.numeroDocumento }}</h3>
@@ -172,10 +157,7 @@
           </div>
 
           <div class="documento-actions">
-            <button 
-              *ngIf="documento.montoSaldo > 0"
-              class="btn-pagar"
-              (click)="seleccionarDocumento(documento)">
+            <button *ngIf="documento.montoSaldo > 0" class="btn-pagar" (click)="seleccionarDocumento(documento)">
               💰 Registrar Pago
             </button>
             <button class="btn-ver">👁️ Ver Detalles</button>
@@ -194,7 +176,7 @@
     <!-- Vista Nuevo Pago -->
     <div *ngIf="vistaActual === 'nuevo-pago'" class="nuevo-pago-view">
       <h2 class="section-title">Registrar Nuevo Pago a Proveedor</h2>
-      
+
       <div class="pago-form" *ngIf="documentoSeleccionado">
         <!-- Información del documento -->
         <div class="documento-info-section">
@@ -226,11 +208,7 @@
 
             <div class="form-group">
               <label>Monto del Pago:</label>
-              <input 
-                type="number" 
-                class="form-input" 
-                step="0.01"
-                [max]="documentoSeleccionado.montoSaldo"
+              <input type="number" class="form-input" step="0.01" [max]="documentoSeleccionado.montoSaldo"
                 [(ngModel)]="nuevoPago.montoPago">
             </div>
 
@@ -244,7 +222,8 @@
               </select>
             </div>
 
-            <div class="form-group" *ngIf="nuevoPago.metodoPago === 'TRANSFERENCIA' || nuevoPago.metodoPago === 'CHEQUE'">
+            <div class="form-group"
+              *ngIf="nuevoPago.metodoPago === 'TRANSFERENCIA' || nuevoPago.metodoPago === 'CHEQUE'">
               <label>Banco:</label>
               <select class="form-select" [(ngModel)]="nuevoPago.banco">
                 <option value="">Seleccionar banco...</option>
@@ -263,10 +242,7 @@
 
             <div class="form-group full-width">
               <label>Observaciones:</label>
-              <textarea 
-                class="form-textarea" 
-                rows="3"
-                placeholder="Observaciones sobre el pago..."
+              <textarea class="form-textarea" rows="3" placeholder="Observaciones sobre el pago..."
                 [(ngModel)]="nuevoPago.observaciones">
               </textarea>
             </div>
@@ -291,7 +267,7 @@
     <!-- Vista Historial de Pagos -->
     <div *ngIf="vistaActual === 'pagos'" class="pagos-view">
       <h2 class="section-title">Historial de Pagos Realizados</h2>
-      
+
       <div class="pagos-list">
         <div *ngFor="let pago of pagos" class="pago-card">
           <div class="pago-header">
@@ -334,7 +310,8 @@
           </div>
           <div class="form-group">
             <label>Razón Social:</label>
-            <input type="text" class="form-input" [(ngModel)]="nuevoProveedor.razonSocial" placeholder="Nombre de la empresa">
+            <input type="text" class="form-input" [(ngModel)]="nuevoProveedor.razonSocial"
+              placeholder="Nombre de la empresa">
           </div>
           <div class="form-group">
             <label>Email:</label>
@@ -346,7 +323,8 @@
           </div>
           <div class="form-group full-width">
             <label>Dirección:</label>
-            <input type="text" class="form-input" [(ngModel)]="nuevoProveedor.direccion" placeholder="Dirección completa">
+            <input type="text" class="form-input" [(ngModel)]="nuevoProveedor.direccion"
+              placeholder="Dirección completa">
           </div>
           <button class="btn-add-proveedor" (click)="agregarProveedor()">
             ➕ Agregar Proveedor

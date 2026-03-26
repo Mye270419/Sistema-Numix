@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NominasService, Empleado, DetallePlanilla } from './nominas.service';
 import { ExportService } from '../export/export.service';
 import { AuthService } from '../auth';
+import { Router } from '@angular/router'; 
 
 @Component({
   selector: 'app-nominas',
@@ -37,6 +38,7 @@ export class NominasComponent implements OnInit {
   };
 
   empresaId = localStorage.getItem('empresa_id') || '';
+  
 
   private get empresaInfo() {
     return {
@@ -46,6 +48,7 @@ export class NominasComponent implements OnInit {
   }
 
   constructor(
+    private router: Router, 
     private nominasService: NominasService,
     private exportService: ExportService,
     private authService: AuthService,
@@ -203,5 +206,8 @@ export class NominasComponent implements OnInit {
       return;
     }
     this.exportService.exportPlanillaExcel(this.getDatosExport());
+  }
+   volverDashboard(): void {
+    this.router.navigate(['/dashboard']);
   }
 }

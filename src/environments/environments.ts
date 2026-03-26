@@ -1,8 +1,8 @@
 // src/environments/environment.ts  (desarrollo)
 export const environment = {
   production: false,
-  supabaseUrl: 'TU_SUPABASE_URL_AQUI',
-  supabaseKey: 'TU_SUPABASE_ANON_KEY_AQUI',
+  supabaseUrl: 'https://pvlldrsovcsproestspz.supabase.co',
+  supabaseKey: 'sb_publishable_EDxxQjoUWO4CJLmbk6b3pg_-r3ojEzv',
 };
 
 // ─────────────────────────────────────────────────────────────

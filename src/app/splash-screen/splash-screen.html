@@ -1,15 +1,16 @@
 <div class="splash-container" #splashContainer>
-  <!-- Contenedor de partículas -->
+
+  <!-- Partículas de fondo -->
   <div class="particles-container" #particlesContainer></div>
-  
-  <!-- Logo NUMIX -->
+
+  <!-- Logo NUMIX — las letras se renderizan via CSS ::before, no como texto -->
   <div class="numix-container" #numixContainer>
-    <span class="numix-letter" data-letter="N">N</span>
-    <span class="numix-letter" data-letter="U">U</span>
-    <span class="numix-letter" data-letter="M">M</span>
-    <span class="numix-letter" data-letter="I">I</span>
-    <span class="numix-letter" data-letter="X">X</span>
-    
+    <span class="numix-letter" data-letter="N"></span>
+    <span class="numix-letter" data-letter="U"></span>
+    <span class="numix-letter" data-letter="M"></span>
+    <span class="numix-letter" data-letter="I"></span>
+    <span class="numix-letter" data-letter="X"></span>
+
     <!-- Pulsos de energía -->
     <div class="energy-pulse" data-pulse="0"></div>
     <div class="energy-pulse" data-pulse="1"></div>
@@ -17,17 +18,13 @@
     <div class="energy-pulse" data-pulse="3"></div>
     <div class="energy-pulse" data-pulse="4"></div>
   </div>
-  
-  <!-- Transición -->
+
+  <!-- Subtítulo -->
+  <div class="splash-subtitle">Sistema Contable Bolivia</div>
+
+  <!-- Overlay de transición -->
   <div class="dashboard-transition" #dashboardTransition>
-    <div>Bienvenido al Sistema NUMIX</div>
+    <div class="transition-text">Bienvenido a NUMIX</div>
   </div>
 
-  <!-- Botón opcional -->
-  <button 
-    *ngIf="showStartButton" 
-    class="start-button" 
-    (click)="startAnimation()">
-    Iniciar Experiencia NUMIX
-  </button>
 </div>

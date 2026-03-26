@@ -1,375 +1,316 @@
-
 import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth';
+import {
+  ContabilidadService,
+  CuentaContable,
+  AsientoVista,
+  DetalleVista,
+} from '../contabilidad/contabilidad.service';
 
-// Declarar anime.js
 declare var anime: any;
-
-interface CuentaContable {
-  codigo: string;
-  nombre: string;
-  tipo: 'ACTIVO' | 'PASIVO' | 'PATRIMONIO' | 'INGRESO' | 'EGRESO';
-  naturaleza: 'DEUDORA' | 'ACREEDORA';
-  cuentaPadre?: string;
-  nivel: number;
-  activa: boolean;
-  saldo: number;
-}
-
-interface AsientoContable {
-  id: number;
-  fecha: string;
-  descripcion: string;
-  referencia: string;
-  detalles: DetalleAsiento[];
-  totalDebito: number;
-  totalCredito: number;
-  balanceado: boolean;
-  estado: 'BORRADOR' | 'CONFIRMADO' | 'ANULADO';
-}
-
-interface DetalleAsiento {
-  id: number;
-  codigoCuenta: string;
-  nombreCuenta: string;
-  descripcion: string;
-  debito: number;
-  credito: number;
-}
 
 @Component({
   selector: 'app-libro-mayor',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './libro-mayor.html',
-  styleUrls: ['./libro-mayor.css']
+  styleUrls: ['./libro-mayor.css'],
 })
 export class LibroMayorComponent implements OnInit, AfterViewInit {
   @ViewChild('container') container!: ElementRef;
 
-  // Estado de la vista
+  // ── Estado de la vista ──────────────────────────────────
   vistaActual: 'plan-cuentas' | 'asientos' | 'nuevo-asiento' = 'plan-cuentas';
-  
-  // Plan de Cuentas Boliviano (según normativa)
-  planCuentas: CuentaContable[] = [
-    // ACTIVOS
-    { codigo: '1', nombre: 'ACTIVOS', tipo: 'ACTIVO', naturaleza: 'DEUDORA', nivel: 1, activa: true, saldo: 0 },
-    { codigo: '11', nombre: 'ACTIVO CORRIENTE', tipo: 'ACTIVO', naturaleza: 'DEUDORA', cuentaPadre: '1', nivel: 2, activa: true, saldo: 0 },
-    { codigo: '1101', nombre: 'Caja y Bancos', tipo: 'ACTIVO', naturaleza: 'DEUDORA', cuentaPadre: '11', nivel: 3, activa: true, saldo: 45000.00 },
-    { codigo: '110101', nombre: 'Caja Moneda Nacional', tipo: 'ACTIVO', naturaleza: 'DEUDORA', cuentaPadre: '1101', nivel: 4, activa: true, saldo: 5000.00 },
-    { codigo: '110102', nombre: 'Banco Mercantil Santa Cruz', tipo: 'ACTIVO', naturaleza: 'DEUDORA', cuentaPadre: '1101', nivel: 4, activa: true, saldo: 40000.00 },
-    { codigo: '1102', nombre: 'Cuentas por Cobrar', tipo: 'ACTIVO', naturaleza: 'DEUDORA', cuentaPadre: '11', nivel: 3, activa: true, saldo: 25000.00 },
-    { codigo: '110201', nombre: 'Clientes', tipo: 'ACTIVO', naturaleza: 'DEUDORA', cuentaPadre: '1102', nivel: 4, activa: true, saldo: 25000.00 },
-    
-    // PASIVOS
-    { codigo: '2', nombre: 'PASIVOS', tipo: 'PASIVO', naturaleza: 'ACREEDORA', nivel: 1, activa: true, saldo: 0 },
-    { codigo: '21', nombre: 'PASIVO CORRIENTE', tipo: 'PASIVO', naturaleza: 'ACREEDORA', cuentaPadre: '2', nivel: 2, activa: true, saldo: 0 },
-    { codigo: '2101', nombre: 'Cuentas por Pagar', tipo: 'PASIVO', naturaleza: 'ACREEDORA', cuentaPadre: '21', nivel: 3, activa: true, saldo: 15000.00 },
-    { codigo: '210101', nombre: 'Proveedores', tipo: 'PASIVO', naturaleza: 'ACREEDORA', cuentaPadre: '2101', nivel: 4, activa: true, saldo: 15000.00 },
-    
-    // PATRIMONIO
-    { codigo: '3', nombre: 'PATRIMONIO', tipo: 'PATRIMONIO', naturaleza: 'ACREEDORA', nivel: 1, activa: true, saldo: 0 },
-    { codigo: '3101', nombre: 'Capital Social', tipo: 'PATRIMONIO', naturaleza: 'ACREEDORA', cuentaPadre: '3', nivel: 2, activa: true, saldo: 50000.00 },
-    { codigo: '3201', nombre: 'Resultados Acumulados', tipo: 'PATRIMONIO', naturaleza: 'ACREEDORA', cuentaPadre: '3', nivel: 2, activa: true, saldo: 5000.00 },
-    
-    // INGRESOS
-    { codigo: '4', nombre: 'INGRESOS', tipo: 'INGRESO', naturaleza: 'ACREEDORA', nivel: 1, activa: true, saldo: 0 },
-    { codigo: '4101', nombre: 'Ingresos por Servicios', tipo: 'INGRESO', naturaleza: 'ACREEDORA', cuentaPadre: '4', nivel: 2, activa: true, saldo: 35000.00 },
-    { codigo: '410101', nombre: 'Servicios Contables', tipo: 'INGRESO', naturaleza: 'ACREEDORA', cuentaPadre: '4101', nivel: 3, activa: true, saldo: 35000.00 },
-    
-    // EGRESOS
-    { codigo: '5', nombre: 'EGRESOS', tipo: 'EGRESO', naturaleza: 'DEUDORA', nivel: 1, activa: true, saldo: 0 },
-    { codigo: '5101', nombre: 'Gastos Operativos', tipo: 'EGRESO', naturaleza: 'DEUDORA', cuentaPadre: '5', nivel: 2, activa: true, saldo: 25000.00 },
-    { codigo: '510101', nombre: 'Sueldos y Salarios', tipo: 'EGRESO', naturaleza: 'DEUDORA', cuentaPadre: '5101', nivel: 3, activa: true, saldo: 15000.00 },
-    { codigo: '510102', nombre: 'Servicios Básicos', tipo: 'EGRESO', naturaleza: 'DEUDORA', cuentaPadre: '5101', nivel: 3, activa: true, saldo: 2500.00 },
-    { codigo: '510103', nombre: 'Material de Oficina', tipo: 'EGRESO', naturaleza: 'DEUDORA', cuentaPadre: '5101', nivel: 3, activa: true, saldo: 1500.00 }
-  ];
 
-  // Asientos contables
-  asientos: AsientoContable[] = [
-    {
-      id: 1,
-      fecha: '2024-09-01',
-      descripcion: 'Asiento de apertura',
-      referencia: 'AST001',
-      totalDebito: 70000,
-      totalCredito: 70000,
-      balanceado: true,
-      estado: 'CONFIRMADO',
-      detalles: [
-        { id: 1, codigoCuenta: '110101', nombreCuenta: 'Caja Moneda Nacional', descripcion: 'Apertura de caja', debito: 5000, credito: 0 },
-        { id: 2, codigoCuenta: '110102', nombreCuenta: 'Banco Mercantil Santa Cruz', descripcion: 'Apertura cuenta bancaria', debito: 40000, credito: 0 },
-        { id: 3, codigoCuenta: '110201', nombreCuenta: 'Clientes', descripcion: 'Saldos iniciales clientes', debito: 25000, credito: 0 },
-        { id: 4, codigoCuenta: '3101', nombreCuenta: 'Capital Social', descripcion: 'Capital inicial', debito: 0, credito: 50000 },
-        { id: 5, codigoCuenta: '3201', nombreCuenta: 'Resultados Acumulados', descripcion: 'Utilidades anteriores', debito: 0, credito: 5000 },
-        { id: 6, codigoCuenta: '210101', nombreCuenta: 'Proveedores', descripcion: 'Saldos iniciales proveedores', debito: 0, credito: 15000 }
-      ]
-    }
-  ];
-
-  // Formulario nuevo asiento
-  nuevoAsiento: AsientoContable = {
-    id: 0,
-    fecha: new Date().toISOString().split('T')[0],
-    descripcion: '',
-    referencia: '',
-    detalles: [],
-    totalDebito: 0,
-    totalCredito: 0,
-    balanceado: false,
-    estado: 'BORRADOR'
-  };
-
-  // Nuevo detalle
-  nuevoDetalle: DetalleAsiento = {
-    id: 0,
-    codigoCuenta: '',
-    nombreCuenta: '',
-    descripcion: '',
-    debito: 0,
-    credito: 0
-  };
-
-  // Filtros y búsqueda
-  busquedaCuenta = '';
-  filtroTipoCuenta = '';
+  // ── Datos ───────────────────────────────────────────────
+  planCuentas:     CuentaContable[] = [];
   cuentasFiltradas: CuentaContable[] = [];
+  asientos:        AsientoVista[]   = [];
+
+  // ── Filtros ─────────────────────────────────────────────
+  busquedaCuenta   = '';
+  filtroTipoCuenta = '';
+
+  // ── Estado de carga ─────────────────────────────────────
+  cargandoCuentas  = false;
+  cargandoAsientos = false;
+  guardando        = false;
+  errorMsg         = '';
+  successMsg       = '';
+
+  // ── Formulario nuevo asiento ────────────────────────────
+  nuevoAsiento = this.asientoVacio();
+  nuevoDetalle = this.detalleVacio();
 
   constructor(
     public authService: AuthService,
-    private router: Router
+    private router: Router,
+    private contabilidadService: ContabilidadService
   ) {}
+
+  get empresaId(): string {
+    return this.authService.empresaId;
+  }
+
+  get usuarioId(): string {
+    return this.authService.currentUserValue?.id || '';
+  }
+
+  // ══════════════════════════════════════════════════════
+  // LIFECYCLE
+  // ══════════════════════════════════════════════════════
 
   ngOnInit(): void {
     if (!this.authService.isLoggedIn) {
       this.router.navigate(['/login']);
       return;
     }
-
-    this.cuentasFiltradas = [...this.planCuentas];
-    console.log('📚 Módulo Libro Mayor iniciado');
+    this.cargarPlanCuentas();
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.startModuleAnimation();
-    }, 300);
+    setTimeout(() => this.startModuleAnimation(), 300);
   }
 
   startModuleAnimation(): void {
-    console.log('🎨 Animando módulo Libro Mayor...');
-
+    if (!this.container?.nativeElement) return;
     anime({
       targets: this.container.nativeElement,
-      opacity: [0, 1],
-      translateY: [30, 0],
-      duration: 800,
-      easing: 'easeOutCubic'
-    });
-
-    // Animar elementos de la interfaz
-    anime({
-      targets: '.module-header',
-      translateY: [-20, 0],
-      opacity: [0, 1],
-      duration: 600,
-      delay: 200,
-      easing: 'easeOutCubic'
-    });
-
-    anime({
-      targets: '.nav-tabs .tab',
-      scale: [0.9, 1],
-      opacity: [0, 1],
-      duration: 400,
-      delay: anime.stagger(100, {start: 400}),
-      easing: 'easeOutBack'
+      opacity: [0, 1], translateY: [30, 0],
+      duration: 800, easing: 'easeOutCubic',
     });
   }
 
-  // Navegación entre vistas
+  // ══════════════════════════════════════════════════════
+  // CARGA DE DATOS
+  // ══════════════════════════════════════════════════════
+
+  async cargarPlanCuentas(): Promise<void> {
+    if (!this.empresaId) return;
+    this.cargandoCuentas = true;
+    this.errorMsg = '';
+    try {
+      this.planCuentas     = await this.contabilidadService.getPlanCuentas(this.empresaId);
+      this.cuentasFiltradas = [...this.planCuentas];
+    } catch (err: any) {
+      this.errorMsg = 'Error cargando plan de cuentas: ' + (err.message || err);
+    } finally {
+      this.cargandoCuentas = false;
+    }
+  }
+
+  async cargarAsientos(): Promise<void> {
+    if (!this.empresaId) return;
+    this.cargandoAsientos = true;
+    this.errorMsg = '';
+    try {
+      this.asientos = await this.contabilidadService.getAsientos(this.empresaId);
+    } catch (err: any) {
+      this.errorMsg = 'Error cargando asientos: ' + (err.message || err);
+    } finally {
+      this.cargandoAsientos = false;
+    }
+  }
+
+  // ══════════════════════════════════════════════════════
+  // NAVEGACIÓN
+  // ══════════════════════════════════════════════════════
+
   cambiarVista(vista: 'plan-cuentas' | 'asientos' | 'nuevo-asiento'): void {
     this.vistaActual = vista;
-    
-    // Animación de cambio de vista
+    this.errorMsg    = '';
+    this.successMsg  = '';
+
+    if (vista === 'asientos' && this.asientos.length === 0) {
+      this.cargarAsientos();
+    }
+    if (vista === 'nuevo-asiento' && this.planCuentas.length === 0) {
+      this.cargarPlanCuentas();
+    }
+
     anime({
       targets: '.content-area',
-      opacity: [1, 0],
-      duration: 200,
-      complete: () => {
-        anime({
-          targets: '.content-area',
-          opacity: [0, 1],
-          duration: 300,
-          easing: 'easeOutCubic'
-        });
-      }
+      opacity: [0, 1], translateY: [10, 0],
+      duration: 400, easing: 'easeOutCubic',
     });
   }
 
-  // Gestión de Plan de Cuentas
+  // ══════════════════════════════════════════════════════
+  // PLAN DE CUENTAS — filtrado
+  // ══════════════════════════════════════════════════════
+
   filtrarCuentas(): void {
-    let cuentas = [...this.planCuentas];
-    
+    let lista = [...this.planCuentas];
+
     if (this.busquedaCuenta) {
-      cuentas = cuentas.filter(cuenta => 
-        cuenta.codigo.toLowerCase().includes(this.busquedaCuenta.toLowerCase()) ||
-        cuenta.nombre.toLowerCase().includes(this.busquedaCuenta.toLowerCase())
+      const q = this.busquedaCuenta.toLowerCase();
+      lista = lista.filter(c =>
+        c.codigo.toLowerCase().includes(q) ||
+        c.nombre.toLowerCase().includes(q)
       );
     }
-    
+
     if (this.filtroTipoCuenta) {
-      cuentas = cuentas.filter(cuenta => cuenta.tipo === this.filtroTipoCuenta);
+      lista = lista.filter(c => c.tipo === this.filtroTipoCuenta);
     }
-    
-    this.cuentasFiltradas = cuentas;
+
+    this.cuentasFiltradas = lista;
   }
 
-  // Gestión de Asientos Contables
+  // ══════════════════════════════════════════════════════
+  // NUEVO ASIENTO
+  // ══════════════════════════════════════════════════════
+
+  onCuentaSeleccionada(): void {
+    const cuenta = this.planCuentas.find(c => c.id === this.nuevoDetalle.codigoCuenta);
+    if (cuenta) {
+      this.nuevoDetalle.nombreCuenta = cuenta.nombre;
+    }
+  }
+
   agregarDetalle(): void {
-    if (this.nuevoDetalle.codigoCuenta && (this.nuevoDetalle.debito > 0 || this.nuevoDetalle.credito > 0)) {
-      const cuenta = this.planCuentas.find(c => c.codigo === this.nuevoDetalle.codigoCuenta);
-      if (cuenta) {
-        this.nuevoDetalle.nombreCuenta = cuenta.nombre;
-        this.nuevoDetalle.id = Date.now();
-        
-        this.nuevoAsiento.detalles.push({...this.nuevoDetalle});
-        this.calcularTotales();
-        
-        // Limpiar formulario
-        this.nuevoDetalle = {
-          id: 0,
-          codigoCuenta: '',
-          nombreCuenta: '',
-          descripcion: '',
-          debito: 0,
-          credito: 0
-        };
-
-        // Animación de agregado
-        anime({
-          targets: '.detalle-item:last-child',
-          scale: [0.8, 1],
-          opacity: [0, 1],
-          duration: 400,
-          easing: 'easeOutBack'
-        });
-      }
+    if (!this.nuevoDetalle.codigoCuenta) {
+      this.errorMsg = 'Seleccione una cuenta';
+      return;
     }
-  }
-
-  eliminarDetalle(index: number): void {
-    anime({
-      targets: `.detalle-item:nth-child(${index + 1})`,
-      scale: [1, 0],
-      opacity: [1, 0],
-      duration: 300,
-      easing: 'easeInBack',
-      complete: () => {
-        this.nuevoAsiento.detalles.splice(index, 1);
-        this.calcularTotales();
-      }
-    });
-  }
-
-  calcularTotales(): void {
-    this.nuevoAsiento.totalDebito = this.nuevoAsiento.detalles.reduce((total, detalle) => total + detalle.debito, 0);
-    this.nuevoAsiento.totalCredito = this.nuevoAsiento.detalles.reduce((total, detalle) => total + detalle.credito, 0);
-    this.nuevoAsiento.balanceado = this.nuevoAsiento.totalDebito === this.nuevoAsiento.totalCredito && this.nuevoAsiento.totalDebito > 0;
-  }
-
-  guardarAsiento(): void {
-    if (!this.nuevoAsiento.balanceado || !this.nuevoAsiento.descripcion) {
-      this.mostrarError('El asiento debe estar balanceado y tener descripción');
+    if (this.nuevoDetalle.debito === 0 && this.nuevoDetalle.credito === 0) {
+      this.errorMsg = 'Ingrese un monto en Débito o Crédito';
       return;
     }
 
-    this.nuevoAsiento.id = Date.now();
-    this.nuevoAsiento.referencia = `AST${String(this.asientos.length + 1).padStart(3, '0')}`;
-    this.nuevoAsiento.estado = 'CONFIRMADO';
+    const cuenta = this.planCuentas.find(c => c.id === this.nuevoDetalle.codigoCuenta);
+    this.nuevoAsiento.detalles.push({
+      codigoCuenta: cuenta?.codigo || '',
+      nombreCuenta: cuenta?.nombre || '',
+      descripcion:  this.nuevoDetalle.descripcion,
+      debito:       this.nuevoDetalle.debito,
+      credito:      this.nuevoDetalle.credito,
+      // Guardamos el id de la cuenta para el INSERT
+      id: this.nuevoDetalle.codigoCuenta,
+    });
 
-    this.asientos.push({...this.nuevoAsiento});
-    
-    // Actualizar saldos de cuentas
-    this.actualizarSaldos();
-    
-    console.log('💾 Asiento guardado:', this.nuevoAsiento);
-    
-    // Limpiar formulario
-    this.limpiarFormulario();
-    
-    // Volver a vista de asientos
-    this.vistaActual = 'asientos';
-
-    // Animación de éxito
-    this.mostrarExito('Asiento guardado correctamente');
+    this.calcularTotales();
+    this.nuevoDetalle = this.detalleVacio();
+    this.errorMsg     = '';
   }
 
-  actualizarSaldos(): void {
-    // Actualizar saldos de cuentas según el nuevo asiento
-    this.nuevoAsiento.detalles.forEach(detalle => {
-      const cuenta = this.planCuentas.find(c => c.codigo === detalle.codigoCuenta);
-      if (cuenta) {
-        if (cuenta.naturaleza === 'DEUDORA') {
-          cuenta.saldo += (detalle.debito - detalle.credito);
-        } else {
-          cuenta.saldo += (detalle.credito - detalle.debito);
-        }
-      }
-    });
+  eliminarDetalle(index: number): void {
+    this.nuevoAsiento.detalles.splice(index, 1);
+    this.calcularTotales();
+  }
+
+  calcularTotales(): void {
+    this.nuevoAsiento.totalDebito  = this.nuevoAsiento.detalles.reduce((s, d) => s + d.debito,  0);
+    this.nuevoAsiento.totalCredito = this.nuevoAsiento.detalles.reduce((s, d) => s + d.credito, 0);
+    this.nuevoAsiento.balanceado   =
+      this.nuevoAsiento.totalDebito > 0 &&
+      Math.abs(this.nuevoAsiento.totalDebito - this.nuevoAsiento.totalCredito) < 0.01;
+  }
+
+  async guardarAsiento(): Promise<void> {
+    if (!this.nuevoAsiento.balanceado) {
+      this.errorMsg = 'El asiento debe estar balanceado (Débito = Crédito)';
+      return;
+    }
+    if (!this.nuevoAsiento.descripcion.trim()) {
+      this.errorMsg = 'La descripción es obligatoria';
+      return;
+    }
+
+    this.guardando = true;
+    this.errorMsg  = '';
+
+    try {
+      // Mapear detalles: el campo 'id' guardamos temporalmente el cuenta_id
+      const detalles = this.nuevoAsiento.detalles.map((d, i) => ({
+        cuenta_id: d.id || '',    // id de plan_cuentas
+        debe:      d.debito,
+        haber:     d.credito,
+        glosa:     d.descripcion || this.nuevoAsiento.descripcion,
+        orden:     i + 1,
+      }));
+
+      await this.contabilidadService.createAsiento(
+        this.empresaId,
+        this.usuarioId,
+        {
+          fecha:       this.nuevoAsiento.fecha,
+          descripcion: this.nuevoAsiento.descripcion,
+        },
+        detalles
+      );
+
+      this.successMsg = '✅ Asiento guardado correctamente';
+      this.limpiarFormulario();
+      await this.cargarAsientos();
+      this.vistaActual = 'asientos';
+
+    } catch (err: any) {
+      this.errorMsg = '❌ Error guardando asiento: ' + (err.message || err);
+    } finally {
+      this.guardando = false;
+    }
   }
 
   limpiarFormulario(): void {
-    this.nuevoAsiento = {
-      id: 0,
-      fecha: new Date().toISOString().split('T')[0],
-      descripcion: '',
-      referencia: '',
-      detalles: [],
-      totalDebito: 0,
-      totalCredito: 0,
-      balanceado: false,
-      estado: 'BORRADOR'
-    };
+    this.nuevoAsiento = this.asientoVacio();
+    this.nuevoDetalle = this.detalleVacio();
+    this.errorMsg     = '';
   }
 
-  // Funciones utilitarias
+  async anularAsiento(asiento: AsientoVista): Promise<void> {
+    if (!confirm(`¿Anular el asiento ${asiento.referencia}?`)) return;
+    try {
+      await this.contabilidadService.anularAsiento(asiento.id);
+      this.successMsg = '✅ Asiento anulado';
+      await this.cargarAsientos();
+    } catch (err: any) {
+      this.errorMsg = '❌ Error anulando asiento: ' + (err.message || err);
+    }
+  }
+
+  // ══════════════════════════════════════════════════════
+  // UTILIDADES
+  // ══════════════════════════════════════════════════════
+
   formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('es-BO', {
-      style: 'currency',
-      currency: 'BOB'
-    }).format(amount);
+    return new Intl.NumberFormat('es-BO', { style: 'currency', currency: 'BOB' }).format(amount || 0);
   }
 
   getIndentStyle(nivel: number): string {
     return `${(nivel - 1) * 20}px`;
   }
 
-  getCuentasPorNivel(nivel: number): CuentaContable[] {
-    return this.cuentasFiltradas.filter(cuenta => cuenta.nivel === nivel);
-  }
-
-  onCuentaSeleccionada(): void {
-    const cuenta = this.planCuentas.find(c => c.codigo === this.nuevoDetalle.codigoCuenta);
-    if (cuenta) {
-      this.nuevoDetalle.nombreCuenta = cuenta.nombre;
-    }
-  }
-
-  mostrarError(mensaje: string): void {
-    console.error('❌', mensaje);
-    // Implementar toast o modal de error
-  }
-
-  mostrarExito(mensaje: string): void {
-    console.log('✅', mensaje);
-    // Implementar toast o modal de éxito
-  }
-
   volverDashboard(): void {
     this.router.navigate(['/dashboard']);
+  }
+
+  // Sólo cuentas que aceptan movimientos para el selector
+  get cuentasParaAsiento(): CuentaContable[] {
+    return this.planCuentas.filter(c => c.acepta_movimientos && c.activo);
+  }
+
+  private asientoVacio() {
+    return {
+      fecha:        new Date().toISOString().split('T')[0],
+      descripcion:  '',
+      detalles:     [] as (DetalleVista & { id?: string })[],
+      totalDebito:  0,
+      totalCredito: 0,
+      balanceado:   false,
+    };
+  }
+
+  private detalleVacio() {
+    return {
+      codigoCuenta: '',  // aquí guardamos el UUID de plan_cuentas
+      nombreCuenta: '',
+      descripcion:  '',
+      debito:       0,
+      credito:      0,
+    };
   }
 }

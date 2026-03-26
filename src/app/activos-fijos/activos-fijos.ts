@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivosFijosService, ActivoFijo, TASAS_DEPRECIACION } from './activos-fijos.service';
+import { Router } from '@angular/router'; 
 
 @Component({
   selector: 'app-activos-fijos',
@@ -44,15 +45,36 @@ export class ActivosFijosComponent implements OnInit {
   get totalValorLibros()     { return this.activos.reduce((s, a) => s + (a.valor_libros_actual || 0), 0); }
   get totalDepreciacionAcum(){ return this.activos.reduce((s, a) => s + (a.depreciacion_acumulada || 0), 0); }
 
-  constructor(private activosService: ActivosFijosService) {}
+ constructor(
+  private router: Router,  // ← ✅ AGREGAR ESTE PARÁMETRO PRIMERO
+  private activosService: ActivosFijosService
+) {}
 
   ngOnInit() { this.cargarActivos(); }
 
   async cargarActivos() {
-    try {
-      this.activos = await this.activosService.getActivos(this.empresaId);
-    } catch (err) { console.error(err); }
-  }
+  console.log('🔍 [DEBUG] Cargando activos para empresa_id:', this.empresaId);
+  
+  try {
+    const data = await this.activosService.getActivos(this.empresaId);
+    
+    console.log('✅ [DEBUG] Datos recibidos:', {
+      cantidad: data?.length,
+      primerRegistro: data?.[0],
+      raw: data
+    });
+    
+    this.activos = data;
+  } catch (err: any) {
+  console.error('❌ [DEBUG] Error COMPLETO en cargarActivos:', {
+    message: err?.message,
+    details: err?.details,
+    hint: err?.hint,
+    code: err?.code,
+    fullError: JSON.stringify(err, Object.getOwnPropertyNames(err), 2)
+  });
+}
+}
 
   formVacio(): Partial<ActivoFijo> {
     return {
@@ -128,5 +150,8 @@ export class ActivosFijosComponent implements OnInit {
   getPorcentajeDepreciado(activo: ActivoFijo): number {
     if (!activo.costo_historico) return 0;
     return Math.round(((activo.depreciacion_acumulada || 0) / activo.costo_historico) * 100);
+  }
+  volverDashboard(): void {
+    this.router.navigate(['/dashboard']);
   }
 }

@@ -1,8 +1,11 @@
 <div class="nominas-container">
-
   <!-- Header -->
   <div class="page-header">
     <div class="header-left">
+      <button class="back-btn" (click)="volverDashboard()">
+        <span class="back-icon">←</span>
+        Dashboard
+      </button>
       <div class="header-icon">👥</div>
       <div>
         <h1>Nóminas</h1>
@@ -10,16 +13,26 @@
       </div>
     </div>
     <div class="header-actions">
+      <button class="btn-secondary" (click)="exportarPDF()">📄 PDF</button>
+      <button class="btn-secondary" (click)="exportarExcel()">📊 Excel</button>
       <button class="btn-primary" (click)="abrirModalEmpleado()">+ Nuevo Empleado</button>
     </div>
   </div>
 
   <!-- Tabs -->
   <div class="tabs">
-    <button class="tab" [class.active]="tabActivo === 'planillas'" (click)="tabActivo = 'planillas'">
+    <button
+      class="tab"
+      [class.active]="tabActivo === 'planillas'"
+      (click)="tabActivo = 'planillas'"
+    >
       📋 Planillas
     </button>
-    <button class="tab" [class.active]="tabActivo === 'empleados'" (click)="tabActivo = 'empleados'">
+    <button
+      class="tab"
+      [class.active]="tabActivo === 'empleados'"
+      (click)="tabActivo = 'empleados'"
+    >
       👤 Empleados
     </button>
     <button class="tab" [class.active]="tabActivo === 'nueva'" (click)="tabActivo = 'nueva'">
@@ -43,15 +56,15 @@
         <div class="planilla-stats">
           <div class="stat">
             <span class="stat-label">Total Haberes</span>
-            <span class="stat-value">Bs {{ p.total_haberes | number:'1.2-2' }}</span>
+            <span class="stat-value">Bs {{ p.total_haberes | number: '1.2-2' }}</span>
           </div>
           <div class="stat">
             <span class="stat-label">Líquido Pagable</span>
-            <span class="stat-value green">Bs {{ p.total_liquido | number:'1.2-2' }}</span>
+            <span class="stat-value green">Bs {{ p.total_liquido | number: '1.2-2' }}</span>
           </div>
           <div class="stat">
             <span class="stat-label">Aporte Patronal</span>
-            <span class="stat-value amber">Bs {{ p.total_aporte_patronal | number:'1.2-2' }}</span>
+            <span class="stat-value amber">Bs {{ p.total_aporte_patronal | number: '1.2-2' }}</span>
           </div>
         </div>
       </div>
@@ -61,7 +74,12 @@
   <!-- TAB: EMPLEADOS -->
   <div class="tab-content" *ngIf="tabActivo === 'empleados'">
     <div class="search-bar">
-      <input type="text" placeholder="Buscar empleado..." [(ngModel)]="busqueda" class="search-input">
+      <input
+        type="text"
+        placeholder="Buscar empleado..."
+        [(ngModel)]="busqueda"
+        class="search-input"
+      />
     </div>
     <div class="table-wrapper">
       <table class="data-table">
@@ -80,12 +98,16 @@
         <tbody>
           <tr *ngFor="let e of empleadosFiltrados">
             <td>{{ e.ci }}</td>
-            <td><strong>{{ e.nombre_completo }}</strong></td>
+            <td>
+              <strong>{{ e.nombre_completo }}</strong>
+            </td>
             <td>{{ e.cargo }}</td>
             <td>{{ e.departamento }}</td>
-            <td>Bs {{ e.salario_base | number:'1.2-2' }}</td>
+            <td>Bs {{ e.salario_base | number: '1.2-2' }}</td>
             <td>{{ e.afp || '—' }}</td>
-            <td><span class="badge" [class]="'badge-' + e.estado">{{ e.estado }}</span></td>
+            <td>
+              <span class="badge" [class]="'badge-' + e.estado">{{ e.estado }}</span>
+            </td>
             <td>
               <button class="btn-icon" (click)="editarEmpleado(e)">✏️</button>
               <button class="btn-icon" (click)="verEmpleado(e)">👁️</button>
@@ -108,12 +130,17 @@
           <div class="form-group">
             <label>Mes</label>
             <select [(ngModel)]="nuevaPlanilla.mes" class="form-control">
-              <option *ngFor="let m of meses; let i = index" [value]="i+1">{{ m }}</option>
+              <option *ngFor="let m of meses; let i = index" [value]="i + 1">{{ m }}</option>
             </select>
           </div>
           <div class="form-group">
             <label>Año</label>
-            <input type="number" [(ngModel)]="nuevaPlanilla.anio" class="form-control" [value]="anioActual">
+            <input
+              type="number"
+              [(ngModel)]="nuevaPlanilla.anio"
+              class="form-control"
+              [value]="anioActual"
+            />
           </div>
         </div>
         <button class="btn-primary" (click)="calcularPlanilla()" [disabled]="calculando">
@@ -148,28 +175,50 @@
             </thead>
             <tbody>
               <tr *ngFor="let d of detallesCalculados; let i = index">
-                <td><strong>{{ empleados[i]?.nombre_completo }}</strong></td>
                 <td>
-                  <input type="number" [(ngModel)]="d.dias_trabajados" min="1" max="30"
-                    class="input-dias" (change)="recalcularFila(i)">
+                  <strong>{{ empleados[i]?.nombre_completo }}</strong>
                 </td>
-                <td>Bs {{ d.total_ganado | number:'1.2-2' }}</td>
-                <td class="red">Bs {{ d.afp_laboral | number:'1.2-2' }}</td>
-                <td class="red">Bs {{ d.caja_salud_laboral | number:'1.2-2' }}</td>
-                <td class="red">Bs {{ d.rc_iva | number:'1.2-2' }}</td>
-                <td class="red"><strong>Bs {{ d.total_descuentos | number:'1.2-2' }}</strong></td>
-                <td class="green"><strong>Bs {{ d.liquido_pagable | number:'1.2-2' }}</strong></td>
-                <td class="amber">Bs {{ d.total_aporte_patronal | number:'1.2-2' }}</td>
+                <td>
+                  <input
+                    type="number"
+                    [(ngModel)]="d.dias_trabajados"
+                    min="1"
+                    max="30"
+                    class="input-dias"
+                    (change)="recalcularFila(i)"
+                  />
+                </td>
+                <td>Bs {{ d.total_ganado | number: '1.2-2' }}</td>
+                <td class="red">Bs {{ d.afp_laboral | number: '1.2-2' }}</td>
+                <td class="red">Bs {{ d.caja_salud_laboral | number: '1.2-2' }}</td>
+                <td class="red">Bs {{ d.rc_iva | number: '1.2-2' }}</td>
+                <td class="red">
+                  <strong>Bs {{ d.total_descuentos | number: '1.2-2' }}</strong>
+                </td>
+                <td class="green">
+                  <strong>Bs {{ d.liquido_pagable | number: '1.2-2' }}</strong>
+                </td>
+                <td class="amber">Bs {{ d.total_aporte_patronal | number: '1.2-2' }}</td>
               </tr>
             </tbody>
             <tfoot>
               <tr class="totals-row">
                 <td colspan="2"><strong>TOTALES</strong></td>
-                <td><strong>Bs {{ totalGanado | number:'1.2-2' }}</strong></td>
-                <td></td><td></td><td></td>
-                <td><strong>Bs {{ totalDescuentos | number:'1.2-2' }}</strong></td>
-                <td class="green"><strong>Bs {{ totalLiquido | number:'1.2-2' }}</strong></td>
-                <td class="amber"><strong>Bs {{ totalPatronal | number:'1.2-2' }}</strong></td>
+                <td>
+                  <strong>Bs {{ totalGanado | number: '1.2-2' }}</strong>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                  <strong>Bs {{ totalDescuentos | number: '1.2-2' }}</strong>
+                </td>
+                <td class="green">
+                  <strong>Bs {{ totalLiquido | number: '1.2-2' }}</strong>
+                </td>
+                <td class="amber">
+                  <strong>Bs {{ totalPatronal | number: '1.2-2' }}</strong>
+                </td>
               </tr>
             </tfoot>
           </table>
@@ -195,27 +244,32 @@
         <div class="form-grid">
           <div class="form-group">
             <label>CI *</label>
-            <input type="text" [(ngModel)]="empleadoForm.ci" class="form-control" placeholder="12345678">
+            <input
+              type="text"
+              [(ngModel)]="empleadoForm.ci"
+              class="form-control"
+              placeholder="12345678"
+            />
           </div>
           <div class="form-group">
             <label>Nombre Completo *</label>
-            <input type="text" [(ngModel)]="empleadoForm.nombre_completo" class="form-control">
+            <input type="text" [(ngModel)]="empleadoForm.nombre_completo" class="form-control" />
           </div>
           <div class="form-group">
             <label>Cargo</label>
-            <input type="text" [(ngModel)]="empleadoForm.cargo" class="form-control">
+            <input type="text" [(ngModel)]="empleadoForm.cargo" class="form-control" />
           </div>
           <div class="form-group">
             <label>Departamento</label>
-            <input type="text" [(ngModel)]="empleadoForm.departamento" class="form-control">
+            <input type="text" [(ngModel)]="empleadoForm.departamento" class="form-control" />
           </div>
           <div class="form-group">
             <label>Fecha de Ingreso *</label>
-            <input type="date" [(ngModel)]="empleadoForm.fecha_ingreso" class="form-control">
+            <input type="date" [(ngModel)]="empleadoForm.fecha_ingreso" class="form-control" />
           </div>
           <div class="form-group">
             <label>Salario Base (Bs) *</label>
-            <input type="number" [(ngModel)]="empleadoForm.salario_base" class="form-control">
+            <input type="number" [(ngModel)]="empleadoForm.salario_base" class="form-control" />
           </div>
           <div class="form-group">
             <label>AFP</label>
@@ -227,7 +281,7 @@
           </div>
           <div class="form-group">
             <label>Nro. AFP</label>
-            <input type="text" [(ngModel)]="empleadoForm.numero_afp" class="form-control">
+            <input type="text" [(ngModel)]="empleadoForm.numero_afp" class="form-control" />
           </div>
           <div class="form-group">
             <label>Caja de Salud</label>
@@ -241,11 +295,11 @@
           </div>
           <div class="form-group">
             <label>Email</label>
-            <input type="email" [(ngModel)]="empleadoForm.email" class="form-control">
+            <input type="email" [(ngModel)]="empleadoForm.email" class="form-control" />
           </div>
           <div class="form-group">
             <label>Teléfono</label>
-            <input type="tel" [(ngModel)]="empleadoForm.telefono" class="form-control">
+            <input type="tel" [(ngModel)]="empleadoForm.telefono" class="form-control" />
           </div>
           <div class="form-group">
             <label>Estado</label>
@@ -265,5 +319,4 @@
       </div>
     </div>
   </div>
-
 </div>

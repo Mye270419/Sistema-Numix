@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuditoriaService, FiltrosAuditoria } from './auditoria.service';
+import { Router } from '@angular/router'; 
 
 @Component({
   selector: 'app-auditoria',
@@ -31,8 +32,12 @@ export class AuditoriaComponent implements OnInit {
   operacionesDisponibles: string[] = [];
 
   get totalPaginas() { return Math.ceil(this.totalLogs / this.porPagina); }
+  
+  constructor(
+    private router: Router,
+    private auditoriaService: AuditoriaService
+  ){}
 
-  constructor(private auditoriaService: AuditoriaService) {}
 
   ngOnInit() {
     this.tablasDisponibles  = this.auditoriaService.getTablasDisponibles();
@@ -112,5 +117,8 @@ export class AuditoriaComponent implements OnInit {
     const anterior = JSON.stringify(log.datos_anteriores, null, 2);
     const nuevo    = JSON.stringify(log.datos_nuevos, null, 2);
     alert(`ANTES:\n${anterior}\n\nDESPUÉS:\n${nuevo}`);
+  }
+  volverDashboard(): void {
+    this.router.navigate(['/dashboard']);
   }
 }

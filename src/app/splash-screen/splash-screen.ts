@@ -2,224 +2,181 @@ import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angula
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
-// Solución definitiva para anime.js
 declare var anime: any;
 
 @Component({
   selector: 'app-splash-screen',
   standalone: true,
-  imports: [CommonModule],  // ✅ Agregar esto
+  imports: [CommonModule],
   templateUrl: './splash-screen.html',
   styleUrls: ['./splash-screen.css']
 })
-
-
-
-
 export class SplashScreenComponent implements OnInit, AfterViewInit {
-  @ViewChild('splashContainer') splashContainer!: ElementRef;
-  @ViewChild('particlesContainer') particlesContainer!: ElementRef;
-  @ViewChild('numixContainer') numixContainer!: ElementRef;
+  @ViewChild('splashContainer')     splashContainer!:     ElementRef;
+  @ViewChild('particlesContainer')  particlesContainer!:  ElementRef;
+  @ViewChild('numixContainer')      numixContainer!:      ElementRef;
   @ViewChild('dashboardTransition') dashboardTransition!: ElementRef;
 
-  showStartButton = true;
+  showStartButton = false;
 
   constructor(private router: Router) {}
 
-  ngOnInit(): void {
-    console.log('🔥 NUMIX Splash Screen iniciado');
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    // Auto-iniciar después de 2 segundos
-    setTimeout(() => {
-      this.startAnimation();
-    }, 2000);
+    setTimeout(() => this.startAnimation(), 500);
   }
 
+  // ── Partículas de fondo (ambientales) ─────────────────
   createParticles(): void {
     const container = this.particlesContainer.nativeElement;
-    const particleCount = 50;
-    
-    for (let i = 0; i < particleCount; i++) {
-      const particle = document.createElement('div');
-      particle.className = 'particle';
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.top = Math.random() * 100 + '%';
-      container.appendChild(particle);
+
+    for (let i = 0; i < 40; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top  = Math.random() * 100 + '%';
+      container.appendChild(p);
     }
-    
+
     anime({
-      targets: '.particle',
-      opacity: [0, 0.6, 0],
-      translateY: [
-        () => anime.random(-50, 50),
-        () => anime.random(-100, 100)
-      ],
-      translateX: [
-        () => anime.random(-30, 30),
-        () => anime.random(-60, 60)
-      ],
-      scale: [0.5, 1, 0.5],
-      duration: () => anime.random(3000, 6000),
-      delay: () => anime.random(0, 3000),
-      loop: true,
-      easing: 'easeInOutSine'
+      targets:    '.particle',
+      opacity:    [0, 0.4, 0],
+      translateY: [() => anime.random(-40, 40),  () => anime.random(-80, 80)],
+      translateX: [() => anime.random(-30, 30),  () => anime.random(-60, 60)],
+      scale:      [0.5, 1, 0.5],
+      duration:   () => anime.random(4000, 8000),
+      delay:      () => anime.random(0, 3000),
+      loop:       true,
+      easing:     'easeInOutSine'
     });
   }
 
-  positionElements(): void {
-    const letters = this.numixContainer.nativeElement.querySelectorAll('.numix-letter');
-    const pulses = this.numixContainer.nativeElement.querySelectorAll('.energy-pulse');
-    
-    letters.forEach((letter: HTMLElement, index: number) => {
-      if (pulses[index]) {
-        const rect = letter.getBoundingClientRect();
-        const containerRect = letter.parentElement!.getBoundingClientRect();
-        
-        pulses[index].style.left = (rect.left - containerRect.left + rect.width / 2) + 'px';
-        pulses[index].style.top = (rect.top - containerRect.top + rect.height / 2) + 'px';
-      }
-    });
+  // ── Partículas que explotan junto a cada letra ─────────
+  explodirEnLetra(letraEl: HTMLElement): void {
+    const container  = this.numixContainer.nativeElement;
+    const rect       = letraEl.getBoundingClientRect();
+    const parentRect = container.getBoundingClientRect();
+
+    const cx = rect.left - parentRect.left + rect.width  / 2;
+    const cy = rect.top  - parentRect.top  + rect.height / 2;
+
+    for (let i = 0; i < 10; i++) {
+      const p = document.createElement('div');
+      p.style.cssText = `
+        position: absolute;
+        left: ${cx}px;
+        top:  ${cy}px;
+        width: 4px; height: 4px;
+        border-radius: 50%;
+        background: rgba(180, 200, 255, 0.9);
+        pointer-events: none;
+        z-index: 20;
+      `;
+      container.appendChild(p);
+
+      anime({
+        targets:    p,
+        translateX: anime.random(-80, 80),
+        translateY: anime.random(-70, 70),
+        opacity:    [1, 0],
+        scale:      [1, 0],
+        duration:   900,
+        easing:     'easeOutCubic',
+        complete:   () => p.remove()
+      });
+    }
   }
 
+  // ── Animación principal ────────────────────────────────
   startAnimation(): void {
-    console.log('🎆 ¡Iniciando animación épica!');
-    
-    this.showStartButton = false;
     this.createParticles();
-    
-    setTimeout(() => {
-      this.positionElements();
-    }, 100);
 
-    // Fase 1: Aparición dramática
+    // Subtítulo aparece suavemente
     anime({
-      targets: '.numix-letter',
-      opacity: [0, 0.15],
-      scale: [0, 1.8],
-      duration: 800,
-      delay: anime.stagger(200),
-      easing: 'easeOutCubic'
-    }).finished.then(() => {
-      
-      // Fase 2: Iluminación secuencial
-      const letters = this.numixContainer.nativeElement.querySelectorAll('.numix-letter');
-      
-      letters.forEach((letter: HTMLElement, index: number) => {
-        setTimeout(() => {
-          console.log(`💡 Iluminando: ${letter.textContent}`);
-          
-          // Iluminar letra
+      targets:    '.splash-subtitle',
+      opacity:    [0, 1],
+      translateY: [10, 0],
+      duration:   800,
+      delay:      400,
+      easing:     'easeOutCubic'
+    });
+
+    // Letras entran UNA POR UNA — más lentas
+    const letters = document.querySelectorAll('.numix-letter');
+
+    letters.forEach((letra, index) => {
+      const letraEl = letra as HTMLElement;
+      const delay   = 300 + index * 220;
+
+      anime({
+        targets:    letraEl,
+        opacity:    [0, 1],
+        scale:      [0.5, 1],
+        translateY: [40, 0],
+        duration:   800,
+        delay:      delay,
+        easing:     'easeOutBack',
+        complete:   () => {
+          // Partículas explotan JUSTO cuando la letra termina de aparecer
+          this.explodirEnLetra(letraEl);
+
           anime({
-            targets: letter,
-            color: ['#1a1a1a', '#ffffff'],
-            textShadow: [
-              '0 0 0px rgba(255,255,255,0)',
-              '0 0 40px rgba(255,255,255,0.9), 0 0 80px rgba(255,255,255,0.5)'
-            ],
-            duration: 500,
-            easing: 'easeOutQuart'
+            targets:  letraEl,
+            opacity:  [1, 0.7, 1],
+            duration: 600,
+            easing:   'easeInOutSine'
           });
-          
-          // Pulso de energía
-          const pulse = this.numixContainer.nativeElement.querySelector(`[data-pulse="${index}"]`);
-          if (pulse) {
-            anime({
-              targets: pulse,
-              opacity: [0, 0.8, 0],
-              scale: [0.5, 3, 4],
-              duration: 1000,
-              easing: 'easeOutCubic'
-            });
-          }
-          
-          // Efectos especiales para la X
-          if (index === 4) {
-            console.log('🎇 ¡EFECTOS ESPECIALES PARA LA X!');
-            setTimeout(() => {
-              // Explosión de partículas
-              for (let i = 0; i < 20; i++) {
-                const specialParticle = document.createElement('div');
-                specialParticle.className = 'particle';
-                specialParticle.style.position = 'absolute';
-                specialParticle.style.left = '50%';
-                specialParticle.style.top = '50%';
-                specialParticle.style.width = '4px';
-                specialParticle.style.height = '4px';
-                specialParticle.style.background = 'rgba(255,255,255,0.9)';
-                this.numixContainer.nativeElement.appendChild(specialParticle);
-                
-                anime({
-                  targets: specialParticle,
-                  translateX: anime.random(-200, 200),
-                  translateY: anime.random(-200, 200),
-                  opacity: [1, 0],
-                  scale: [1, 0],
-                  duration: 1500,
-                  easing: 'easeOutCubic',
-                  complete: () => specialParticle.remove()
-                });
-              }
-              
-              // Brillo final
-              setTimeout(() => {
-                anime({
-                  targets: '.numix-letter',
-                  textShadow: [
-                    '0 0 40px rgba(255,255,255,0.9), 0 0 80px rgba(255,255,255,0.5)',
-                    '0 0 60px rgba(255,255,255,1), 0 0 120px rgba(255,255,255,0.8), 0 0 200px rgba(255,255,255,0.4)'
-                  ],
-                  duration: 800,
-                  direction: 'alternate',
-                  easing: 'easeInOutSine'
-                }).finished.then(() => {
-                  
-                  // Asentamiento elegante
-                  anime({
-                    targets: '.numix-letter',
-                    scale: [1.8, 1],
-                    textShadow: [
-                      '0 0 60px rgba(255,255,255,1), 0 0 120px rgba(255,255,255,0.8)',
-                      '0 0 20px rgba(255,255,255,0.6)'
-                    ],
-                    duration: 1000,
-                    easing: 'easeOutCubic'
-                  }).finished.then(() => {
-                    
-                    // Transición al dashboard
-                    setTimeout(() => {
-                      this.transitionToDashboard();
-                    }, 1500);
-                  });
-                });
-              }, 300);
-            }, 400);
-          }
-        }, index < 4 ? index * 150 : (index * 150) + 300); // Timing especial para X
+        }
       });
     });
+
+    // Tiempo total: 300 + (4 letras * 220ms) + 800ms animacion = ~1980ms
+    const tiempoEntrada = 300 + (letters.length - 1) * 220 + 800;
+
+    // Brillo final sobre todas las letras juntas
+    setTimeout(() => {
+      anime({
+        targets:  '.numix-letter',
+        scale:    [1, 1.04, 1],
+        duration: 600,
+        delay:    anime.stagger(60),
+        easing:   'easeInOutSine'
+      });
+    }, tiempoEntrada);
+
+    // Pulsos de energía
+    setTimeout(() => {
+      anime({
+        targets:  '.energy-pulse',
+        opacity:  [0, 0.5, 0],
+        scale:    [0.5, 3],
+        duration: 1200,
+        delay:    anime.stagger(150),
+        easing:   'easeOutCubic'
+      });
+    }, tiempoEntrada + 200);
+
+    // Transición al login
+    setTimeout(() => this.transitionToLogin(), tiempoEntrada + 1800);
   }
 
-  transitionToDashboard(): void {
-    console.log('🚀 Transicionando al dashboard...');
-    
+  // ── Transición al login ────────────────────────────────
+  transitionToLogin(): void {
     anime({
-      targets: this.splashContainer.nativeElement,
-      opacity: [1, 0],
-      duration: 1000,
-      easing: 'easeInCubic',
-      complete: () => {
-        // Aquí irá la navegación al dashboard
-       this.router.navigate(['/login']);
-      }
+      targets:  this.splashContainer.nativeElement,
+      opacity:  [1, 0],
+      scale:    [1, 1.03],
+      duration: 800,
+      easing:   'easeInCubic',
+      complete: () => this.router.navigate(['/login'])
     });
-    
+
     anime({
-      targets: this.dashboardTransition.nativeElement,
-      opacity: [0, 1],
-      duration: 1000,
-      easing: 'easeOutCubic'
+      targets:  this.dashboardTransition.nativeElement,
+      opacity:  [0, 1],
+      duration: 600,
+      easing:   'easeOutCubic'
     });
   }
 }

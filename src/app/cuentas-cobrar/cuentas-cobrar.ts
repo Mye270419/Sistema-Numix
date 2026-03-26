@@ -7,8 +7,6 @@ import { AuthService } from '../auth';
 // Declarar anime.js
 declare var anime: any;
 
-
-
 interface Tercero {
   id: number;
   tipo: 'CLIENTE' | 'PROVEEDOR';
@@ -54,7 +52,6 @@ interface PagoCobro {
   imports: [CommonModule, FormsModule],
   templateUrl: './cuentas-cobrar.html',
   styleUrls: ['./cuentas-cobrar.css']
-  
 })
 export class CuentasCobrarComponent implements OnInit, AfterViewInit {
   @ViewChild('container') container!: ElementRef;
@@ -122,12 +119,12 @@ export class CuentasCobrarComponent implements OnInit, AfterViewInit {
     }
   ];
 
-  // Nuevo pago
-  nuevoPago: PagoCobro = this.inicializarNuevoPago();
+  // ✅ CORREGIDO: Solo declaración, sin inicialización directa
+  nuevoPago!: PagoCobro;
   documentoSeleccionado: DocumentoPorCobrar | null = null;
 
-  // Nuevo cliente
-  nuevoCliente: Tercero = this.inicializarNuevoCliente();
+  // ✅ CORREGIDO: Solo declaración, sin inicialización directa
+  nuevoCliente!: Tercero;
 
   // Filtros
   filtroEstado = '';
@@ -148,10 +145,15 @@ export class CuentasCobrarComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
+    // Validar autenticación primero
     if (!this.authService.isLoggedIn) {
       this.router.navigate(['/login']);
       return;
     }
+
+    // ✅ CORREGIDO: Inicializar después de que authService esté disponible
+    this.nuevoPago = this.inicializarNuevoPago();
+    this.nuevoCliente = this.inicializarNuevoCliente();
 
     this.calcularDiasVencimiento();
     this.actualizarEstados();
@@ -289,7 +291,8 @@ export class CuentasCobrarComponent implements OnInit, AfterViewInit {
       montoPago: 0,
       metodoPago: 'EFECTIVO',
       observaciones: '',
-      registradoPor: this.authService.currentUserValue?.fullName || 'Usuario'
+      // ✅ CORREGIDO: Encadenamiento opcional más seguro
+      registradoPor: this.authService?.currentUserValue?.fullName || 'Usuario'
     };
   }
 
@@ -322,7 +325,7 @@ export class CuentasCobrarComponent implements OnInit, AfterViewInit {
     console.log('💰 Pago registrado:', this.nuevoPago);
     this.mostrarExito(`Pago de ${this.formatCurrency(this.nuevoPago.montoPago)} registrado correctamente`);
 
-    // Limpiar formulario
+    // ✅ CORREGIDO: Reinicializar después de registrar
     this.nuevoPago = this.inicializarNuevoPago();
     this.documentoSeleccionado = null;
     this.vistaActual = 'documentos';
@@ -434,21 +437,22 @@ export class CuentasCobrarComponent implements OnInit, AfterViewInit {
   }
 
   getSaldoPorCliente(clienteId: number): number {
-  return this.documentosPorCobrar
-    .filter(d => d.cliente.id === clienteId)
-    .reduce((total, d) => total + d.montoSaldo, 0);
-}
-getDocumentoPorId(documentoId: number): DocumentoPorCobrar | undefined {
-  return this.documentosPorCobrar.find(d => d.id === documentoId);
-}
+    return this.documentosPorCobrar
+      .filter(d => d.cliente.id === clienteId)
+      .reduce((total, d) => total + d.montoSaldo, 0);
+  }
 
-getNumeroDocumento(documentoId: number): string {
-  const documento = this.getDocumentoPorId(documentoId);
-  return documento?.numeroDocumento || 'N/A';
-}
+  getDocumentoPorId(documentoId: number): DocumentoPorCobrar | undefined {
+    return this.documentosPorCobrar.find(d => d.id === documentoId);
+  }
 
-getRazonSocialCliente(documentoId: number): string {
-  const documento = this.getDocumentoPorId(documentoId);
-  return documento?.cliente.razonSocial || 'N/A';
-}
+  getNumeroDocumento(documentoId: number): string {
+    const documento = this.getDocumentoPorId(documentoId);
+    return documento?.numeroDocumento || 'N/A';
+  }
+
+  getRazonSocialCliente(documentoId: number): string {
+    const documento = this.getDocumentoPorId(documentoId);
+    return documento?.cliente.razonSocial || 'N/A';
+  }
 }

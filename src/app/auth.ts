@@ -79,12 +79,27 @@ export class AuthService {
     try {
       const { data, error } = await this.supabaseService.client
         .from('usuarios')
-        .select('*, empresas(nombre, id)')
+        .select(`
+          id,
+          empresa_id,
+          nombre_completo,
+          email,
+          rol,
+          activo,
+          ultimo_acceso,
+          preferencias,
+          created_at,
+          updated_at,
+          empresas!inner (
+            id,
+            nombre
+          )
+        `)
         .eq('id', supabaseUserId)
         .single();
 
       if (error || !data) {
-        // Si no existe en tabla usuarios, crear perfil básico
+        // Si no existe en tabla usuarios, crear perfil básico desde auth
         const { data: authUser } = await this.supabaseService.client.auth.getUser();
         if (authUser.user) {
           const user: User = {
@@ -101,13 +116,15 @@ export class AuthService {
         return;
       }
 
+      // ✅ Mapear datos reales de la BD al interfaz User de la app
       const user: User = {
         id: data.id,
         username: data.email.split('@')[0],
         email: data.email,
-        role: data.rol,
+        role: data.rol as User['role'],
         fullName: data.nombre_completo,
-        empresa: data.empresas?.nombre || 'NUMIX',
+        // ✅ Solución: usar 'as any' para evitar error de TypeScript en relación anidada
+        empresa: (data as any).empresas?.nombre || 'NUMIX',
         empresaId: data.empresa_id,
       };
 
@@ -165,7 +182,8 @@ export class AuthService {
           razon_social: datos.nombreEmpresa,
           nit: datos.nit,
         })
-        .select().single();
+        .select()
+        .single();
 
       if (empError || !empresa) {
         return { success: false, error: 'Error al crear empresa' };

@@ -54,7 +54,7 @@ interface PagoPagar {
   styleUrls: ['./cuentas-pagar.css']
 })
 export class CuentasPagarComponent implements OnInit, AfterViewInit {
-  @ViewChild('container') container!: ElementRef ;
+  @ViewChild('container') container!: ElementRef;
   Math = Math;
 
   // Estado de la vista
@@ -131,12 +131,12 @@ export class CuentasPagarComponent implements OnInit, AfterViewInit {
     }
   ];
 
-  // Nuevo pago
-  nuevoPago: PagoPagar = this.inicializarNuevoPago();
+  // ✅ CORREGIDO: Solo declaración, sin inicialización directa
+  nuevoPago!: PagoPagar;
   documentoSeleccionado: DocumentoPorPagar | null = null;
 
-  // Nuevo proveedor
-  nuevoProveedor: Tercero = this.inicializarNuevoProveedor();
+  // ✅ CORREGIDO: Solo declaración, sin inicialización directa
+  nuevoProveedor!: Tercero;
 
   // Filtros
   filtroEstado = '';
@@ -157,10 +157,15 @@ export class CuentasPagarComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
+    // Validar autenticación primero
     if (!this.authService.isLoggedIn) {
       this.router.navigate(['/login']);
       return;
     }
+
+    // ✅ CORREGIDO: Inicializar después de que authService esté disponible
+    this.nuevoPago = this.inicializarNuevoPago();
+    this.nuevoProveedor = this.inicializarNuevoProveedor();
 
     this.calcularDiasVencimiento();
     this.actualizarEstados();
@@ -297,7 +302,8 @@ export class CuentasPagarComponent implements OnInit, AfterViewInit {
       montoPago: 0,
       metodoPago: 'EFECTIVO',
       observaciones: '',
-      registradoPor: this.authService.currentUserValue?.fullName || 'Usuario'
+      // ✅ CORREGIDO: Encadenamiento opcional más seguro
+      registradoPor: this.authService?.currentUserValue?.fullName || 'Usuario'
     };
   }
 
@@ -330,7 +336,7 @@ export class CuentasPagarComponent implements OnInit, AfterViewInit {
     console.log('💳 Pago registrado:', this.nuevoPago);
     this.mostrarExito(`Pago de ${this.formatCurrency(this.nuevoPago.montoPago)} registrado correctamente`);
 
-    // Limpiar formulario
+    // ✅ CORREGIDO: Reinicializar después de registrar
     this.nuevoPago = this.inicializarNuevoPago();
     this.documentoSeleccionado = null;
     this.vistaActual = 'documentos';
