@@ -1,136 +1,172 @@
 <div class="libro-mayor-container" #container>
-
-  <!-- Header del módulo -->
+  <!-- Header -->
   <div class="module-header">
     <div class="header-left">
-      <button class="back-btn" (click)="volverDashboard()">
-        <span class="back-icon">←</span>
-        Dashboard
-      </button>
+      <button class="back-btn" (click)="volverDashboard()">← Dashboard</button>
       <div class="header-info">
         <h1 class="module-title">📚 Libro Mayor</h1>
-        <p class="module-subtitle">Gestión del Plan de Cuentas y Asientos Contables</p>
+        <p class="module-subtitle">Plan de Cuentas PUCT y Asientos Contables</p>
       </div>
     </div>
     <div class="header-right">
-      <div class="user-info">
-        <span class="user-role">{{ authService.currentUserValue?.role | titlecase }}</span>
-      </div>
+      <span class="user-role">{{ authService.currentUserValue?.role | titlecase }}</span>
     </div>
   </div>
 
-  <!-- Mensajes de estado -->
+  <!-- Alertas -->
   <div class="alert alert-error"   *ngIf="errorMsg">⚠️ {{ errorMsg }}</div>
   <div class="alert alert-success" *ngIf="successMsg">{{ successMsg }}</div>
 
-  <!-- Navegación por tabs -->
+  <!-- Tabs -->
   <div class="nav-tabs">
-    <button class="tab" [class.active]="vistaActual === 'plan-cuentas'"  (click)="cambiarVista('plan-cuentas')">
-      🏗️ Plan de Cuentas
-    </button>
-    <button class="tab" [class.active]="vistaActual === 'asientos'"      (click)="cambiarVista('asientos')">
-      📝 Asientos Contables
-    </button>
-    <button class="tab" [class.active]="vistaActual === 'nuevo-asiento'" (click)="cambiarVista('nuevo-asiento')">
-      ➕ Nuevo Asiento
-    </button>
+    <button class="tab" [class.active]="vistaActual === 'plan-cuentas'"  (click)="cambiarVista('plan-cuentas')">🏗️ Plan de Cuentas</button>
+    <button class="tab" [class.active]="vistaActual === 'asientos'"      (click)="cambiarVista('asientos')">📝 Asientos</button>
+    <button class="tab" [class.active]="vistaActual === 'nuevo-asiento'" (click)="cambiarVista('nuevo-asiento')">➕ Nuevo Asiento</button>
   </div>
 
-  <!-- Contenido principal -->
   <div class="content-area">
 
-    <!-- ═══════════════════════════════════════════════════
-         VISTA: PLAN DE CUENTAS
-    ════════════════════════════════════════════════════ -->
+    <!-- ══════════════════════════════════════════════════
+         PLAN DE CUENTAS PUCT
+    ═══════════════════════════════════════════════════ -->
     <div *ngIf="vistaActual === 'plan-cuentas'" class="plan-cuentas-view">
-
-      <!-- Cargando -->
       <div class="loading-row" *ngIf="cargandoCuentas">⏳ Cargando plan de cuentas...</div>
 
-      <!-- Filtros -->
-      <div class="filters-section" *ngIf="!cargandoCuentas">
-        <div class="search-group">
-          <input
-            type="text"
-            class="search-input"
-            placeholder="Buscar cuenta por código o nombre..."
-            [(ngModel)]="busquedaCuenta"
-            (ngModelChange)="filtrarCuentas()">
-        </div>
-        <div class="filter-group">
-          <select
-            class="filter-select"
-            [(ngModel)]="filtroTipoCuenta"
-            (ngModelChange)="filtrarCuentas()">
-            <option value="">Todos los tipos</option>
-            <option value="ACTIVO">Activos</option>
-            <option value="PASIVO">Pasivos</option>
-            <option value="PATRIMONIO">Patrimonio</option>
-            <option value="INGRESO">Ingresos</option>
-            <option value="EGRESO">Egresos</option>
-          </select>
-        </div>
-        <button class="btn-secondary" (click)="cargarPlanCuentas()">🔄 Recargar</button>
-      </div>
+      <ng-container *ngIf="!cargandoCuentas">
 
-      <!-- Tabla de cuentas -->
-      <div class="cuentas-table" *ngIf="!cargandoCuentas">
-        <div class="table-header">
-          <div class="col-codigo">Código</div>
-          <div class="col-nombre">Nombre de la Cuenta</div>
-          <div class="col-tipo">Tipo</div>
-          <div class="col-naturaleza">Naturaleza</div>
-          <div class="col-acepta">Mov.</div>
+        <!-- Barra de acciones -->
+        <div class="plan-actions-bar">
+          <div class="filters-section">
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Buscar por código o nombre..."
+              [(ngModel)]="busquedaCuenta"
+              (ngModelChange)="filtrarCuentas()"
+            />
+            <select class="filter-select" [(ngModel)]="filtroTipoCuenta" (ngModelChange)="filtrarCuentas()">
+              <option value="">Todos los tipos</option>
+              <option value="ACTIVO">Activos</option>
+              <option value="PASIVO">Pasivos</option>
+              <option value="PATRIMONIO">Patrimonio</option>
+              <option value="INGRESO">Ingresos</option>
+              <option value="EGRESO">Egresos</option>
+            </select>
+            <select class="filter-select" [(ngModel)]="filtroNivel" (ngModelChange)="filtrarCuentas()">
+              <option value="">Todos los niveles</option>
+              <option value="1">Nivel 1 — C (Clase)</option>
+              <option value="2">Nivel 2 — G (Grupo)</option>
+              <option value="3">Nivel 3 — SG (Subgrupo)</option>
+              <option value="4">Nivel 4 — CP (Cuenta Principal)</option>
+              <option value="5">Nivel 5 — CA (Cuenta Analítica)</option>
+            </select>
+            <button class="btn-secondary" (click)="limpiarFiltros()">✕ Limpiar</button>
+            <button class="btn-secondary" (click)="cargarPlanCuentas()">🔄 Recargar</button>
+          </div>
+
+          <!-- Botón Nueva Cuenta (solo admin) -->
+          <button
+            class="btn-primary"
+            *ngIf="authService.isAdmin"
+            (click)="abrirCrear()"
+          >
+            ➕ Nueva Cuenta
+          </button>
         </div>
 
-        <div class="table-body">
-          <div
-            *ngFor="let cuenta of cuentasFiltradas"
-            class="table-row"
-            [class.nivel-1]="cuenta.nivel === 1"
-            [class.nivel-2]="cuenta.nivel === 2"
-            [class.nivel-3]="cuenta.nivel === 3"
-            [class.nivel-4]="cuenta.nivel === 4">
+        <!-- Tabla PUCT -->
+        <div class="cuentas-table">
+          <div class="table-header puct-header">
+            <div class="col-nivel">Niv.</div>
+            <div class="col-c">C</div>
+            <div class="col-g">G</div>
+            <div class="col-sg">SG</div>
+            <div class="col-cp">CP</div>
+            <div class="col-ca">CA</div>
+            <div class="col-nombre">Nombre de la Cuenta</div>
+            <div class="col-tipo">Tipo</div>
+            <div class="col-nat">Naturaleza</div>
+            <div class="col-mov">Mov.</div>
+            <div class="col-acciones" *ngIf="authService.isAdmin">Acc.</div>
+          </div>
 
-            <div class="col-codigo">{{ cuenta.codigo }}</div>
-            <div class="col-nombre" [style.padding-left]="getIndentStyle(cuenta.nivel)">
-              {{ cuenta.nombre }}
+          <div class="table-body">
+            <div
+              *ngFor="let cuenta of cuentasFiltradas"
+              class="table-row puct-row"
+              [class.nivel-1]="cuenta.nivel === 1"
+              [class.nivel-2]="cuenta.nivel === 2"
+              [class.nivel-3]="cuenta.nivel === 3"
+              [class.nivel-4]="cuenta.nivel === 4"
+              [class.nivel-5]="cuenta.nivel === 5"
+            >
+              <div class="col-nivel">
+                <span class="nivel-badge nivel-{{ cuenta.nivel }}">{{ labelNivel(cuenta.nivel) }}</span>
+              </div>
+              <div class="col-c">{{ cuenta.c }}</div>
+              <div class="col-g">{{ cuenta.g }}</div>
+              <div class="col-sg">{{ cuenta.sg }}</div>
+              <div class="col-cp">{{ cuenta.cp }}</div>
+              <div class="col-ca">{{ cuenta.ca }}</div>
+              <div class="col-nombre" [style.padding-left.px]="(cuenta.nivel - 1) * 16">
+                <strong *ngIf="cuenta.nivel <= 2">{{ cuenta.nombre }}</strong>
+                <span   *ngIf="cuenta.nivel > 2">{{ cuenta.nombre }}</span>
+              </div>
+              <div class="col-tipo">
+                <span class="tipo-badge" [class]="cuenta.tipo.toLowerCase()">{{ cuenta.tipo }}</span>
+              </div>
+              <div class="col-nat">
+                <span class="nat-badge" [class]="cuenta.naturaleza === 'DEUDORA' ? 'deudora' : 'acreedora'">
+                  {{ cuenta.naturaleza }}
+                </span>
+              </div>
+              <div class="col-mov">
+                <span *ngIf="cuenta.acepta_movimientos"  title="Acepta movimientos" class="mov-ok">✅</span>
+                <span *ngIf="!cuenta.acepta_movimientos" title="Solo agrupadora"    class="mov-no">—</span>
+              </div>
+
+              <!-- Acciones CRUD (solo admin) -->
+              <div class="col-acciones" *ngIf="authService.isAdmin">
+                <button
+                  class="btn-icon btn-edit"
+                  title="Editar cuenta"
+                  (click)="abrirEditar(cuenta)"
+                >✏️</button>
+                <button
+                  class="btn-icon btn-danger"
+                  title="Eliminar cuenta"
+                  (click)="pedirConfirmDelete(cuenta)"
+                >🗑️</button>
+              </div>
             </div>
-            <div class="col-tipo">
-              <span class="tipo-badge" [class]="cuenta.tipo.toLowerCase()">{{ cuenta.tipo }}</span>
-            </div>
-            <div class="col-naturaleza">{{ cuenta.naturaleza }}</div>
-            <div class="col-acepta">
-              <span *ngIf="cuenta.acepta_movimientos" title="Acepta movimientos">✅</span>
-              <span *ngIf="!cuenta.acepta_movimientos" title="Solo agrupadora">—</span>
+
+            <div class="empty-row" *ngIf="cuentasFiltradas.length === 0">
+              No se encontraron cuentas con los filtros aplicados
             </div>
           </div>
 
-          <div class="empty-row" *ngIf="cuentasFiltradas.length === 0">
-            No se encontraron cuentas
+          <div class="table-footer" *ngIf="cuentasFiltradas.length > 0">
+            <span>{{ cuentasFiltradas.length }} cuenta(s) encontrada(s)</span>
           </div>
         </div>
-      </div>
+      </ng-container>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════
-         VISTA: ASIENTOS CONTABLES
-    ════════════════════════════════════════════════════ -->
+    <!-- ══════════════════════════════════════════════════
+         ASIENTOS CONTABLES
+    ═══════════════════════════════════════════════════ -->
     <div *ngIf="vistaActual === 'asientos'" class="asientos-view">
-
       <div class="asientos-header">
-        <h2 class="section-title">Asientos Contables Registrados</h2>
+        <h2 class="section-title">Asientos Contables</h2>
         <button class="btn-primary" (click)="cambiarVista('nuevo-asiento')">➕ Nuevo Asiento</button>
       </div>
 
-      <!-- Cargando -->
       <div class="loading-row" *ngIf="cargandoAsientos">⏳ Cargando asientos...</div>
 
-      <!-- Lista de asientos -->
       <div class="asientos-list" *ngIf="!cargandoAsientos">
-
         <div class="empty-row" *ngIf="asientos.length === 0">
-          No hay asientos registrados. <a (click)="cambiarVista('nuevo-asiento')" style="cursor:pointer;color:var(--accent)">Crear el primero →</a>
+          No hay asientos.
+          <a (click)="cambiarVista('nuevo-asiento')" style="cursor:pointer;color:var(--accent)">Crear el primero →</a>
         </div>
 
         <div *ngFor="let asiento of asientos" class="asiento-card">
@@ -141,41 +177,36 @@
             </div>
             <div class="asiento-meta">
               <span class="asiento-fecha">{{ asiento.fecha | date:'dd/MM/yyyy' }}</span>
-              <span class="asiento-estado" [class]="asiento.estado?.toLowerCase()">
-                {{ asiento.estado }}
-              </span>
-              <!-- Botón anular solo si está CONFIRMADO y es admin/contador -->
+              <span class="asiento-estado" [class]="asiento.estado.toLowerCase()">{{ asiento.estado }}</span>
               <button
                 class="btn-icon btn-danger"
                 *ngIf="asiento.estado === 'CONFIRMADO' && authService.isAdmin"
                 (click)="anularAsiento(asiento)"
-                title="Anular asiento">
-                🚫
-              </button>
+                title="Anular"
+              >🚫</button>
             </div>
           </div>
 
           <div class="asiento-detalles">
             <div class="detalles-header">
-              <div class="col-cuenta">Cuenta</div>
-              <div class="col-descripcion">Descripción</div>
+              <div class="col-cuenta-codigo">Código</div>
+              <div class="col-cuenta-nombre">Cuenta</div>
+              <div class="col-descripcion">Glosa</div>
               <div class="col-debito">Débito</div>
               <div class="col-credito">Crédito</div>
             </div>
-
             <div *ngFor="let detalle of asiento.detalles" class="detalle-row">
-              <div class="col-cuenta">
-                <strong>{{ detalle.codigoCuenta }}</strong> — {{ detalle.nombreCuenta }}
-              </div>
+              <div class="col-cuenta-codigo"><code>{{ detalle.codigoCuenta }}</code></div>
+              <div class="col-cuenta-nombre">{{ detalle.nombreCuenta }}</div>
               <div class="col-descripcion">{{ detalle.descripcion }}</div>
-              <div class="col-debito">{{ detalle.debito  > 0 ? formatCurrency(detalle.debito)  : '' }}</div>
-              <div class="col-credito">{{ detalle.credito > 0 ? formatCurrency(detalle.credito) : '' }}</div>
+              <div class="col-debito green">{{ detalle.debito  > 0 ? formatCurrency(detalle.debito)  : '' }}</div>
+              <div class="col-credito red"> {{ detalle.credito > 0 ? formatCurrency(detalle.credito) : '' }}</div>
             </div>
-
             <div class="totales-row">
-              <div class="col-cuenta"></div>
-              <div class="col-descripcion"><strong>TOTALES:</strong></div>
-              <div class="col-debito"><strong>{{ formatCurrency(asiento.totalDebito) }}</strong></div>
+              <div class="col-cuenta-codigo"></div>
+              <div class="col-cuenta-nombre"></div>
+              <div class="col-descripcion"><strong>TOTALES</strong></div>
+              <div class="col-debito"><strong>{{ formatCurrency(asiento.totalDebito)  }}</strong></div>
               <div class="col-credito"><strong>{{ formatCurrency(asiento.totalCredito) }}</strong></div>
             </div>
           </div>
@@ -183,126 +214,85 @@
       </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════
-         VISTA: NUEVO ASIENTO
-    ════════════════════════════════════════════════════ -->
+    <!-- ══════════════════════════════════════════════════
+         NUEVO ASIENTO
+    ═══════════════════════════════════════════════════ -->
     <div *ngIf="vistaActual === 'nuevo-asiento'" class="nuevo-asiento-view">
       <div class="asiento-form">
         <h2 class="section-title">Crear Nuevo Asiento Contable</h2>
 
-        <!-- Datos de cabecera -->
         <div class="form-header">
           <div class="form-group">
-            <label for="fecha">Fecha: *</label>
-            <input
-              type="date"
-              id="fecha"
-              class="form-input"
-              [(ngModel)]="nuevoAsiento.fecha">
+            <label>Fecha: *</label>
+            <input type="date" class="form-input" [(ngModel)]="nuevoAsiento.fecha" />
           </div>
           <div class="form-group">
-            <label for="descripcion">Descripción: *</label>
-            <input
-              type="text"
-              id="descripcion"
-              class="form-input"
-              placeholder="Ej: Pago de nómina septiembre 2026"
-              [(ngModel)]="nuevoAsiento.descripcion">
+            <label>Descripción: *</label>
+            <input type="text" class="form-input" placeholder="Ej: Pago nómina septiembre 2026" [(ngModel)]="nuevoAsiento.descripcion" />
           </div>
         </div>
 
-        <!-- Agregar movimiento -->
         <div class="detalle-form">
           <h3 class="subsection-title">Agregar Movimiento</h3>
           <div class="detalle-inputs">
-
-            <!-- ✅ SELECTOR usa cuenta.id (UUID) como value -->
             <div class="form-group">
-              <label for="cuenta">Cuenta: *</label>
-              <select
-                id="cuenta"
-                class="form-select"
-                [(ngModel)]="nuevoDetalle.codigoCuenta"
-                (ngModelChange)="onCuentaSeleccionada()">
+              <label>Cuenta: *</label>
+              <select class="form-select" [(ngModel)]="nuevoDetalle.codigoCuenta" (ngModelChange)="onCuentaSeleccionada()">
                 <option value="">Seleccionar cuenta...</option>
-                <option *ngFor="let cuenta of cuentasParaAsiento" [value]="cuenta.id">
-                  {{ cuenta.codigo }} — {{ cuenta.nombre }}
-                </option>
+                <optgroup *ngFor="let tipo of ['ACTIVO','PASIVO','PATRIMONIO','INGRESO','EGRESO']" [label]="tipo">
+                  <ng-container *ngFor="let c of cuentasParaAsiento | slice:0:999">
+                    <option [value]="c.id" *ngIf="c.tipo === tipo">{{ c.codigo }} — {{ c.nombre }}</option>
+                  </ng-container>
+                </optgroup>
               </select>
             </div>
-
-            <div class="form-group">
-              <label for="desc-detalle">Descripción:</label>
-              <input
-                type="text"
-                id="desc-detalle"
-                class="form-input"
-                placeholder="Descripción del movimiento"
-                [(ngModel)]="nuevoDetalle.descripcion">
+            <div class="form-group" *ngIf="nuevoDetalle.nombreCuenta">
+              <label>Cuenta seleccionada:</label>
+              <div class="cuenta-seleccionada">{{ nuevoDetalle.nombreCuenta }}</div>
             </div>
-
             <div class="form-group">
-              <label for="debito">Débito (Bs):</label>
-              <input
-                type="number"
-                id="debito"
-                class="form-input"
-                min="0"
-                step="0.01"
-                [(ngModel)]="nuevoDetalle.debito"
-                (ngModelChange)="nuevoDetalle.credito = 0">
+              <label>Glosa / Descripción:</label>
+              <input type="text" class="form-input" placeholder="Descripción del movimiento" [(ngModel)]="nuevoDetalle.descripcion" />
             </div>
-
             <div class="form-group">
-              <label for="credito">Crédito (Bs):</label>
-              <input
-                type="number"
-                id="credito"
-                class="form-input"
-                min="0"
-                step="0.01"
-                [(ngModel)]="nuevoDetalle.credito"
-                (ngModelChange)="nuevoDetalle.debito = 0">
+              <label>Débito (Bs):</label>
+              <input type="number" class="form-input" min="0" step="0.01" [(ngModel)]="nuevoDetalle.debito"  (ngModelChange)="nuevoDetalle.credito = 0" />
             </div>
-
+            <div class="form-group">
+              <label>Crédito (Bs):</label>
+              <input type="number" class="form-input" min="0" step="0.01" [(ngModel)]="nuevoDetalle.credito" (ngModelChange)="nuevoDetalle.debito = 0" />
+            </div>
             <button class="btn-add" (click)="agregarDetalle()">➕ Agregar</button>
           </div>
         </div>
 
-        <!-- Lista de movimientos agregados -->
         <div class="detalles-list" *ngIf="nuevoAsiento.detalles.length > 0">
           <h3 class="subsection-title">Movimientos del Asiento</h3>
-
           <div class="detalles-table">
             <div class="table-header">
-              <div class="col-cuenta">Cuenta</div>
-              <div class="col-descripcion">Descripción</div>
+              <div class="col-cuenta-codigo">Código</div>
+              <div class="col-cuenta-nombre">Cuenta</div>
+              <div class="col-descripcion">Glosa</div>
               <div class="col-debito">Débito</div>
               <div class="col-credito">Crédito</div>
               <div class="col-acciones">—</div>
             </div>
-
             <div class="table-body">
-              <div
-                *ngFor="let detalle of nuevoAsiento.detalles; let i = index"
-                class="detalle-item table-row">
-                <div class="col-cuenta">
-                  <strong>{{ detalle.codigoCuenta }}</strong> — {{ detalle.nombreCuenta }}
-                </div>
-                <div class="col-descripcion">{{ detalle.descripcion }}</div>
-                <div class="col-debito">{{ detalle.debito  > 0 ? formatCurrency(detalle.debito)  : '' }}</div>
-                <div class="col-credito">{{ detalle.credito > 0 ? formatCurrency(detalle.credito) : '' }}</div>
+              <div *ngFor="let d of nuevoAsiento.detalles; let i = index" class="detalle-item table-row">
+                <div class="col-cuenta-codigo"><code>{{ d.codigoCuenta }}</code></div>
+                <div class="col-cuenta-nombre">{{ d.nombreCuenta }}</div>
+                <div class="col-descripcion">{{ d.descripcion }}</div>
+                <div class="col-debito green">{{ d.debito  > 0 ? formatCurrency(d.debito)  : '' }}</div>
+                <div class="col-credito red"> {{ d.credito > 0 ? formatCurrency(d.credito) : '' }}</div>
                 <div class="col-acciones">
                   <button class="btn-delete" (click)="eliminarDetalle(i)">🗑️</button>
                 </div>
               </div>
             </div>
-
-            <!-- Totales y balance -->
             <div class="totales-section">
               <div class="totales-row">
                 <div class="totales-label"><strong>TOTALES:</strong></div>
-                <div class="totales-debito">{{ formatCurrency(nuevoAsiento.totalDebito) }}</div>
+                <div class="totales-debito">{{ formatCurrency(nuevoAsiento.totalDebito)  }}</div>
                 <div class="totales-credito">{{ formatCurrency(nuevoAsiento.totalCredito) }}</div>
                 <div class="balance-indicator" [class.balanceado]="nuevoAsiento.balanceado">
                   {{ nuevoAsiento.balanceado ? '✅ Balanceado' : '⚠️ No balanceado' }}
@@ -312,20 +302,122 @@
           </div>
         </div>
 
-        <!-- Acciones -->
         <div class="form-actions">
-          <button
-            class="btn-success"
-            [disabled]="!nuevoAsiento.balanceado || !nuevoAsiento.descripcion || guardando"
-            (click)="guardarAsiento()">
+          <button class="btn-success"   [disabled]="!nuevoAsiento.balanceado || !nuevoAsiento.descripcion || guardando" (click)="guardarAsiento()">
             {{ guardando ? '⏳ Guardando...' : '💾 Guardar Asiento' }}
           </button>
           <button class="btn-secondary" (click)="limpiarFormulario()">🧹 Limpiar</button>
           <button class="btn-cancel"    (click)="cambiarVista('asientos')">❌ Cancelar</button>
         </div>
-
       </div>
     </div>
 
+  </div><!-- /content-area -->
+</div><!-- /libro-mayor-container -->
+
+
+<!-- ══════════════════════════════════════════════════
+     MODAL — Crear / Editar Cuenta
+═══════════════════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="modalMode" (click)="cerrarModal()">
+  <div class="cuenta-modal" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <h2>{{ modalMode === 'crear' ? '➕ Nueva Cuenta' : '✏️ Editar Cuenta' }}</h2>
+      <button class="modal-close" (click)="cerrarModal()">✕</button>
+    </div>
+
+    <div class="alert alert-error" *ngIf="errorMsg">⚠️ {{ errorMsg }}</div>
+
+    <div class="modal-body">
+
+      <!-- Código -->
+      <div class="form-group">
+        <label>Código PUCT *</label>
+        <input
+          type="text"
+          class="form-input"
+          placeholder="Ej: 1, 101, 10101, 1010101, 1010101001"
+          [(ngModel)]="cuentaForm.codigo"
+          (ngModelChange)="onCodigoChange()"
+          [readonly]="modalMode === 'editar'"
+        />
+        <small class="form-hint">
+          1 dígito=C · 3=G · 5=SG · 7=CP · 9-10=CA &nbsp;|&nbsp;
+          Nivel inferido: <strong>{{ labelNivel(cuentaForm.nivel || 1) }} ({{ cuentaForm.nivel }})</strong>
+        </small>
+      </div>
+
+      <!-- Nombre -->
+      <div class="form-group">
+        <label>Nombre *</label>
+        <input type="text" class="form-input" placeholder="Nombre de la cuenta" [(ngModel)]="cuentaForm.nombre" />
+      </div>
+
+      <!-- Tipo + Naturaleza en fila -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tipo *</label>
+          <select class="form-select" [(ngModel)]="cuentaForm.tipo">
+            <option *ngFor="let t of TIPOS" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Naturaleza *</label>
+          <select class="form-select" [(ngModel)]="cuentaForm.naturaleza">
+            <option *ngFor="let n of NATURALEZAS" [value]="n">{{ n }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Switches -->
+      <div class="form-row switches-row">
+        <label class="switch-label">
+          <input type="checkbox" [(ngModel)]="cuentaForm.acepta_movimientos" />
+          <span>Acepta movimientos</span>
+        </label>
+        <label class="switch-label">
+          <input type="checkbox" [(ngModel)]="cuentaForm.activo" />
+          <span>Activo</span>
+        </label>
+      </div>
+
+    </div><!-- /modal-body -->
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="cerrarModal()">Cancelar</button>
+      <button
+        class="btn-success"
+        [disabled]="guardandoCuenta"
+        (click)="guardarCuenta()"
+      >
+        {{ guardandoCuenta ? '⏳ Guardando...' : (modalMode === 'crear' ? '💾 Crear' : '💾 Actualizar') }}
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     MODAL — Confirmar eliminación
+═══════════════════════════════════════════════════ -->
+<div class="modal-overlay" *ngIf="confirmDelete" (click)="cancelarDelete()">
+  <div class="cuenta-modal confirm-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>🗑️ Eliminar Cuenta</h2>
+      <button class="modal-close" (click)="cancelarDelete()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p>¿Estás seguro de eliminar la cuenta?</p>
+      <div class="confirm-cuenta-info">
+        <code>{{ confirmDelete.codigo }}</code>
+        <strong>{{ confirmDelete.nombre }}</strong>
+      </div>
+      <p class="confirm-warning">⚠️ Esta acción no se puede deshacer. Si la cuenta tiene movimientos, la operación fallará.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="cancelarDelete()">Cancelar</button>
+      <button class="btn-danger-solid" (click)="eliminarCuenta()">🗑️ Eliminar</button>
+    </div>
   </div>
 </div>

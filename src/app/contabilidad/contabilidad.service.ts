@@ -115,7 +115,7 @@ export class ContabilidadService {
     if (error) throw error;
     return (data || []).map(c => ({
       ...c,
-      tipo: c.tipo?.toUpperCase() as CuentaContable['tipo'],
+      tipo:       c.tipo?.toUpperCase()       as CuentaContable['tipo'],
       naturaleza: c.naturaleza?.toUpperCase() as CuentaContable['naturaleza'],
       saldo: 0,
     }));
@@ -125,22 +125,51 @@ export class ContabilidadService {
     const { data, error } = await this.db
       .from('plan_cuentas')
       .insert({
-        empresa_id:              cuenta.empresa_id,
-        codigo:                  cuenta.codigo,
-        nombre:                  cuenta.nombre,
-        tipo:                    cuenta.tipo,
-        naturaleza:              cuenta.naturaleza,
-        nivel:                   cuenta.nivel,
-        cuenta_padre_id:         cuenta.cuenta_padre_id || null,
-        acepta_movimientos:      cuenta.acepta_movimientos ?? true,
-        requiere_centro_costo:   cuenta.requiere_centro_costo ?? false,
-        activo:                  true,
+        empresa_id:            cuenta.empresa_id,
+        codigo:                cuenta.codigo,
+        nombre:                cuenta.nombre,
+        tipo:                  cuenta.tipo,
+        naturaleza:            cuenta.naturaleza,
+        nivel:                 cuenta.nivel,
+        cuenta_padre_id:       cuenta.cuenta_padre_id || null,
+        acepta_movimientos:    cuenta.acepta_movimientos ?? true,
+        requiere_centro_costo: cuenta.requiere_centro_costo ?? false,
+        activo:                true,
       })
       .select()
       .single();
 
     if (error) throw error;
     return data;
+  }
+
+  /** Actualiza los campos editables de una cuenta. Nunca modifica id ni empresa_id. */
+  async updateCuenta(id: string, changes: Partial<CuentaContable>): Promise<CuentaContable> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id: _id, empresa_id: _eid, saldo: _saldo, ...safe } = changes as any;
+
+    const { data, error } = await this.db
+      .from('plan_cuentas')
+      .update(safe)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  }
+
+  /**
+   * Elimina una cuenta del plan de cuentas.
+   * La BD rechazará la operación si existen detalle_asientos que referencien esta cuenta (FK).
+   */
+  async deleteCuenta(id: string): Promise<void> {
+    const { error } = await this.db
+      .from('plan_cuentas')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
   }
 
   // ══════════════════════════════════════════════════════════
@@ -158,8 +187,8 @@ export class ContabilidadService {
         )
       `)
       .eq('empresa_id', empresaId)
-      .order('fecha', { ascending: false })
-      .order('numero_asiento', { ascending: false });
+      .order('fecha',           { ascending: false })
+      .order('numero_asiento',  { ascending: false });
 
     if (fechaInicio) query = query.gte('fecha', fechaInicio);
     if (fechaFin)    query = query.lte('fecha', fechaFin);
@@ -246,9 +275,9 @@ export class ContabilidadService {
         asientos_contables!inner ( fecha, estado, empresa_id )
       `)
       .eq('asientos_contables.empresa_id', empresaId)
-      .eq('asientos_contables.estado', 'CONFIRMADO')
-      .gte('asientos_contables.fecha', fechaInicio)
-      .lte('asientos_contables.fecha', fechaFin);
+      .eq('asientos_contables.estado',     'CONFIRMADO')
+      .gte('asientos_contables.fecha',     fechaInicio)
+      .lte('asientos_contables.fecha',     fechaFin);
 
     if (error) throw error;
 
@@ -264,26 +293,14 @@ export class ContabilidadService {
 
     // 4. Armar CuentaBalance con saldos
     return cuentas.map(c => {
-      const sumas = sumasPorCuenta.get(c.id || '') || { debe: 0, haber: 0 };
+      const sumas         = sumasPorCuenta.get(c.id || '') || { debe: 0, haber: 0 };
       const saldoDeudor   = sumas.debe;
       const saldoAcreedor = sumas.haber;
-      let saldoFinal: number;
+      const saldoFinal    = c.naturaleza === 'DEUDORA'
+        ? saldoDeudor - saldoAcreedor
+        : saldoAcreedor - saldoDeudor;
 
-      if (c.naturaleza === 'DEUDORA') {
-        saldoFinal = saldoDeudor - saldoAcreedor;
-      } else {
-        saldoFinal = saldoAcreedor - saldoDeudor;
-      }
-
-      return {
-        codigo:        c.codigo,
-        nombre:        c.nombre,
-        tipo:          c.tipo,
-        nivel:         c.nivel,
-        saldoDeudor,
-        saldoAcreedor,
-        saldoFinal,
-      };
+      return { codigo: c.codigo, nombre: c.nombre, tipo: c.tipo, nivel: c.nivel, saldoDeudor, saldoAcreedor, saldoFinal };
     });
   }
 
@@ -300,20 +317,16 @@ export class ContabilidadService {
     const totalEgresos    = sum('EGRESO');
     const utilidadNeta    = totalIngresos - totalEgresos;
 
-    const activoCorriente = Math.abs(
-      cuentas.find(c => c.codigo === '11')?.saldoFinal ?? 0
-    );
-    const pasivoCorriente = Math.abs(
-      cuentas.find(c => c.codigo === '21')?.saldoFinal ?? 0
-    );
+    const activoCorriente = Math.abs(cuentas.find(c => c.codigo === '11')?.saldoFinal ?? 0);
+    const pasivoCorriente = Math.abs(cuentas.find(c => c.codigo === '21')?.saldoFinal ?? 0);
 
     return {
       totalActivos,
       totalPasivos,
       totalPatrimonio,
       utilidadNeta,
-      liquidez:      pasivoCorriente > 0 ? activoCorriente / pasivoCorriente : 0,
-      rentabilidad:  totalActivos    > 0 ? (utilidadNeta / totalActivos) * 100 : 0,
+      liquidez:     pasivoCorriente > 0 ? activoCorriente / pasivoCorriente : 0,
+      rentabilidad: totalActivos    > 0 ? (utilidadNeta / totalActivos) * 100 : 0,
     };
   }
 
